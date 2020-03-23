@@ -1,7 +1,9 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.conf import settings
 from django.urls import reverse
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 
 from .forms import PlayerForm
 from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction
@@ -35,7 +37,9 @@ def get_user_profile():
     player = Player.objects.all()[0]
     return player
 
+@login_required
 def player_profile(request):
+    print("Autenticado")
     if request.method == 'POST':
         form = PlayerForm(request.POST)
         if form.is_valid():
