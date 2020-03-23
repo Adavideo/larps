@@ -20,12 +20,31 @@ class Player(models.Model):
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
+
     def __str__(self):
         if (self.user.first_name):
             name = self.user.first_name + " " + self.user.last_name
         else:
             name = self.user.username
         return name
+
+    def get_data(self):
+        data = {
+            'allergies': self.allergies,
+            'food_allergies' : self.food_allergies,
+            'food_intolerances': self.food_intolerances,
+            'medical_conditions': self.medical_conditions,
+            'emergency_contact': self.emergency_contact,
+        }
+        return data
+
+    def save_profile(self, new_data):
+        self.allergies = new_data['allergies']
+        self.food_allergies = new_data['food_allergies']
+        self.food_intolerances = new_data['food_intolerances']
+        self.medical_conditions = new_data['medical_conditions']
+        self.emergency_contact = new_data['emergency_contact']
+        self.save()
 
 
 # LARPS AND CHARACTERS
