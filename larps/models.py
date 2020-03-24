@@ -17,6 +17,7 @@ class Player(models.Model):
     medical_conditions = models.CharField(max_length=200, blank=True)
     emergency_contact = models.CharField(max_length=200, blank=True)
     dietary_restrictions = models.ForeignKey(DietaryRestriction, on_delete=models.SET_NULL, null=True, blank=True)
+    shoulder = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
