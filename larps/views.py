@@ -12,6 +12,19 @@ from .forms import PlayerForm, BookingsForm
 from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction, Larp
 
 
+# HOME AND LOGOUT
+
+@login_required
+def home_view(request):
+    return render(request, 'larps/home.html', {'user': request.user})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/accounts/login/')
+
+
+# CHARACTERS
+
 class CharacterView(generic.DetailView):
     model = Character
 
@@ -19,27 +32,12 @@ class CharactersListView(generic.ListView):
     def get_queryset(self):
         return Character.objects.all()
 
-class PlayerView(generic.DetailView):
-    model = Player
+
+# PLAYERS
 
 class PlayersListView(generic.ListView):
     def get_queryset(self):
         return Player.objects.all()
-
-class ProfileView(generic.DetailView):
-    model = Player
-
-class BookingsView(generic.DetailView):
-    model = Bookings
-
-class BookingsListView(generic.ListView):
-    def get_queryset(self):
-        user = self.request.user
-        if not user.is_authenticated:
-            user_bookings = Bookings.objects.none()
-        else:
-            user_bookings = Bookings.objects.filter(user=user)
-        return user_bookings
 
 def get_player_profile(user):
     profiles = Player.objects.filter(user=user)
@@ -56,12 +54,27 @@ def player_profile(request):
         form = PlayerForm(request.POST)
         if form.is_valid():
             player.save_profile(form.cleaned_data)
-            player_profile_url = '/larps/player/'+ str(player.id)
-            return HttpResponseRedirect(player_profile_url)
+            url = '/larps/'
+            return HttpResponseRedirect(url)
     else:
         player_data = player.get_data()
         form = PlayerForm(player_data)
     return render(request, 'larps/player_profile.html', {'form': form, 'user': request.user})
+
+
+# BOOKINGS
+
+class BookingsView(generic.DetailView):
+    model = Bookings
+
+class BookingsListView(generic.ListView):
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            user_bookings = Bookings.objects.none()
+        else:
+            user_bookings = Bookings.objects.filter(user=user)
+        return user_bookings
 
 def get_bookings(user, larp, run):
     bookings_list = Bookings.objects.filter(user=user, larp=larp, run=run)
@@ -90,11 +103,3 @@ def manage_bookings(request, larp_id):
         bookings_data = bookings.get_data()
         form = BookingsForm(bookings_data)
     return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp })
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect('/accounts/login/')
-
-@login_required
-def home_view(request):
-    return render(request, 'larps/home.html', {'user': request.user})
