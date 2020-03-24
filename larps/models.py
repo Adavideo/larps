@@ -36,6 +36,10 @@ class Player(models.Model):
             'food_intolerances': self.food_intolerances,
             'medical_conditions': self.medical_conditions,
             'emergency_contact': self.emergency_contact,
+            'shoulder' : self.shoulder,
+            'height' : self.height,
+            'chest' : self.chest,
+            'waist' : self.waist,
         }
         return data
 
@@ -45,6 +49,10 @@ class Player(models.Model):
         self.food_intolerances = new_data['food_intolerances']
         self.medical_conditions = new_data['medical_conditions']
         self.emergency_contact = new_data['emergency_contact']
+        self.shoulder = new_data['shoulder']
+        self.height = new_data['height']
+        self.chest = new_data['chest']
+        self.waist = new_data['waist']
         self.save()
 
 
