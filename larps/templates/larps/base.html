@@ -9,7 +9,20 @@
     </head>
     <body>
         <div class="page-header">
-            <center><h1><a href="/">Not only Larps</a></h1></center>
+            <center><h1>Not only Larps</h1></center>
+
+            <p style="text-align:left;">
+              <a href="{% url 'larps:player_profile' %}">
+              Player profile
+              </a> | 
+              <a href="{% url 'larps:bookings_list' %}">
+              Bookings
+              </a> |
+              <a href="{% url 'larps:characters_list' %}">
+              Characters
+              </a> |
+            </p>
+
             <p style="text-align:right;">
             {% if user.first_name %}
             {{ user.first_name }} {{ user.last_name }}
