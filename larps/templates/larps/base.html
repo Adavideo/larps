@@ -9,7 +9,15 @@
     </head>
     <body>
         <div class="page-header">
-            <h1><a href="/">Not only Larps</a></h1>
+            <center><h1><a href="/">Not only Larps</a></h1></center>
+            <p style="text-align:right;">
+            {% if user.username %}
+            {{ user.first_name }} {{ user.last_name }}
+             -  <a href="/larps/logout">Logout
+            {% else %}
+            <a href="/accounts/login">Login
+            {% endif %}
+            </a></p>
         </div>
 
         <div class="content container">

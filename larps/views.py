@@ -3,8 +3,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.views import generic
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
 
 from .forms import PlayerForm
 from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction
@@ -55,3 +57,7 @@ def player_profile(request):
         player_data = player.get_data()
         form = PlayerForm(player_data)
     return render(request, 'larps/player_profile.html', {'form': form, 'user': request.user})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/accounts/login/')
