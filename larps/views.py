@@ -49,7 +49,8 @@ def player_profile(request):
         form = PlayerForm(request.POST)
         if form.is_valid():
             player.save_profile(form.cleaned_data)
-            return HttpResponseRedirect('/larps/players')
+            player_profile_url = '/larps/player/'+ str(player.id)
+            return HttpResponseRedirect(player_profile_url)
     else:
         player_data = player.get_data()
         form = PlayerForm(player_data)
