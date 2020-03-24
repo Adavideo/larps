@@ -21,3 +21,8 @@ class PlayerForm(forms.Form):
     height = forms.IntegerField()
     chest = forms.IntegerField()
     waist = forms.IntegerField()
+
+class BookingsForm(forms.Form):
+    weapon = forms.CharField(max_length=50)
+    #bus = 
+    #accomodation

@@ -39,7 +39,7 @@ class Player(models.Model):
             'food_allergies' : self.food_allergies,
             'food_intolerances': self.food_intolerances,
             'medical_conditions': self.medical_conditions,
-            'emergency_contact': self.emergency_contact,        
+            'emergency_contact': self.emergency_contact,
             'dietary_restrictions' : diet,
             'shoulder' : self.shoulder,
             'height' : self.height,
@@ -98,6 +98,7 @@ class CharacterAssigment(models.Model):
     run = models.IntegerField(default=1)
     character =  models.ForeignKey(Character, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self):
         assigment = ""
         if self.character.group:
@@ -105,6 +106,9 @@ class CharacterAssigment(models.Model):
         if self.user:
             assigment += " assigned to " + self.user.first_name + " " + self.user.last_name
         return assigment
+
+    def larp(self):
+        return self.character.group.larp
 
 
 # BOOKINGS
@@ -125,5 +129,22 @@ class Bookings(models.Model):
     uniform = models.CharField(max_length=50, blank=True)
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self):
         return str(self.character_assigment)
+
+    def user(self):
+        return self.character_assigment.user
+
+    def larp(self):
+        return self.character_assigment.larp()
+
+    def get_data(self):
+        data = {
+            'weapon': self.weapon,
+        }
+        return data
+
+    def save_bookings(self, new_data):
+        self.weapon = new_data['weapon']
+        self.save()
