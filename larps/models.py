@@ -30,13 +30,17 @@ class Player(models.Model):
         return name
 
     def get_data(self):
+        if self.dietary_restrictions:
+            diet = self.dietary_restrictions.name
+        else:
+            diet = "none"
         data = {
             'allergies': self.allergies,
             'food_allergies' : self.food_allergies,
             'food_intolerances': self.food_intolerances,
             'medical_conditions': self.medical_conditions,
-            'emergency_contact': self.emergency_contact,
-            'dietary_restrictions' : self.dietary_restrictions.name,
+            'emergency_contact': self.emergency_contact,        
+            'dietary_restrictions' : diet,
             'shoulder' : self.shoulder,
             'height' : self.height,
             'chest' : self.chest,
