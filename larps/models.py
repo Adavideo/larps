@@ -124,20 +124,16 @@ class BusStop(models.Model):
         return self.name
 
 class Bookings(models.Model):
-    character_assigment = models.ForeignKey(CharacterAssigment, on_delete=models.CASCADE)
-    weapon = models.CharField(max_length=50, blank=True)
-    uniform = models.CharField(max_length=50, blank=True)
-    bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
+    run = models.IntegerField(default=1)
+    weapon = models.BooleanField(null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return str(self.character_assigment)
-
-    def user(self):
-        return self.character_assigment.user
-
-    def larp(self):
-        return self.character_assigment.larp()
+        text = self.larp.name + " run " + str(self.run)
+        text += " - " + self.user.first_name + " " + self.user.last_name
+        return text
 
     def get_data(self):
         data = {

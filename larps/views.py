@@ -34,7 +34,12 @@ class BookingsView(generic.DetailView):
 
 class BookingsListView(generic.ListView):
     def get_queryset(self):
-        return Bookings.objects.all()
+        user = self.request.user
+        if not user.is_authenticated:
+            user_bookings = Bookings.objects.none()
+        else:
+            user_bookings = Bookings.objects.filter(user=user)
+        return user_bookings
 
 def get_player_profile(user):
     profiles = Player.objects.filter(user=user)
@@ -58,45 +63,29 @@ def player_profile(request):
         form = PlayerForm(player_data)
     return render(request, 'larps/player_profile.html', {'form': form, 'user': request.user})
 
-def get_assigment_for_larp(user, larp):
-    assigment_for_this_larp = None
-    character_assigments = CharacterAssigment.objects.filter(user=user)
-    for assigment in character_assigments:
-        if assigment.larp() == larp:
-            assigment_for_this_larp = assigment
-    return assigment_for_this_larp
-
-def get_bookings(user, larp):
-    assigment_for_this_larp = get_assigment_for_larp(user, larp)
-    if not assigment_for_this_larp:
+def get_bookings(user, larp, run):
+    bookings_list = Bookings.objects.filter(user=user, larp=larp, run=run)
+    if len(bookings_list) == 0:
         return None
-
-    bookings_assigned = Bookings.objects.filter(character_assigment=assigment_for_this_larp)
-    if len(bookings_assigned) == 0:
-        bookings = Bookings(character_assigment=assigment_for_this_larp)
     else:
-        bookings = bookings_assigned[0]
+        bookings = bookings_list[0]
     return bookings
 
 @login_required
 def manage_bookings(request, larp_id):
+    run = 1
     larp = Larp.objects.get(id=larp_id)
-    bookings = get_bookings(request.user, larp)
+
+    bookings = get_bookings(request.user, larp, run)
     if not bookings:
-        text = "The player doesn't have a character assigned in this larp. <br>"
-        user_bookings = Bookings.objects.all()
-        larps = []
-        for b in user_bookings:
-            if b.user() == request.user:
-                larp = b.larp()
-                larps.append(larp)
-                text += larp.name + " - " + str(larp.id)
-        return HttpResponse(text)
+        return HttpResponseRedirect('/larps/bookings')
+
     if request.method == 'POST':
         form = BookingsForm(request.POST)
         if form.is_valid():
             bookings.save_bookings(form.cleaned_data)
-            return HttpResponseRedirect('/larps/bookings')
+            url = '/larps/bookings/'+ str(bookings.id)
+            return HttpResponseRedirect(url)
     else:
         bookings_data = bookings.get_data()
         form = BookingsForm(bookings_data)

@@ -23,6 +23,6 @@ class PlayerForm(forms.Form):
     waist = forms.IntegerField()
 
 class BookingsForm(forms.Form):
-    weapon = forms.CharField(max_length=50)
-    #bus = 
+    weapon = forms.BooleanField()
+    #bus =
     #accomodation

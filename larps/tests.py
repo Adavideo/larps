@@ -3,10 +3,9 @@ from django.contrib.auth.models import User
 from .models import Player, Larp, Group, Character, CharacterAssigment, Bookings, DietaryRestriction
 
 
+# PLAYER PROFILES
+
 class PlayerModelTests(TestCase):
-
-
-    # PLAYER PROFILES
 
     def test_create_player_profile(self):
         """
@@ -41,7 +40,9 @@ class PlayerModelTests(TestCase):
         self.assertIs(test_player.waist, 90)
 
 
-    # LARPS AND CHARACTERS
+# LARPS AND CHARACTERS
+
+class GroupModelTests(TestCase):
 
     def test_create_group(self):
         """
@@ -62,6 +63,9 @@ class PlayerModelTests(TestCase):
         self.assertEqual(empty_group.larp.name, "Blue Flame")
         self.assertIs(empty_group.larp, test_larp)
         self.assertEqual(str(empty_group), "Blue Flame - no group")
+
+
+class CharacterModelTests(TestCase):
 
     def test_create_character(self):
         """
@@ -123,7 +127,10 @@ class PlayerModelTests(TestCase):
         self.assertIs(character_assigment.user.username, "ana")
         self.assertEqual(str(character_assigment), "Blue Flame run 1 - Marie Curie assigned to Ana Garcia")
 
-    # BOOKINGS
+
+# BOOKINGS
+
+class BookingsModelTests(TestCase):
 
     def test_create_bookings(self):
         """
@@ -131,11 +138,16 @@ class PlayerModelTests(TestCase):
         """
         test_user = User(username="ana", first_name="Ana", last_name="Garcia")
         test_larp = Larp(name = "Blue Flame")
-        test_group = Group(larp=test_larp, name="Doctors")
-        test_character = Character(group = test_group, name="Marie Curie")
-        character_assigment = CharacterAssigment(run=1, character=test_character, user=test_user)
-        test_bookings = Bookings(character_assigment=character_assigment)
-        self.assertIs(test_bookings.character_assigment.character.name, "Marie Curie")
-        self.assertIs(test_bookings.character_assigment.user.username, "ana")
-        self.assertIs(test_bookings.character_assigment.character.group.name, "Doctors")
-        self.assertEqual(str(test_bookings), "Blue Flame run 1 - Marie Curie assigned to Ana Garcia")
+        test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
+        self.assertIs(test_bookings.user.username, "ana")
+        self.assertEqual(str(test_bookings), "Blue Flame run 1 - Ana Garcia")
+
+    def test_bookings_weapon(self):
+        """
+        bookings_weapon()
+        """
+        test_user = User(username="ana", first_name="Ana", last_name="Garcia")
+        test_larp = Larp(name = "Blue Flame")
+        test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
+        test_bookings.weapon = True
+        self.assertIs(test_bookings.weapon, True)
