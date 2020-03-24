@@ -34,7 +34,8 @@ class PlayerModelTests(TestCase):
         and adds information about the size of the player.
         """
         test_user = User(username="ana")
-        test_player = Player(user=test_user, height = 160, chest = 90, waist = 90)
+        test_player = Player(user=test_user, shoulder= 40, height = 160, chest = 90, waist = 90)
+        self.assertIs(test_player.shoulder, 40)
         self.assertIs(test_player.height, 160)
         self.assertIs(test_player.chest, 90)
         self.assertIs(test_player.waist, 90)
