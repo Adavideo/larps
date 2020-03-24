@@ -4,6 +4,7 @@ from . import views
 
 app_name = 'larps'
 urlpatterns = [
+    path('', views.home_view, name='home'),
     path('player/<int:pk>/', views.PlayerView.as_view(), name='player'),
     path('players', views.PlayersListView.as_view(), name='playerslist'),
     path('character/<int:pk>/', views.CharacterView.as_view(), name='character'),
