@@ -1,3 +1,6 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
 <h1>{{ character.name }}</h1>
 <br>
 Group: {{ character.group  }}
@@ -5,3 +8,4 @@ Group: {{ character.group  }}
 Race: {{ character.race  }}
 <br>
 Short concept: {{ character.short_concept }}
+{% endblock %}

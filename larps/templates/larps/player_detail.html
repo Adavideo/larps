@@ -1,3 +1,8 @@
+{% extends 'larps/base.html' %}
+
+{% block title %}{{ player.user.first_name }} {{ player.user.last_name }}{% endblock %}
+{% block content %}
+
 <h1>{{ player.user.first_name }} {{ player.user.last_name }}</h1>
 
 Allergies: {{ player.allergies }}
@@ -21,3 +26,5 @@ Meassurements
     chest {{ player.chest }}
     <br>
     waist {{ player.waist }}
+
+{% endblock %}

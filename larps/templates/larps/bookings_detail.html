@@ -1,3 +1,6 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
 <h1>Bookings {{ bookings.character_assigment.user.username }}</h1>
 
 Larp {{ bookings.character_assigment.larp }} run {{ bookings.character_assigment.run }}
@@ -9,3 +12,4 @@ uniform {{ bookings.uniform }}
 bus {{ bookings.bus }}
 <br>
 accomodation {{ bookings.accomodation }}
+{% endblock %}
