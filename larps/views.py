@@ -53,4 +53,4 @@ def player_profile(request):
     else:
         player_data = player.get_data()
         form = PlayerForm(player_data)
-    return render(request, 'larps/player_profile.html', {'form': form})
+    return render(request, 'larps/player_profile.html', {'form': form, 'user': request.user})

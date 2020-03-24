@@ -1,3 +1,5 @@
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
+
 <form action="/larps/player_profile/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
