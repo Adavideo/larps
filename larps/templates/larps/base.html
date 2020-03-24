@@ -11,8 +11,11 @@
         <div class="page-header">
             <center><h1><a href="/">Not only Larps</a></h1></center>
             <p style="text-align:right;">
-            {% if user.username %}
+            {% if user.first_name %}
             {{ user.first_name }} {{ user.last_name }}
+             -  <a href="/larps/logout">Logout
+            {% elif user.username %}
+            {{ user.username }}
              -  <a href="/larps/logout">Logout
             {% else %}
             <a href="/accounts/login">Login
