@@ -128,6 +128,7 @@ class Bookings(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     run = models.IntegerField(default=1)
     weapon = models.BooleanField(null=True, blank=True)
+    bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -138,9 +139,11 @@ class Bookings(models.Model):
     def get_data(self):
         data = {
             'weapon': self.weapon,
+            'bus' : self.bus,
         }
         return data
 
     def save_bookings(self, new_data):
         self.weapon = new_data['weapon']
+        self.bus = BusStop.objects.get(name=new_data['bus'])
         self.save()
