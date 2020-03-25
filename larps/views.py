@@ -6,10 +6,12 @@ from django.views import generic
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 from .forms import PlayerForm, BookingsForm
 from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction, Larp
+from .csv_importer import process_csv
 
 
 # HOME AND LOGOUT
@@ -102,3 +104,30 @@ def manage_bookings(request, larp_id, run):
         bookings_data = bookings.get_data()
         form = BookingsForm(bookings_data)
     return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp, 'run': run })
+
+
+# CSV IMPORTER
+
+def get_context_info():
+    characters = Character.objects.all()
+    players = User.objects.all()
+    assigments = CharacterAssigment.objects.all()
+    context = {
+                'characters': characters,
+                'players': players,
+                'assigments' : assigments
+              }
+    return context
+
+@login_required
+def file_upload(request):
+    template = "csv_import/file_upload.html"
+    context = get_context_info()
+
+    if request.method == "GET":
+        return render(request, template, context)
+
+    csv_file = request.FILES['file']
+    process_csv(csv_file)
+
+    return render(request, template, context)
