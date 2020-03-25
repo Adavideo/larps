@@ -20,13 +20,14 @@ class PlayerForm(forms.Form):
     chest = forms.IntegerField()
     waist = forms.IntegerField()
 
-def get_weapon_choices():
+def boolean_choices():
     choices = [(True, "Yes"), (False, "No")]
     return choices
 
 class BookingsForm(forms.Form):
-    weapon = forms.ChoiceField(choices=get_weapon_choices())
+    weapon = forms.ChoiceField(choices=boolean_choices())
     bus_options = process_options(BusStop.objects.all())
     bus = forms.ChoiceField(choices=bus_options)
     accomodation_options = process_options(Accomodation.objects.all())
     accomodation = forms.ChoiceField(choices=accomodation_options)
+    sleeping_bag = forms.ChoiceField(choices=boolean_choices())

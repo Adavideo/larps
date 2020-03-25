@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Player, Larp, Group, Character, CharacterAssigment, Bookings, DietaryRestriction, BusStop
+from .models import Player, Larp, Group, Character, CharacterAssigment, Bookings, DietaryRestriction, BusStop, Accomodation
 
 
 # PLAYER PROFILES
@@ -162,3 +162,16 @@ class BookingsModelTests(TestCase):
         bus_option1 = BusStop(name="Madrid_1")
         test_bookings.bus = bus_option1
         self.assertIs(test_bookings.bus.name, "Madrid_1")
+
+    def test_bookings_accomodations(self):
+        """
+        bookings_accomodations()
+        """
+        test_user = User(username="ana", first_name="Ana", last_name="Garcia")
+        test_larp = Larp(name = "Blue Flame")
+        test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
+        accomodation1 = Accomodation(name="In game")
+        test_bookings.accomodation = accomodation1
+        test_bookings.sleeping_bag = False
+        self.assertIs(test_bookings.accomodation.name, "In game")
+        self.assertIs(test_bookings.sleeping_bag, False)

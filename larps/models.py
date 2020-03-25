@@ -130,6 +130,7 @@ class Bookings(models.Model):
     weapon = models.BooleanField(null=True, blank=True)
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
+    sleeping_bag = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         text = self.larp.name + " run " + str(self.run)
@@ -141,6 +142,7 @@ class Bookings(models.Model):
             'weapon': self.weapon,
             'bus' : self.bus,
             'accomodation': self.accomodation,
+            'sleeping_bag' : self.sleeping_bag,
         }
         return data
 
@@ -148,4 +150,5 @@ class Bookings(models.Model):
         self.weapon = new_data['weapon']
         self.bus = BusStop.objects.get(name=new_data['bus'])
         self.accomodation = Accomodation.objects.get(name=new_data['accomodation'])
+        self.sleeping_bag = new_data['sleeping_bag']
         self.save()

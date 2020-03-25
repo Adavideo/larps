@@ -9,6 +9,6 @@ weapon: {% if bookings.weapon %}Yes{% else %}No{% endif %}
 bus: {{ bookings.bus }}
 <br>
 accomodation: {{ bookings.accomodation }}
-
-
+<br>
+sleeping bag: {% if bookings.sleeping_bag %}Yes{% else %}No{% endif %}
 {% endblock %}
