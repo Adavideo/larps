@@ -175,3 +175,22 @@ class BookingsModelTests(TestCase):
         test_bookings.sleeping_bag = False
         self.assertIs(test_bookings.accomodation.name, "In game")
         self.assertIs(test_bookings.sleeping_bag, False)
+
+    def test_bookings_comments(self):
+        """
+        bookings_comments()
+        """
+        test_user = User(username="ana", first_name="Ana", last_name="Garcia")
+        test_larp = Larp(name = "Blue Flame")
+        test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
+        test_bookings.comments = "Hi"
+        self.assertIs(test_bookings.comments,"Hi")
+
+    def test_bookings_no_comments(self):
+        """
+        bookings_no_comments()
+        """
+        test_user = User(username="ana", first_name="Ana", last_name="Garcia")
+        test_larp = Larp(name = "Blue Flame")
+        test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
+        self.assertIs(test_bookings.comments,"")

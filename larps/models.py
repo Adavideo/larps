@@ -131,6 +131,7 @@ class Bookings(models.Model):
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
     sleeping_bag = models.BooleanField(null=True, blank=True)
+    comments = models.CharField(max_length=200, default="", blank=True, null=True)
 
     def __str__(self):
         text = self.larp.name + " run " + str(self.run)
@@ -143,6 +144,7 @@ class Bookings(models.Model):
             'bus' : self.bus,
             'accomodation': self.accomodation,
             'sleeping_bag' : self.sleeping_bag,
+            'comments' : self.comments
         }
         return data
 
@@ -151,4 +153,5 @@ class Bookings(models.Model):
         self.bus = BusStop.objects.get(name=new_data['bus'])
         self.accomodation = Accomodation.objects.get(name=new_data['accomodation'])
         self.sleeping_bag = new_data['sleeping_bag']
+        self.comments = new_data['comments']
         self.save()

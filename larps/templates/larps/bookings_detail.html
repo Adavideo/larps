@@ -11,4 +11,6 @@ bus: {{ bookings.bus }}
 accomodation: {{ bookings.accomodation }}
 <br>
 sleeping bag: {% if bookings.sleeping_bag %}Yes{% else %}No{% endif %}
+<br>
+comments: {{ bookings.comments }}
 {% endblock %}

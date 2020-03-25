@@ -31,3 +31,4 @@ class BookingsForm(forms.Form):
     accomodation_options = process_options(Accomodation.objects.all())
     accomodation = forms.ChoiceField(choices=accomodation_options)
     sleeping_bag = forms.ChoiceField(choices=boolean_choices())
+    comments = forms.CharField(max_length=200)
