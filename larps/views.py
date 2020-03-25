@@ -85,8 +85,7 @@ def get_bookings(user, larp, run):
     return bookings
 
 @login_required
-def manage_bookings(request, larp_id):
-    run = 1
+def manage_bookings(request, larp_id, run):
     larp = Larp.objects.get(id=larp_id)
 
     bookings = get_bookings(request.user, larp, run)
@@ -102,4 +101,4 @@ def manage_bookings(request, larp_id):
     else:
         bookings_data = bookings.get_data()
         form = BookingsForm(bookings_data)
-    return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp })
+    return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp, 'run': run })

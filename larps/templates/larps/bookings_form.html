@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
-<form action="{% url 'larps:manage_bookings' larp.id %}" method="post">
+<form action="{% url 'larps:manage_bookings' larp.id run %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">

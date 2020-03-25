@@ -12,6 +12,6 @@ urlpatterns = [
     path('characters', login_required(views.CharactersListView.as_view()), name='characters_list'),
     path('bookings', login_required(views.BookingsListView.as_view()), name='bookings_list'),
     path('bookings/<int:pk>/', login_required(views.BookingsView.as_view()), name='bookings'),
-    path('bookings/larp_<int:larp_id>/', login_required(views.manage_bookings), name='manage_bookings'),
+    path('bookings/larp_<int:larp_id>/run_<int:run>/', login_required(views.manage_bookings), name='manage_bookings'),
     path('logout/', views.logout_view, name='logout'),
 ]
