@@ -26,6 +26,7 @@ class PlayerModelTests(TestCase):
         test_player = Player(user=test_user, dietary_restrictions = diet)
         self.assertEqual(test_player.dietary_restrictions.name, "None")
         self.assertIs(test_player.dietary_restrictions, diet)
+        self.assertIs(test_player.comments,"no")
 
     def test_create_player_profile_with_dietary_information(self):
         """
@@ -217,4 +218,4 @@ class BookingsModelTests(TestCase):
         test_user = User(username="ana", first_name="Ana", last_name="Garcia")
         test_larp = Larp(name = "Blue Flame")
         test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
-        self.assertIs(test_bookings.comments,"")
+        self.assertIs(test_bookings.comments,"no")

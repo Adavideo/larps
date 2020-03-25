@@ -17,7 +17,7 @@ class Player(models.Model):
     medical_conditions = models.CharField(max_length=200, blank=True)
     emergency_contact = models.CharField(max_length=200, blank=True)
     dietary_restrictions = models.ForeignKey(DietaryRestriction, on_delete=models.SET_NULL, null=True, blank=True)
-    comments = models.CharField(max_length=200, default="", blank=True, null=True)
+    comments = models.CharField(max_length=200, default="no", blank=True, null=True)
     shoulder = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
@@ -134,7 +134,7 @@ class Bookings(models.Model):
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
     sleeping_bag = models.BooleanField(null=True, blank=True)
-    comments = models.CharField(max_length=200, default="", blank=True, null=True)
+    comments = models.CharField(max_length=200, default="no", blank=True, null=True)
 
     def __str__(self):
         text = self.larp.name + " run " + str(self.run)
