@@ -1,5 +1,5 @@
 from django import forms
-from .models import DietaryRestriction, BusStop
+from .models import DietaryRestriction, BusStop, Accomodation
 
 def process_options(options_list):
     processed_options = []
@@ -28,4 +28,5 @@ class BookingsForm(forms.Form):
     weapon = forms.ChoiceField(choices=get_weapon_choices())
     bus_options = process_options(BusStop.objects.all())
     bus = forms.ChoiceField(choices=bus_options)
-    #accomodation
+    accomodation_options = process_options(Accomodation.objects.all())
+    accomodation = forms.ChoiceField(choices=accomodation_options)

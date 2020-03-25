@@ -140,10 +140,12 @@ class Bookings(models.Model):
         data = {
             'weapon': self.weapon,
             'bus' : self.bus,
+            'accomodation': self.accomodation,
         }
         return data
 
     def save_bookings(self, new_data):
         self.weapon = new_data['weapon']
         self.bus = BusStop.objects.get(name=new_data['bus'])
+        self.accomodation = Accomodation.objects.get(name=new_data['accomodation'])
         self.save()
