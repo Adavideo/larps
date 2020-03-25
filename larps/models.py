@@ -17,6 +17,7 @@ class Player(models.Model):
     medical_conditions = models.CharField(max_length=200, blank=True)
     emergency_contact = models.CharField(max_length=200, blank=True)
     dietary_restrictions = models.ForeignKey(DietaryRestriction, on_delete=models.SET_NULL, null=True, blank=True)
+    comments = models.CharField(max_length=200, default="", blank=True, null=True)
     shoulder = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
@@ -41,6 +42,7 @@ class Player(models.Model):
             'medical_conditions': self.medical_conditions,
             'emergency_contact': self.emergency_contact,
             'dietary_restrictions' : diet,
+            'comments' : self.comments,
             'shoulder' : self.shoulder,
             'height' : self.height,
             'chest' : self.chest,
@@ -56,6 +58,7 @@ class Player(models.Model):
         self.emergency_contact = new_data['emergency_contact']
         diet =  new_data['dietary_restrictions']
         self.dietary_restrictions = DietaryRestriction.objects.get(name=diet)
+        self.comments = new_data['comments']
         self.shoulder = new_data['shoulder']
         self.height = new_data['height']
         self.chest = new_data['chest']

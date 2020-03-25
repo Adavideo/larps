@@ -15,6 +15,7 @@ class PlayerForm(forms.Form):
     emergency_contact = forms.CharField(max_length=100)
     diets = process_options(DietaryRestriction.objects.all())
     dietary_restrictions = forms.ChoiceField(choices=diets)
+    comments = forms.CharField(max_length=200)
     shoulder = forms.IntegerField()
     height = forms.IntegerField()
     chest = forms.IntegerField()

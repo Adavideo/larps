@@ -16,16 +16,40 @@ class PlayerModelTests(TestCase):
         self.assertEqual(test_player.user.username, "ana")
         self.assertEqual(str(test_player), "Ana Garcia")
 
+    def test_create_player_profile_with_no_dietary_information(self):
+        """
+        create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
+        and adds medical and dietary information.
+        """
+        test_user = User(username="ana")
+        diet = DietaryRestriction(name="None")
+        test_player = Player(user=test_user, dietary_restrictions = diet)
+        self.assertEqual(test_player.dietary_restrictions.name, "None")
+        self.assertIs(test_player.dietary_restrictions, diet)
+
     def test_create_player_profile_with_dietary_information(self):
         """
         create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
         and adds medical and dietary information.
         """
         test_user = User(username="ana")
-        diet = DietaryRestriction(name="none")
+        diet = DietaryRestriction(name="Vegan")
         test_player = Player(user=test_user, dietary_restrictions = diet)
-        self.assertEqual(test_player.dietary_restrictions.name, "none")
+        self.assertEqual(test_player.dietary_restrictions.name, "Vegan")
         self.assertIs(test_player.dietary_restrictions, diet)
+
+    def test_create_player_profile_with_alternative_dietary_information(self):
+        """
+        create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
+        and adds medical and dietary information.
+        """
+        test_user = User(username="ana")
+        diet = DietaryRestriction(name="Other")
+        test_player = Player(user=test_user, dietary_restrictions = diet)
+        test_player.comments = "I'm a pescatarian"
+        self.assertEqual(test_player.dietary_restrictions.name, "Other")
+        self.assertIs(test_player.dietary_restrictions, diet)
+        self.assertEqual(test_player.comments, "I'm a pescatarian")
 
     def test_create_player_profile_with_size_information(self):
         """
