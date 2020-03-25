@@ -4,11 +4,12 @@
 <h1>Bookings {{ bookings.larp }} run {{ bookings.run }}</h1>
 
 <br>
-weapon {{ bookings.weapon }}
+weapon: {% if bookings.weapon %}Yes{% else %}No{% endif %}
 <br>
-uniform {{ bookings.uniform }}
+uniform: {{ bookings.uniform }}
 <br>
-bus {{ bookings.bus }}
+bus: {{ bookings.bus }}
 <br>
-accomodation {{ bookings.accomodation }}
+accomodation: {{ bookings.accomodation }}
+
 {% endblock %}
