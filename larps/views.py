@@ -127,7 +127,7 @@ def file_upload(request):
     if request.method == "GET":
         return render(request, template, context)
 
-    csv_file = request.FILES['file']
-    process_csv(csv_file)
+    file = request.FILES['file']
+    process_csv(file)
 
     return render(request, template, context)
