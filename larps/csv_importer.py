@@ -52,7 +52,7 @@ def assign_character_to_user(user, character, run):
     if created:
         result = "Character "+ character.name + " assigned to " + user.first_name + " " + user.last_name
     else:
-        result = "Not assigned. Character: "+ character.name + "Player: " + user.first_name + " " + user.last_name
+        result = "Not assigned."
     return result
 
 
@@ -76,7 +76,7 @@ def process_csv_line(column):
         if not user:
             result = "User invalid"
         else:
-            result = "Created user " + user.first_name + " " + user.last_name 
+            result = "Created user " + user.first_name + " " + user.last_name
         if not character:
             result += ". Character invalid"
     return result

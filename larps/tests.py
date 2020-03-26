@@ -311,6 +311,18 @@ class CSVTests(TestCase):
         self.assertEqual(new_character.group.larp.name, "Blue Flame")
 
 
+    # Test assign characters to users
+
+    def test_assign_character_to_user(self):
+        run = 2
+        user = User(username="Ana", first_name="Ana")
+        user.save()
+        character = Character(name="Ono")
+        character.save()
+        result = assign_character_to_user(user, character, run)
+        self.assertEqual(result, "Character Ono assigned to Ana ")
+
+
     # Test for processing lines
 
     def test_process_csv_line_correct(self):
