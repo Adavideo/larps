@@ -16,7 +16,6 @@ from .csv_importer import process_csv
 
 # HOME AND LOGOUT
 
-@login_required
 def home_view(request):
     return render(request, 'larps/home.html', {'user': request.user})
 
