@@ -48,7 +48,7 @@ def get_player_profile(user):
         player = profiles[0]
     return player
 
-def player_profile(request):
+def player_profile_view(request):
     player = get_player_profile(request.user)
     if request.method == 'POST':
         form = PlayerForm(request.POST)
@@ -84,7 +84,7 @@ def get_bookings(user, larp, run):
         bookings = bookings_list[0]
     return bookings
 
-def manage_bookings(request, larp_id, run):
+def manage_bookings_view(request, larp_id, run):
     larp = Larp.objects.get(id=larp_id)
 
     bookings = get_bookings(request.user, larp, run)
@@ -116,7 +116,7 @@ def get_context_info():
               }
     return context
 
-def file_upload(request):
+def file_upload_view(request):
     template = "csv_import/file_upload.html"
     context = get_context_info()
 
