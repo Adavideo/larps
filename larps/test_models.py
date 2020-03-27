@@ -220,3 +220,30 @@ class BookingsModelTests(TestCase):
         test_larp = Larp(name = "Blue Flame")
         test_bookings = Bookings(user=test_user, larp=test_larp, run=1)
         self.assertIs(test_bookings.comments,"no")
+
+
+# UNIFORMS
+
+class UniformModelTests(TestCase):
+
+    def test_create_uniform(self):
+        group_name = "Pilots"
+        group = Group(name=group_name)
+        uniform = Uniform(group=group, name=group_name)
+        self.assertEqual(uniform.group.name, group_name)
+        self.assertEqual(uniform.name, group_name)
+
+    def test_create_uniform_with_full_info(self):
+        group_name = "Pilots"
+        group = Group(name=group_name)
+        color = "Red"
+        uniform = Uniform(group=group, name=group_name, color=color)
+        self.assertEqual(uniform.group.name, group_name)
+        self.assertEqual(uniform.name, group_name)
+
+    def test_create_uniform_size_with_no_info(self):
+        group_name = "Pilots"
+        group = Group(name=group_name)
+        uniform = Uniform(group=group, name=group_name)
+        size = UniformSize(uniform=uniform)
+        self.assertEqual(size.uniform.name, group_name)

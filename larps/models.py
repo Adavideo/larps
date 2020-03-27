@@ -76,7 +76,6 @@ class Larp(models.Model):
 class Group(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default="", blank=True)
-    uniform = models.CharField(max_length=50, blank=True)
     weapon = models.CharField(max_length=50, blank=True)
     def __str__(self):
         if self.name:
@@ -158,3 +157,24 @@ class Bookings(models.Model):
         self.sleeping_bag = new_data['sleeping_bag']
         self.comments = new_data['comments']
         self.save()
+
+
+# UNIFORMS
+
+class Uniform(models.Model):
+    name = models.CharField(max_length=200)
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
+    color = models.CharField(max_length=50)
+
+
+class UniformSize(models.Model):
+    uniform  = models.ForeignKey(Uniform, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=50)
+    american_size = models.CharField(max_length=10)
+    european_size = models.CharField(max_length=10)
+    chest_min = models.IntegerField()
+    chest_max = models.IntegerField()
+    waist_min = models.IntegerField()
+    waist_max = models.IntegerField()
+
+    

@@ -23,3 +23,4 @@ class ViewsTests(TestCase):
         url = reverse("larps:uniforms")
         if not login_required_enabled():
             response = test_correct_page(self, url)
+            
