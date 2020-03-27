@@ -1,7 +1,7 @@
 import csv, io
 from django.contrib.auth.models import User
 from .models import Character, Player, CharacterAssigment, Group, Larp, Race
-
+from .config import larp_name
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
 
@@ -60,7 +60,6 @@ def assign_character_to_user(user, character, run):
 
 def process_csv_line(column):
     # run	player	character	group	planet	rank
-    larp_name = "Mission Together"
     run = column[0]
     player_name = column[1]
     character_name = column[2]
@@ -68,7 +67,7 @@ def process_csv_line(column):
     character_race = column[4]
 
     user = create_user(player_name)
-    character = create_character(larp_name, character_name, character_group, character_race)
+    character = create_character(larp_name(), character_name, character_group, character_race)
 
     if user and character:
         result = assign_character_to_user(user, character, run)
