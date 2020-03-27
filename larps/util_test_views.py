@@ -1,9 +1,9 @@
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from .config import login_required_enabled
 
 login_url = reverse('login')
-
 
 # checks that it loads the page without problems
 def test_correct_page(test, url):
@@ -21,7 +21,10 @@ def test_login(test):
 
 # checks that it redirects to login when trying to access the page anonimously.
 def test_page_no_login(test, url):
-    response = test.client.get(url)
-    test.assertEqual(response.status_code, 302)
-    test.assertEqual(response.url, login_url +  "?next=" + url)
+    if login_required_enabled():
+        response = test.client.get(url)
+        test.assertEqual(response.status_code, 302)
+        test.assertEqual(response.url, login_url +  "?next=" + url)
+    else:
+        response = ""
     return response
