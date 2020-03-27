@@ -225,6 +225,10 @@ class BookingsModelTests(TestCase):
 # UNIFORMS
 
 class UniformModelTests(TestCase):
+    example_sizes = [
+         {  "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" },
+         {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" }
+    ]
 
     def test_create_uniform(self):
         group_name = "Pilots"
@@ -247,3 +251,33 @@ class UniformModelTests(TestCase):
         uniform = Uniform(group=group, name=group_name)
         size = UniformSize(uniform=uniform)
         self.assertEqual(size.uniform.name, group_name)
+
+    def test_create_uniform_size_with_info(self):
+        group_name = "Pilots"
+        group = Group(name=group_name)
+        uniform = Uniform(group=group, name=group_name)
+        size = UniformSize(uniform=uniform)
+        size_information = self.example_sizes[1]
+        size.set_values(size_information)
+        self.assertEqual(size.gender, size_information["gender"])
+        self.assertEqual(size.american_size, size_information["american_size"])
+        self.assertEqual(size.european_size, size_information["european_size"])
+        self.assertEqual(size.chest_min, size_information["chest_min"])
+        self.assertEqual(size.chest_max, size_information["chest_max"])
+        self.assertEqual(size.waist_min, size_information["waist_min"])
+        self.assertEqual(size.waist_max, size_information["waist_max"])
+
+    def test_create_uniform_size_with_empty_info(self):
+        group_name = "Pilots"
+        group = Group(name=group_name)
+        uniform = Uniform(group=group, name=group_name)
+        size = UniformSize(uniform=uniform)
+        size_information = self.example_sizes[0]
+        size.set_values(size_information)
+        self.assertEqual(size.gender, size_information["gender"])
+        self.assertEqual(size.american_size, size_information["american_size"])
+        self.assertEqual(size.european_size, size_information["european_size"])
+        self.assertEqual(size.chest_min, size_information["chest_min"])
+        self.assertEqual(size.chest_max, size_information["chest_max"])
+        self.assertEqual(size.waist_min, size_information["waist_min"])
+        self.assertEqual(size.waist_max, size_information["waist_max"])

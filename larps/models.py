@@ -177,4 +177,11 @@ class UniformSize(models.Model):
     waist_min = models.IntegerField()
     waist_max = models.IntegerField()
 
-    
+    def set_values(self, size_information):
+        self.gender = size_information["gender"]
+        self.american_size = size_information["american_size"]
+        self.european_size = size_information["european_size"]
+        self.chest_min = size_information["chest_min"]
+        self.chest_max = size_information["chest_max"]
+        self.waist_min = size_information["waist_min"]
+        self.waist_max = size_information["waist_max"]
