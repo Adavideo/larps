@@ -1,11 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
+from .util_test_views import *
 
 
 class ViewsTests(TestCase):
-
-    login_url = "/accounts/login/?next="
-
 
     # HOME PAGE
 
@@ -14,9 +12,10 @@ class ViewsTests(TestCase):
             home_page() Test the home page is working
         """
         url = reverse('larps:home')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Not only Larps")
+        test_correct_page(self, url)
+
+    def test_login_page(self):
+        test_login(self)
 
 
     # PLAYER PROFILE
@@ -26,9 +25,7 @@ class ViewsTests(TestCase):
             player_profile_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = reverse('larps:player_profile')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # PLAYERS LIST
@@ -38,9 +35,7 @@ class ViewsTests(TestCase):
             players_list_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = reverse('larps:players_list')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # CHARACTER PAGE
@@ -50,9 +45,7 @@ class ViewsTests(TestCase):
             character_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = "/larps/character/1/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # CHARACTERS LIST
@@ -62,9 +55,7 @@ class ViewsTests(TestCase):
             characters_list_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = reverse('larps:characters_list')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # BOOKINGS PAGE
@@ -74,9 +65,7 @@ class ViewsTests(TestCase):
             bookings_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = "/larps/bookings/1/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # MANAGE BOOKINGS PAGE
@@ -86,9 +75,7 @@ class ViewsTests(TestCase):
             bookings_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = "/larps/bookings/larp_1/run_1/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # BOOKINGS LIST
@@ -98,9 +85,7 @@ class ViewsTests(TestCase):
             bookings_list_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = reverse('larps:bookings_list')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
 
 
     # PAGE FOR CSV FILE UPLOAD
@@ -110,6 +95,4 @@ class ViewsTests(TestCase):
             csv_upload_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
         url = reverse('larps:file_upload')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.login_url + url)
+        test_page_no_login(self, url)
