@@ -127,3 +127,10 @@ def file_upload(request):
     process_csv(file)
 
     return render(request, template, context)
+
+# UNIFORMS
+
+def uniforms_view(request):
+    context = {}
+    template = "larps/uniforms.html"
+    return render(request, template, context)

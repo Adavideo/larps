@@ -8,3 +8,8 @@ class ViewsTests(TestCase):
 
     def test_login_page(self):
         test_login(self)
+
+
+    def test_uniforms_page(self):
+        url = reverse("larps:uniforms")
+        response = test_correct_page(self, url)
