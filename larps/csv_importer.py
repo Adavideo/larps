@@ -1,7 +1,7 @@
 import csv, io
 from django.contrib.auth.models import User
 from .models import *
-from .config import larp_name, csv_file_types
+from .config import *
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
 
@@ -140,10 +140,12 @@ def process_csv_line(column, file_type):
     return result
 
 def process_data(data_set, file_type):
-    result = []
-    # setup a stream which is when we loop through each line we are able to handle a data in a stream
     io_string = io.StringIO(data_set)
-    next(io_string)
+    header = next(io_string)
+    if not correct_file_type(header, file_type):
+        return ["Incorrect file type"]
+
+    result = []
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         r = process_csv_line(column, file_type)
         result.append(r)

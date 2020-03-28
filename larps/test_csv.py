@@ -3,7 +3,17 @@ from django.contrib.auth.models import User
 
 from .models import *
 from .csv_importer import create_user, create_character, assign_character_to_user, process_csv_line, process_data
-from .config import larp_name, csv_file_types
+from .config import *
+
+empty_data_set = ""
+
+uniforms_data_set = '''name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+Pilots (black red),Pilots,black red,women,S,38,86,90,70,74
+Pilots (black red),Pilots,black red,women,M,40,90,94,74,78'''
+
+characters_data_set = '''run,player,character,group,planet,rank
+1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
+2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
 
 
 # CSV IMPORT CHARACTERS
@@ -135,10 +145,7 @@ class CSVCharactersTests(TestCase):
         """
         process_data() checks that the data from the csv file is processed correctly
         """
-        data = """run,player,character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant"""
-        result = process_data(data, self.csv_type)
+        result = process_data(characters_data_set, self.csv_type)
         self.assertEqual(result, ['Character Ono assigned to Werner Mikolasch', 'Character Fuertes assigned to Fabio '])
 
 
@@ -147,8 +154,8 @@ class CSVCharactersTests(TestCase):
         process_data_with_invalid_users() checks that no users are created when the player name is empty or a blank space
         """
         data = """run,player,character,group,planet,rank
-    1,,Fuertes,artist teacher,Kepler,lieutenant
-    2, ,Ono,agriculture teacher,Rhea,lieutenant"""
+        1,,Fuertes,artist teacher,Kepler,lieutenant
+        2, ,Ono,agriculture teacher,Rhea,lieutenant"""
         result = process_data(data, self.csv_type)
         self.assertEqual(result, ['User invalid', 'User invalid'])
 
@@ -204,3 +211,46 @@ class CSVUniformsTests(TestCase):
         column = self.incorrect_size_examples[2]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, "Group not assigned - women. L/44 chest(98,102) waist(82,86)")
+
+
+class CSVFileTypesTests(TestCase):
+    character_file_type = csv_file_types()[0][0]
+    uniform_file_type = csv_file_types()[1][0]
+
+    def test_correct_header_characters(self):
+        header = "run,player,character,group,planet,rank"
+        result = correct_file_type(header, self.character_file_type)
+        self.assertEqual(result, True)
+
+    def test_correct_header_uniforms(self):
+        header = "name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max"
+        result = correct_file_type(header, self.uniform_file_type)
+        self.assertEqual(result, True)
+
+    def test_incorrect_header_characters(self):
+        header = ""
+        result = correct_file_type(header, self.character_file_type)
+        self.assertEqual(result, False)
+
+    def test_incorrect_header_uniforms(self):
+        header = ""
+        result = correct_file_type(header, self.uniform_file_type)
+        self.assertEqual(result, False)
+
+    def test_correct_data_set_characters(self):
+        result = process_data(characters_data_set, self.character_file_type)
+        self.assertEqual(result, ["Character Ono assigned to Werner Mikolasch",
+                                "Character Fuertes assigned to Fabio "])
+
+    def test_correct_data_set_uniforms(self):
+        result = process_data(uniforms_data_set, self.uniform_file_type)
+        self.assertEqual(result, ["Pilots - women. S/38 chest(86,90) waist(70,74)",
+                                "Pilots - women. M/40 chest(90,94) waist(74,78)"])
+
+    def test_incorrect_data_set_characters(self):
+        result = process_data(uniforms_data_set, self.character_file_type)
+        self.assertEqual(result, ["Incorrect file type"])
+
+    def test_incorrect_data_set_uniforms(self):
+        result = process_data(characters_data_set, self.uniform_file_type)
+        self.assertEqual(result, ["Incorrect file type"])
