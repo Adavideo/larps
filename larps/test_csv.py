@@ -6,7 +6,7 @@ from .csv_importer import create_user, create_character, assign_character_to_use
 from .config import larp_name, csv_file_types
 
 
-# CSV IMPORT
+# CSV IMPORT CHARACTERS
 
 class CSVCharactersTests(TestCase):
     csv_type = csv_file_types()[0][0]
@@ -160,3 +160,49 @@ class CSVCharactersTests(TestCase):
 2,Samuel Bascomb,,,,"""
         result = process_data(data, self.csv_type)
         self.assertEqual(result, ['Created user Samuel Bascomb. Character invalid'])
+
+
+
+# CSV IMPORT UNIFORMS
+
+class CSVUniformsTests(TestCase):
+    csv_type = csv_file_types()[1][0]
+    correct_size_examples = [
+        ["Pilots (black, red)","Pilots","black, red","women","S",38,86,90,70,74],
+        ["Pilots (black, red)","Pilots","black, red","women","M",40,90,94,74,78],
+        ["Pilots (black, red)","Pilots","black, red","women","M",42,94,98,78,82],
+        ["Pilots (black, red)","Pilots","black, red","women","L",44,98,102,82,86],
+        ["Pilots (black, red)","Pilots","black, red","women","L",46,102,107,86,91],
+        ["Pilots (black, red)","Pilots","black, red","women","XL",48,107,113,91,97]
+    ]
+    incorrect_size_examples = [
+        ["","Pilots","","women","L",44,98,102,82,86],
+        ["","","","women","L",44,98,102,82,86],
+        [""," ","","women","L",44,98,102,82,86],
+        ["","Pilots","","","L",44,98,102,82,86],
+        ["","Pilots","","women","",44,98,102,82,86],
+        ["","Pilots","","women","L","",98,102,82,86],
+        ["","Pilots","","women","","",98,102,82,86],
+        ["","Pilots","","women","L",44,"","","",""]
+    ]
+
+    def test_process_csv_line_correct(self):
+        column = self.correct_size_examples[3]
+        result = process_csv_line(column, self.csv_type)
+        self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
+
+    def test_process_csv_line_not_esential_info_missing(self):
+        column = self.incorrect_size_examples[0]
+        result = process_csv_line(column, self.csv_type)
+        self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
+
+    def test_process_csv_line_no_group(self):
+        column = self.incorrect_size_examples[1]
+        result = process_csv_line(column, self.csv_type)
+        expected_result = "Group not assigned - women. L/44 chest(98,102) waist(82,86)"
+        self.assertEqual(result, expected_result)
+
+    def test_process_csv_line_group_blank_space(self):
+        column = self.incorrect_size_examples[2]
+        result = process_csv_line(column, self.csv_type)
+        self.assertEqual(result, "Group not assigned - women. L/44 chest(98,102) waist(82,86)")

@@ -166,6 +166,18 @@ class Uniform(models.Model):
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     color = models.CharField(max_length=50)
 
+    def __str__(self):
+        if self.group:
+            text = self.group.name
+        else:
+            text = "Group not assigned"
+        return text
+
+    def add_size(self, size_information):
+        size = UniformSize(uniform=self)
+        size.set_values(size_information)
+        size.save()
+        return size
 
 class UniformSize(models.Model):
     uniform  = models.ForeignKey(Uniform, on_delete=models.CASCADE)
@@ -176,6 +188,13 @@ class UniformSize(models.Model):
     chest_max = models.IntegerField()
     waist_min = models.IntegerField()
     waist_max = models.IntegerField()
+
+    def __str__(self):
+        text = self.gender + ". "
+        text += str(self.american_size) + "/" + str(self.european_size) +" "
+        text += "chest(" + str(self.chest_min) + ","+ str(self.chest_max)+ ") "
+        text += "waist(" + str(self.waist_min) + ","+ str(self.waist_max)+ ")"
+        return text
 
     def set_values(self, size_information):
         self.gender = size_information["gender"]

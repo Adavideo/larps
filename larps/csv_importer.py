@@ -1,6 +1,6 @@
 import csv, io
 from django.contrib.auth.models import User
-from .models import Character, Player, CharacterAssigment, Group, Larp, Race
+from .models import *
 from .config import larp_name, csv_file_types
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
@@ -9,6 +9,14 @@ from .config import larp_name, csv_file_types
 def empty(name):
     return not name.strip()
 
+def get_larp(larp_name):
+    larp_search = Larp.objects.filter(name=larp_name)
+    if larp_search:
+        return larp_search[0]
+    else:
+        larp = Larp(name=larp_name)
+        larp.save()
+        return larp
 
 def create_user(player_name):
     if empty(player_name):
@@ -31,7 +39,7 @@ def create_character(larp_name, character_name, character_group, character_race)
     if empty(character_name) and empty(character_group) and empty(character_race):
         return None
 
-    larp, created = Larp.objects.update_or_create(name=larp_name)
+    larp = get_larp(larp_name)
     group, created = Group.objects.update_or_create(name=character_group, larp=larp)
     race, created = Race.objects.update_or_create(name=character_race)
 
@@ -80,8 +88,37 @@ def process_character_info(column):
             result += ". Character invalid"
     return result
 
+def create_uniform(uniform_name, group_name):
+    larp = get_larp(larp_name())
+    if not empty(group_name):
+        group, created = Group.objects.update_or_create(name=group_name, larp=larp)
+    else:
+        group = None
+    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group)
+    return uniform
+
+def process_size_info(column):
+    size_information = {}
+    size_information["gender"] = column[3]
+    size_information["american_size"] = column[4]
+    size_information["european_size"] = column[5]
+    size_information["chest_min"] = column[6]
+    size_information["chest_max"] = column[7]
+    size_information["waist_min"] = column[8]
+    size_information["waist_max"] = column[9]
+    return size_information
+
 def process_uniform_info(column):
-    result = "Uniform info NOT PROCESSED"
+    # name ,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+    uniform_name = column[0]
+    group_name = column[1]
+    uniform = create_uniform(uniform_name, group_name)
+    if uniform:
+        size_information = process_size_info(column)
+        size = uniform.add_size(size_information)
+        result = str(uniform) + " - " + str(size)
+    else:
+        result = "Uniform info NOT PROCESSED. " + str(column)
     return result
 
 def process_csv_line(column, file_type):

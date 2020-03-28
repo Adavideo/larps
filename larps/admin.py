@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Larp, Group, Bookings, Player, Character, CharacterAssigment, DietaryRestriction, Accomodation, Race, BusStop
+from .models import *
 
 admin.site.register(Larp)
 admin.site.register(Group)
@@ -11,3 +11,5 @@ admin.site.register(DietaryRestriction)
 admin.site.register(Accomodation)
 admin.site.register(Race)
 admin.site.register(BusStop)
+admin.site.register(Uniform)
+admin.site.register(UniformSize)
