@@ -36,5 +36,4 @@ class BookingsForm(forms.Form):
     comments = forms.CharField(max_length=200)
 
 class ImportCSVForm(forms.Form):
-    #file_type = forms.ChoiceField(choices=csv_file_types())
     file = forms.FileField()
