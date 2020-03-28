@@ -9,9 +9,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 
-from .forms import PlayerForm, BookingsForm
+from .forms import *
 from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction, Larp
 from .csv_importer import process_csv
+from .config import csv_file_types
 
 
 # HOME AND LOGOUT
@@ -116,21 +117,49 @@ def get_context_info():
               }
     return context
 
-def file_upload_view(request):
-    template = "csv_import/file_upload.html"
-    context = get_context_info()
 
-    if request.method == "GET":
-        return render(request, template, context)
-
-    file = request.FILES['file']
-    process_csv(file)
+def file_upload_index_view(request):
+    template = "csv_import/csv_index.html"
+    file_types = csv_file_types()
+    context = {'user': request.user, 'file_types': file_types}
 
     return render(request, template, context)
+
+
+def file_upload_view(request, file_type_number):
+    template = "csv_import/file_upload.html"
+    file_type = csv_file_types()[file_type_number][0]
+
+    if request.method == "POST":
+        form = ImportCSVForm(request.POST)
+        file = request.FILES['file']
+        result = process_csv(file, file_type)
+        context = {'form': form, 'user': request.user, 'result': result, 'file_type':file_type}
+    else:
+        form = ImportCSVForm()
+        context = {'form': form, 'user': request.user, 'file_type':file_type}
+
+    return render(request, template, context)
+
+def file_upload_uniforms_view(request):
+    template = "csv_import/file_upload.html"
+    file_type = csv_file_types()[1][0]
+
+    if request.method == "POST":
+        form = ImportCSVForm(request.POST)
+        file = request.FILES['file']
+        result = process_csv(file, file_type)
+        context = {'form': form, 'user': request.user, 'result': result}
+    else:
+        form = ImportCSVForm()
+        context = {'form': form, 'user': request.user}
+
+    return render(request, template, context)
+
 
 # UNIFORMS
 
 def uniforms_view(request):
-    context = {}
     template = "larps/uniforms.html"
+    context = {}
     return render(request, template, context)

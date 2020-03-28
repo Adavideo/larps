@@ -1,9 +1,10 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
-from .config import login_required_enabled
+from .config import login_required_enabled, csv_file_types
 from . import views
 
 app_name = 'larps'
+csv_file_types = csv_file_types()
 
 if login_required_enabled():
     urlpatterns = [
@@ -16,7 +17,8 @@ if login_required_enabled():
         path('bookings', login_required(views.BookingsListView.as_view()), name='bookings_list'),
         path('bookings/<int:pk>/', login_required(views.BookingsView.as_view()), name='bookings'),
         path('bookings/larp_<int:larp_id>/run_<int:run>/', login_required(views.manage_bookings_view), name='manage_bookings'),
-        path('file_upload/', login_required(views.file_upload_view), name="file_upload"),
+        path('file_upload/', login_required(views.file_upload_index_view), name='file_upload'),
+        path('file_upload/<int:file_type_number>/', login_required(views.file_upload_view), name='file_upload'),
         path('uniforms', login_required(views.uniforms_view), name="uniforms"),
     ]
 else:
@@ -30,6 +32,7 @@ else:
         path('bookings', views.BookingsListView.as_view(), name='bookings_list'),
         path('bookings/<int:pk>/', views.BookingsView.as_view(), name='bookings'),
         path('bookings/larp_<int:larp_id>/run_<int:run>/', views.manage_bookings_view, name='manage_bookings'),
-        path('file_upload/', views.file_upload_view, name="file_upload"),
+        path('file_upload/', views.file_upload_index_view, name='file_upload'),
+        path('file_upload/<int:file_type_number>/', views.file_upload_view, name='file_upload'),
         path('uniforms', views.uniforms_view, name="uniforms"),
     ]

@@ -58,7 +58,7 @@ def assign_character_to_user(user, character, run):
 
 # PROCESS CSV FILE
 
-def process_csv_line(column):
+def process_character_info(column):
     # run	player	character	group	planet	rank
     run = column[0]
     player_name = column[1]
@@ -80,13 +80,22 @@ def process_csv_line(column):
             result += ". Character invalid"
     return result
 
-def process_data(data_set):
+def process_csv_line(column, file_type):
+    if file_type == "Characters":
+        result = process_character_info(column)
+    elif file_type == "Uniforms":
+        result = "Uniform info NOT PROCESSED"
+    else:
+        result = "File type "+ str(file_type) + " not recognised"
+    return result
+
+def process_data(data_set, file_type):
     result = []
     # setup a stream which is when we loop through each line we are able to handle a data in a stream
     io_string = io.StringIO(data_set)
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
-        r = process_csv_line(column)
+        r = process_csv_line(column, file_type)
         result.append(r)
     return result
 
@@ -94,6 +103,7 @@ def read_csv_file(file):
     data_set = file.read().decode('UTF-8')
     return data_set
 
-def process_csv(file):
+def process_csv(file, file_type):
     data_set = read_csv_file(file)
-    process_data(data_set)
+    result = process_data(data_set, file_type)
+    return result

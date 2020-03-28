@@ -1,0 +1,26 @@
+{% extends 'larps/base.html' %}
+
+{% block title %}Uploaded information{% endblock %}
+
+{% block content %}
+
+  <hr>
+  <h3>Characters</h3>
+  {% for character in characters %}
+    {{character.name}} - group: {{character.group.name}} - race: {{character.race.name}}<br>
+  {% endfor %}
+  <br>
+  <h3>Players</h3>
+  {% for player in players %}
+    {{player.first_name}} {{player.last_name}}<br>
+  {% endfor %}
+
+  <hr>
+  <h3>Character assigments</h3>
+  {% for assigment in assigments %}
+    {{assigment.character.group.larp}} {{assigment.run}} -
+    {{assigment.character.name}} assigned to {{assigment.user.first_name}} {{assigment.user.last_name}}
+    <br>
+  {% endfor %}
+
+{% endblock %}

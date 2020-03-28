@@ -1,5 +1,6 @@
 from django import forms
 from .models import DietaryRestriction, BusStop, Accomodation
+from .config import csv_file_types
 
 def process_options(options_list):
     processed_options = []
@@ -33,3 +34,7 @@ class BookingsForm(forms.Form):
     accomodation = forms.ChoiceField(choices=accomodation_options)
     sleeping_bag = forms.ChoiceField(choices=boolean_choices())
     comments = forms.CharField(max_length=200)
+
+class ImportCSVForm(forms.Form):
+    #file_type = forms.ChoiceField(choices=csv_file_types())
+    file = forms.FileField()
