@@ -226,58 +226,83 @@ class BookingsModelTests(TestCase):
 
 class UniformModelTests(TestCase):
     example_sizes = [
-         {  "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" },
-         {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" }
-    ]
+             {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
+             {  "gender":"female", "american_size":"M", "european_size":"40", "chest_min":"90", "chest_max":"94", "waist_min":"74", "waist_max":"78" },
+             {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"94", "waist_min":"78", "waist_max":"82" },
+         ]
+    empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
+    group_name = "Pilots"
+
+    def create_uniform(self):
+        larp = Larp(name="larp name")
+        larp.save()
+        group = Group(name=self.group_name, larp=larp)
+        group.save()
+        uniform = Uniform(group=group, name=self.group_name)
+        uniform.save()
+        return uniform
+
+    def create_uniform_size(self, size_information):
+        uniform = self.create_uniform()
+        size = UniformSize(uniform=uniform)
+        size.set_values(size_information)
+        size.save()
+        return size
+
+    def create_uniform_with_sizes(self):
+        uniform = self.create_uniform()
+        for size_information in self.example_sizes:
+            size = UniformSize(uniform=uniform)
+            size.set_values(size_information)
+            size.save()
+        return uniform
+
 
     def test_create_uniform(self):
-        group_name = "Pilots"
-        group = Group(name=group_name)
-        uniform = Uniform(group=group, name=group_name)
-        self.assertEqual(uniform.group.name, group_name)
-        self.assertEqual(uniform.name, group_name)
+        uniform = self.create_uniform()
+        self.assertEqual(uniform.group.name, self.group_name)
+        self.assertEqual(uniform.name, self.group_name)
 
     def test_create_uniform_with_full_info(self):
-        group_name = "Pilots"
-        group = Group(name=group_name)
+        uniform = self.create_uniform()
         color = "Red"
-        uniform = Uniform(group=group, name=group_name, color=color)
-        self.assertEqual(uniform.group.name, group_name)
-        self.assertEqual(uniform.name, group_name)
+        uniform.color = color
+        self.assertEqual(uniform.group.name, self.group_name)
+        self.assertEqual(uniform.name, self.group_name)
 
     def test_create_uniform_size_with_no_info(self):
-        group_name = "Pilots"
-        group = Group(name=group_name)
-        uniform = Uniform(group=group, name=group_name)
+        uniform = self.create_uniform()
         size = UniformSize(uniform=uniform)
-        self.assertEqual(size.uniform.name, group_name)
+        self.assertEqual(size.uniform.name, self.group_name)
 
     def test_create_uniform_size_with_info(self):
-        group_name = "Pilots"
-        group = Group(name=group_name)
-        uniform = Uniform(group=group, name=group_name)
-        size = UniformSize(uniform=uniform)
-        size_information = self.example_sizes[1]
-        size.set_values(size_information)
+        size_information = self.example_sizes[0]
+        size = self.create_uniform_size(size_information)
+        self.assertEqual(size.uniform.name, self.group_name)
         self.assertEqual(size.gender, size_information["gender"])
         self.assertEqual(size.american_size, size_information["american_size"])
         self.assertEqual(size.european_size, size_information["european_size"])
-        self.assertEqual(size.chest_min, size_information["chest_min"])
-        self.assertEqual(size.chest_max, size_information["chest_max"])
-        self.assertEqual(size.waist_min, size_information["waist_min"])
-        self.assertEqual(size.waist_max, size_information["waist_max"])
+        self.assertEqual(size.chest_min, int(size_information["chest_min"]))
+        self.assertEqual(size.chest_max, int(size_information["chest_max"]))
+        self.assertEqual(size.waist_min, int(size_information["waist_min"]))
+        self.assertEqual(size.waist_max, int(size_information["waist_max"]))
+        self.assertEqual(str(size), "female. S/38 chest(86,90) waist(70,74)")
 
     def test_create_uniform_size_with_empty_info(self):
-        group_name = "Pilots"
-        group = Group(name=group_name)
-        uniform = Uniform(group=group, name=group_name)
-        size = UniformSize(uniform=uniform)
-        size_information = self.example_sizes[0]
-        size.set_values(size_information)
+        size_information = self.empty_size_info
+        size = self.create_uniform_size(size_information)
         self.assertEqual(size.gender, size_information["gender"])
         self.assertEqual(size.american_size, size_information["american_size"])
         self.assertEqual(size.european_size, size_information["european_size"])
-        self.assertEqual(size.chest_min, size_information["chest_min"])
-        self.assertEqual(size.chest_max, size_information["chest_max"])
-        self.assertEqual(size.waist_min, size_information["waist_min"])
-        self.assertEqual(size.waist_max, size_information["waist_max"])
+        self.assertEqual(size.chest_min, 0)
+        self.assertEqual(size.chest_max, 0)
+        self.assertEqual(size.waist_min, 0)
+        self.assertEqual(size.waist_max, 0)
+        #self.assertEqual(str(size), "")
+
+    def test_recommend_sizes(self):
+        chest = 90
+        waist = 75
+        uniform = self.create_uniform_with_sizes()
+        sizes = uniform.recommend_sizes(chest, waist)
+        self.assertEqual(sizes[0].american_size,"M")

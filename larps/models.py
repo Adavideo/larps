@@ -179,8 +179,39 @@ class Uniform(models.Model):
         size.save()
         return size
 
+    def find_perfect_fit(self, sizes, chest, waist):
+        perfect_fit = []
+        for size in sizes:
+            if size.chest_fit(chest) and size.waist_fit(waist):
+                perfect_fit.append(size)
+        return perfect_fit
+
+    def find_valid_fit(self, sizes, chest, waist):
+        valid_fit = []
+        for size in sizes:
+            if (size.chest_fit(chest) and size.waist_minimum_fit(waist)):
+                valid_fit.append(size)
+            elif (size.chest_minimum_fit(chest) and size.waist_fit(waist)):
+                valid_fit.append(size)
+
+        if valid_fit:
+            return valid_fit
+        else:
+            return None
+
+    def recommend_sizes(self, chest, waist):
+        sizes = UniformSize.objects.filter(uniform=self)
+        if not sizes:
+            return None
+
+        perfect_fit = self.find_perfect_fit(sizes, chest, waist)
+        if perfect_fit:
+            return perfect_fit
+
+        return find_valid_fit(sizes, chest, waist)
+
 class UniformSize(models.Model):
-    uniform  = models.ForeignKey(Uniform, on_delete=models.CASCADE)
+    uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)
     gender = models.CharField(max_length=50)
     american_size = models.CharField(max_length=10)
     european_size = models.CharField(max_length=10)
@@ -196,11 +227,30 @@ class UniformSize(models.Model):
         text += "waist(" + str(self.waist_min) + ","+ str(self.waist_max)+ ")"
         return text
 
-    def set_values(self, size_information):
-        self.gender = size_information["gender"]
-        self.american_size = size_information["american_size"]
-        self.european_size = size_information["european_size"]
-        self.chest_min = size_information["chest_min"]
-        self.chest_max = size_information["chest_max"]
-        self.waist_min = size_information["waist_min"]
-        self.waist_max = size_information["waist_max"]
+    def get_measurement(self, size_info, index):
+        measurement = size_info[index]
+        if not measurement:
+            return 0
+        return int(measurement)
+
+    def set_values(self, size_info):
+        self.gender = size_info["gender"]
+        self.american_size = size_info["american_size"]
+        self.european_size = size_info["european_size"]
+        self.chest_min = self.get_measurement(size_info, "chest_min")
+        self.chest_max = self.get_measurement(size_info, "chest_max")
+        self.waist_min = self.get_measurement(size_info, "waist_min")
+        self.waist_max = self.get_measurement(size_info, "waist_max")
+
+
+    def chest_fit(self, chest):
+        return (self.chest_min <= chest and self.chest_max >= chest)
+
+    def chest_minimum_fit(self, chest):
+        return self.chest_min <= chest
+
+    def waist_fit(self, waist):
+        return (self.waist_min <= waist and self.waist_max >= waist)
+
+    def waist_minimum_fit(self, waist):
+        return self.waist_min <= waist
