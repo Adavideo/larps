@@ -1,7 +1,7 @@
 import csv, io
 from django.contrib.auth.models import User
 from .models import Character, Player, CharacterAssigment, Group, Larp, Race
-from .config import larp_name
+from .config import larp_name, csv_file_types
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
 
@@ -80,11 +80,16 @@ def process_character_info(column):
             result += ". Character invalid"
     return result
 
+def process_uniform_info(column):
+    result = "Uniform info NOT PROCESSED"
+    return result
+
 def process_csv_line(column, file_type):
-    if file_type == "Characters":
+    file_types_list = csv_file_types()
+    if file_type == file_types_list[0][0]:
         result = process_character_info(column)
-    elif file_type == "Uniforms":
-        result = "Uniform info NOT PROCESSED"
+    elif file_type == file_types_list[1][0]:
+        result = process_uniform_info(column)
     else:
         result = "File type "+ str(file_type) + " not recognised"
     return result
