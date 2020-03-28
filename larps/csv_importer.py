@@ -17,6 +17,7 @@ def get_larp(larp_name):
         larp = Larp(name=larp_name)
         larp.save()
         return larp
+        
 
 def create_user(player_name):
     if empty(player_name):
@@ -88,13 +89,13 @@ def process_character_info(column):
             result += ". Character invalid"
     return result
 
-def create_uniform(uniform_name, group_name):
+def create_uniform(uniform_name, group_name, color):
     larp = get_larp(larp_name())
     if not empty(group_name):
         group, created = Group.objects.update_or_create(name=group_name, larp=larp)
     else:
         group = None
-    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group)
+    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group, color=color)
     return uniform
 
 def process_size_info(column):
@@ -112,7 +113,8 @@ def process_uniform_info(column):
     # name ,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
     uniform_name = column[0]
     group_name = column[1]
-    uniform = create_uniform(uniform_name, group_name)
+    color = column[2]
+    uniform = create_uniform(uniform_name, group_name, color)
     if uniform:
         size_information = process_size_info(column)
         size = uniform.add_size(size_information)
