@@ -17,7 +17,18 @@ def get_larp(larp_name):
         larp = Larp(name=larp_name)
         larp.save()
         return larp
-        
+
+def get_group(group_name, larp_name):
+    if empty(larp_name) or empty(group_name):
+        return None
+    larp = get_larp(larp_name)
+    search = Group.objects.filter(name=group_name, larp=larp)
+    if search:
+        return search[0]
+    else:
+        group = Group(name=group_name, larp=larp)
+        group.save()
+        return group
 
 def create_user(player_name):
     if empty(player_name):
@@ -40,8 +51,7 @@ def create_character(larp_name, character_name, character_group, character_race)
     if empty(character_name) and empty(character_group) and empty(character_race):
         return None
 
-    larp = get_larp(larp_name)
-    group, created = Group.objects.update_or_create(name=character_group, larp=larp)
+    group = get_group(character_group, larp_name)
     race, created = Race.objects.update_or_create(name=character_race)
 
     character, created = Character.objects.update_or_create(
@@ -90,11 +100,7 @@ def process_character_info(column):
     return result
 
 def create_uniform(uniform_name, group_name, color):
-    larp = get_larp(larp_name())
-    if not empty(group_name):
-        group, created = Group.objects.update_or_create(name=group_name, larp=larp)
-    else:
-        group = None
+    group = get_group(group_name, larp_name())
     uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group, color=color)
     return uniform
 

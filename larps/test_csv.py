@@ -63,8 +63,7 @@ class CSVCharactersTests(TestCase):
         race = "Terrans"
         new_character = create_character(self.larp_name, character_name, group, race)
         self.assertEqual(new_character.name, "Athena")
-        self.assertEqual(new_character.group.name, "")
-        self.assertEqual(new_character.group.larp.name, self.larp_name)
+        self.assertEqual(new_character.group, None)
 
     def test_create_character_no_information(self):
         character_name = ""
@@ -87,8 +86,7 @@ class CSVCharactersTests(TestCase):
         race = "Terrans"
         new_character = create_character(self.larp_name, character_name, group, race)
         self.assertEqual(new_character.race.name, "Terrans")
-        self.assertEqual(new_character.group.name, "")
-        self.assertEqual(new_character.group.larp.name, self.larp_name)
+        self.assertEqual(new_character.group, None)
 
 
     # Test assign characters to users
