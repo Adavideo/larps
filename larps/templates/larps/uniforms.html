@@ -2,4 +2,16 @@
 
 {% block content %}
 
+  {% for uniform in uniforms %}
+    <a href="{% url 'larps:uniform_sizes' uniform.id %}">
+      {{ uniform }}
+    </a><br>
+  {% endfor %}
+
+  <hr>
+
+  {% for size in sizes %}
+      {{ size }}<br>
+  {% endfor %}
+
 {% endblock %}

@@ -10,7 +10,7 @@ from django.contrib import messages
 
 
 from .forms import *
-from .models import Character, Player, CharacterAssigment, Bookings, Group, DietaryRestriction, Larp
+from .models import *
 from .csv_importer import process_csv
 from .config import csv_file_types
 
@@ -144,5 +144,13 @@ def file_upload_view(request, file_type_number):
 
 def uniforms_view(request):
     template = "larps/uniforms.html"
-    context = {}
+    uniforms = Uniform.objects.all()
+    context = {"uniforms": uniforms}
+    return render(request, template, context)
+
+def uniform_sizes_view(request, uniform_id):
+    template = "larps/uniforms.html"
+    uniforms = Uniform.objects.all()
+    sizes = UniformSize.objects.filter(uniform=uniform_id)
+    context = {"uniforms": uniforms, "sizes": sizes}
     return render(request, template, context)

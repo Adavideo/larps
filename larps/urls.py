@@ -20,6 +20,7 @@ if login_required_enabled():
         path('file_upload/', login_required(views.file_upload_index_view), name='file_upload'),
         path('file_upload/<int:file_type_number>/', login_required(views.file_upload_view), name='file_upload'),
         path('uniforms', login_required(views.uniforms_view), name="uniforms"),
+        path('uniform_sizes/<int:uniform_id>', login_required(views.uniform_sizes_view), name="uniform_sizes"),
     ]
 else:
     urlpatterns = [
@@ -35,4 +36,5 @@ else:
         path('file_upload/', views.file_upload_index_view, name='file_upload'),
         path('file_upload/<int:file_type_number>/', views.file_upload_view, name='file_upload'),
         path('uniforms', views.uniforms_view, name="uniforms"),
+        path('uniform_sizes/<int:uniform_id>/', views.uniform_sizes_view, name="uniform_sizes"),
     ]
