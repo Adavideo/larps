@@ -13,10 +13,23 @@
     <hr>
     <h3>Sizes for {{ group.name }}</h3>
   {% endif %}
-  {% for size in sizes %}
-      {{ size }}<br>
-  {% endfor %}
+  <table border=1 style="width:75%">
+    <th align="center">gender</th>
+    <th align="center">size</th>
+    <th align="center">chest</th>
+    <th align="center">waist</th>
+    <th align="center">quantity</th>
 
+  {% for size in sizes %}
+    <tr>
+      <td align="center"> {{ size.info.gender }} </td>
+      <td align="center"> {{ size.name }} </td>
+      <td align="center"> {{ size.info.chest_min }}-{{ size.info.chest_max }} </td>
+      <td align="center"> {{ size.info.waist_min }}-{{ size.info.waist_max }} </td>
+      <td align="center"> {{ size.quantity }} </td>
+    </tr>
+  {% endfor %}
+  <table>
 
 
   {% if players %}

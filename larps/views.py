@@ -148,8 +148,7 @@ def uniforms_view(request):
     context = {"uniforms": uniforms}
     return render(request, template, context)
 
-def get_players_list(uniform_id):
-    selected_uniform = Uniform.objects.get(id=uniform_id)
+def get_players_list(selected_uniform):
     players_profiles = selected_uniform.group.get_player_profiles()
     players_list = []
     for player in players_profiles:
@@ -157,12 +156,31 @@ def get_players_list(uniform_id):
         players_list.append( { "info": player, "sizes": sizes} )
     return players_list
 
+def increment_quantity(sizes_with_quantities, size_to_increment):
+    for size in sizes_with_quantities:
+        if size["name"] == size_to_increment:
+            size["quantity"] += 1
+
+def get_sizes_with_quantities(players_list, selected_uniform):
+    all_sizes = UniformSize.objects.filter(uniform=selected_uniform)
+    sizes_with_quantities = []
+    for size in all_sizes:
+        sizes_with_quantities.append({ "name":size.get_name(), "info": size, "quantity": 0 })
+    for player in players_list:
+        player_size = player["sizes"][0].get_name()
+        increment_quantity(sizes_with_quantities, player_size)
+    return sizes_with_quantities
+
 def uniform_sizes_view(request, uniform_id):
     template = "larps/uniforms.html"
-    uniforms_list = Uniform.objects.all()
-    sizes = UniformSize.objects.filter(uniform=uniform_id)
-    players_list = get_players_list(uniform_id)
-    group = Uniform.objects.get(id=uniform_id).group
+    selected_uniform = Uniform.objects.get(id=uniform_id)
 
-    context = {"uniforms": uniforms_list, "sizes": sizes, "players": players_list, "group": group }
+    context = {}
+    context["group"] = selected_uniform.group
+    context["uniforms_list"] = Uniform.objects.all()
+
+    players_list = get_players_list(selected_uniform)
+    context["players"] = players_list
+    context["sizes"] = get_sizes_with_quantities(players_list, selected_uniform)
+
     return render(request, template, context)

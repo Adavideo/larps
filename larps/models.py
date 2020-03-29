@@ -251,6 +251,14 @@ class UniformSize(models.Model):
         text += "waist(" + str(self.waist_min) + ","+ str(self.waist_max)+ ")"
         return text
 
+    def get_name(self):
+        name = self.american_size
+        if name and self.european_size:
+            name += " / " + self.european_size
+        else:
+            name = self.european_size
+        return name
+
     def get_measurement(self, size_info, index):
         measurement = size_info[index]
         if not measurement:
