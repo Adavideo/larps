@@ -8,15 +8,19 @@
     </a><br>
   {% endfor %}
 
-  <hr>
-  <h3>Sizes for {{ group.name }}</h3>
+
+  {% if group %}
+    <hr>
+    <h3>Sizes for {{ group.name }}</h3>
+  {% endif %}
   {% for size in sizes %}
       {{ size }}<br>
   {% endfor %}
 
-  <hr>
+
 
   {% if players %}
+    <hr>
     <h3>Players of this group</h3>
     {% for player in players %}
         {{ player.info }} chest: {{ player.info.chest }} waist: {{ player.info.waist }} - recommended sizes:
