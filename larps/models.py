@@ -77,11 +77,28 @@ class Group(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default="", blank=True)
     weapon = models.CharField(max_length=50, blank=True)
+
     def __str__(self):
         if self.name:
             return self.larp.name + " - " + self.name
         else:
             return self.larp.name + " - " + "no group"
+
+    # returns the profiles of the players assigned to this group.
+    def get_player_profiles(self):
+        characters_list = Character.objects.filter(group=self)
+        assigments_list = []
+        for character in characters_list:
+            assigments = CharacterAssigment.objects.filter(character=character)
+            assigments_list.extend(assigments)
+
+        player_profiles_list = []
+        for assigment in assigments_list:
+            player_profiles = Player.objects.filter(user=assigment.user)
+            player_profiles_list.extend(player_profiles)
+
+        return player_profiles_list
+
 
 class Race(models.Model):
     name = models.CharField(max_length=50)

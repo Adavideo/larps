@@ -2,7 +2,14 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from .models import *
+from .config import larp_name
 
+example_characters = [ "Marie Curie", "Ada Lovelace" ]
+example_groups = [ "Scientists", "Doctors", "Mecanics" ]
+example_players = [
+    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "chest":90, "waist":75 },
+    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "chest":95, "waist":78 }
+]
 
 # PLAYER PROFILES
 
@@ -12,10 +19,11 @@ class PlayerModelTests(TestCase):
         """
         create_player_profile() creates a Player object asociated to a test User account.
         """
-        test_user = User(username="ana", first_name="Ana", last_name="Garcia")
-        test_player = Player(user=test_user)
-        self.assertEqual(test_player.user.username, "ana")
-        self.assertEqual(str(test_player), "Ana Garcia")
+        player_info = example_players[0]
+        user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["last_name"])
+        player = Player(user=user)
+        self.assertEqual(player.user.username, player_info["username"])
+        self.assertEqual(str(player), player_info["first_name"] + " " + player_info["last_name"])
 
     def test_create_player_profile_with_no_dietary_information(self):
         """
@@ -70,25 +78,74 @@ class PlayerModelTests(TestCase):
 
 class GroupModelTests(TestCase):
 
+    def create_group(self):
+        larp = Larp(name = larp_name())
+        larp.save()
+        group = Group(larp=larp, name="Doctors")
+        group.save()
+        return group
+
+    def create_character_assigment(self, group, player_info, character_name):
+        run = 1
+        user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["first_name"])
+        user.save()
+        player_profile = Player(user=user, chest=player_info["chest"], waist=player_info["waist"])
+        player_profile.save()
+        character = Character(name=character_name, group=group)
+        character.save()
+        assigment = CharacterAssigment(user=user, character=character, run=run)
+        assigment.save()
+        return assigment
+
+    def create_characters_assigments(self, group):
+        assigments = []
+        for n in range(0, 2):
+            player_info = example_players[n]
+            character_name = example_characters[n]
+            a = self.create_character_assigment(group, player_info, character_name)
+            assigments.append(a)
+        return assigments
+
     def test_create_group(self):
         """
         create_group creates a Group associated with a Larp.
         """
-        test_larp = Larp(name = "Blue Flame")
-        test_group = Group(larp=test_larp, name="Doctors")
-        self.assertEqual(test_group.name, "Doctors")
-        self.assertEqual(test_group.larp.name, "Blue Flame")
-        self.assertIs(test_group.larp, test_larp)
+        group = self.create_group()
+        self.assertEqual(group.name, "Doctors")
+        self.assertEqual(group.larp.name, larp_name())
 
     def test_create_empty_group(self):
         """
         create_empty_group creates agroup associated with a Larp.
         """
-        test_larp = Larp(name = "Blue Flame")
-        empty_group = Group(larp=test_larp, name="")
-        self.assertEqual(empty_group.larp.name, "Blue Flame")
-        self.assertIs(empty_group.larp, test_larp)
-        self.assertEqual(str(empty_group), "Blue Flame - no group")
+        larp = Larp(name = larp_name())
+        empty_group = Group(larp=larp, name="")
+        self.assertEqual(empty_group.larp.name, larp_name())
+        self.assertIs(empty_group.larp, larp)
+        self.assertEqual(str(empty_group), larp_name()+" - no group")
+
+    def test_get_player_profiles_empty(self):
+        """
+        create_get_player_profiles returns the profiles of the players assigned to this group.
+        """
+        group = self.create_group()
+        player_profiles = group.get_player_profiles()
+        self.assertEqual(player_profiles, [])
+
+    def test_get_player_profiles_with_correct_examples(self):
+        """
+        create_get_player_profiles returns the profiles of the players assigned to this group.
+        """
+        group = self.create_group()
+        self.create_characters_assigments(group)
+        player_profiles = group.get_player_profiles()
+        self.assertEqual(player_profiles[0].user.username, example_players[0]["username"])
+        self.assertEqual(player_profiles[0].chest, example_players[0]["chest"])
+        self.assertEqual(player_profiles[0].waist, example_players[0]["waist"])
+        self.assertEqual(player_profiles[1].user.username, example_players[1]["username"])
+        self.assertEqual(player_profiles[1].chest, example_players[1]["chest"])
+        self.assertEqual(player_profiles[1].waist, example_players[1]["waist"])
+
 
 
 class CharacterModelTests(TestCase):
