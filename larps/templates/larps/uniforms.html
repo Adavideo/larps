@@ -10,7 +10,7 @@
 
 
   {% if group %}
-    <hr>
+    <hr><center>
     <h3>Sizes for {{ group.name }}</h3>
     {% if sizes %}
       <table border=1 style="width:75%">
@@ -37,13 +37,32 @@
 
   {% if players %}
     <hr>
-    <h3>Players of this group</h3>
-    {% for player in players %}
-        {{ player.info }} chest: {{ player.info.chest }} waist: {{ player.info.waist }} - recommended sizes:
-          {% for size in player.sizes %}
-              {{ size.american_size }}/{{ size.european_size }} {{ size.gender }} 
-          {% endfor %}<br>
-    {% endfor %}
-  {% endif %}
 
+    <h3>Players of this group</h3>
+
+    <table border=1 style="width:100%">
+      <th align="center">Character</th>
+      <th align="center">Player</th>
+      <th align="center">chest</th>
+      <th align="center">waist</th>
+      <th align="center">recommended sizes</th>
+
+      {% for player in players %}
+        <tr>
+          <td align="center">
+          {% for assigment in player.character_assigments %}
+             {{ assigment.character.group.larp.name }} run {{ assigment.run }} - 
+             {{ assigment.character.name }}
+          {% endfor %} </td>
+          <td align="center"> {{ player.info }}  </td>
+          <td align="center"> {{ player.info.chest }} </td>
+          <td align="center"> {{ player.info.waist }}  </td>
+          <td align="center">
+            {% for size in player.sizes %}
+                {{ size.american_size }} / {{ size.european_size }} {{ size.gender }}
+            {% endfor %}  </td>
+        </tr>
+      {% endfor %}
+  {% endif %}
+  </center>
 {% endblock %}

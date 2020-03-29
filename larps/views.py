@@ -153,7 +153,8 @@ def get_players_list(selected_uniform):
     players_list = []
     for player in players_profiles:
         sizes = selected_uniform.recommend_sizes(player=player)
-        players_list.append( { "info": player, "sizes": sizes} )
+        character_assigments = selected_uniform.group.character_assigment_for_user(player.user)
+        players_list.append( { "info": player, "sizes": sizes, "character_assigments": character_assigments } )
     return players_list
 
 def increment_quantity(sizes_with_quantities, size_to_increment):

@@ -102,6 +102,14 @@ class Group(models.Model):
 
         return player_profiles_list
 
+    def character_assigment_for_user(self, user):
+        user_assigments = CharacterAssigment.objects.filter(user=user)
+        assigments_on_this_group = []
+        for assigment in user_assigments:
+            if assigment.character.group == self:
+                assigments_on_this_group.append(assigment)
+        return assigments_on_this_group
+
 
 class Race(models.Model):
     name = models.CharField(max_length=50)
