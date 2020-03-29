@@ -1,5 +1,5 @@
-from .models import *
-from .config import *
+from larps.models import *
+from larps.config import *
 
 def create_player(player_info):
     user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["last_name"])

@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from .models import *
-from .csv_importer import create_user, create_character, assign_character_to_user, process_csv_line, process_data
-from .config import *
+from larps.models import *
+from larps.csv_importer import *
+from larps.config import *
 
 empty_data_set = ""
 

@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from .models import *
-from .config import larp_name
+from larps.models import *
+from larps.config import larp_name
 from .util_test_models import *
 
 example_characters = [ "Marie Curie", "Ada Lovelace" ]

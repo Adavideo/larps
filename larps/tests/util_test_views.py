@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .config import login_required_enabled
+from larps.config import login_required_enabled
 
 login_url = reverse('login')
 
