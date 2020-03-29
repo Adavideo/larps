@@ -3,12 +3,13 @@ from django.contrib.auth.models import User
 
 from .models import *
 from .config import larp_name
+from .util_test_models import *
 
 example_characters = [ "Marie Curie", "Ada Lovelace" ]
 example_groups = [ "Scientists", "Doctors", "Mecanics" ]
 example_players = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "chest":90, "waist":75 },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "chest":95, "waist":78 }
+    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75 },
+    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78 }
 ]
 
 # PLAYER PROFILES
@@ -20,10 +21,10 @@ class PlayerModelTests(TestCase):
         create_player_profile() creates a Player object asociated to a test User account.
         """
         player_info = example_players[0]
-        user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["last_name"])
-        player = Player(user=user)
+        player = create_player(player_info)
         self.assertEqual(player.user.username, player_info["username"])
         self.assertEqual(str(player), player_info["first_name"] + " " + player_info["last_name"])
+        self.assertEqual(player.gender, player_info["gender"])
 
     def test_create_player_profile_with_no_dietary_information(self):
         """
@@ -87,13 +88,10 @@ class GroupModelTests(TestCase):
 
     def create_character_assigment(self, group, player_info, character_name):
         run = 1
-        user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["first_name"])
-        user.save()
-        player_profile = Player(user=user, chest=player_info["chest"], waist=player_info["waist"])
-        player_profile.save()
+        player = create_player(player_info)
         character = Character(name=character_name, group=group)
         character.save()
-        assigment = CharacterAssigment(user=user, character=character, run=run)
+        assigment = CharacterAssigment(user=player.user, character=character, run=run)
         assigment.save()
         return assigment
 
@@ -286,7 +284,11 @@ class UniformModelTests(TestCase):
              {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
              {  "gender":"female", "american_size":"M", "european_size":"40", "chest_min":"90", "chest_max":"94", "waist_min":"74", "waist_max":"78" },
              {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"98", "waist_min":"78", "waist_max":"82" },
+             {  "gender":"male", "american_size":"M", "european_size":"46", "chest_min":"90", "chest_max":"94", "waist_min":"78", "waist_max":"82" },
+             {  "gender":"male", "american_size":"M", "european_size":"48", "chest_min":"94", "chest_max":"98", "waist_min":"82", "waist_max":"86" },
+             {  "gender":"male", "american_size":"L", "european_size":"50", "chest_min":"98", "chest_max":"102", "waist_min":"86", "waist_max":"90" },
          ]
+
     empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
     group_name = "Pilots"
 
@@ -313,6 +315,8 @@ class UniformModelTests(TestCase):
             size.set_values(size_information)
             size.save()
         return uniform
+
+
 
 
     def test_create_uniform(self):
@@ -358,20 +362,21 @@ class UniformModelTests(TestCase):
         self.assertEqual(str(size), "chest(0,0) waist(0,0)")
 
     def test_recommend_sizes_perfect_fit(self):
-        chest = 90
-        waist = 75
+        player_info = example_players[0]
+        player = create_player(player_info=player_info)
         uniform = self.create_uniform_with_sizes()
-        sizes = uniform.recommend_sizes(chest, waist)
+        sizes = uniform.recommend_sizes(player)
         self.assertEqual(len(sizes), 1)
+        self.assertEqual(sizes[0].gender,"female")
         self.assertEqual(sizes[0].american_size,"M")
         self.assertEqual(sizes[0].european_size,"40")
         self.assertEqual(str(sizes[0]), "female. M/40 chest(90,94) waist(74,78)")
 
     def test_recommend_sizes_valid_fit(self):
-        chest = 88
-        waist = 75
         uniform = self.create_uniform_with_sizes()
-        sizes = uniform.recommend_sizes(chest, waist)
+        player_info = example_players[0]
+        player = create_player(player_info=player_info)
+        sizes = uniform.recommend_sizes(player=player)
         self.assertEqual(len(sizes), 1)
         self.assertEqual(sizes[0].american_size,"M")
         self.assertEqual(sizes[0].european_size,"40")

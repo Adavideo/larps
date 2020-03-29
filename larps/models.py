@@ -11,6 +11,7 @@ class DietaryRestriction(models.Model):
 
 class Player(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=200, blank=True)
     allergies = models.CharField(max_length=200, blank=True)
     food_allergies = models.CharField(max_length=200, blank=True)
     food_intolerances = models.CharField(max_length=200, blank=True)
@@ -36,6 +37,7 @@ class Player(models.Model):
         else:
             diet = "none"
         data = {
+            'gender' : self.gender,
             'allergies': self.allergies,
             'food_allergies' : self.food_allergies,
             'food_intolerances': self.food_intolerances,
@@ -51,6 +53,7 @@ class Player(models.Model):
         return data
 
     def save_profile(self, new_data):
+        self.gender = new_data['gender']
         self.allergies = new_data['allergies']
         self.food_allergies = new_data['food_allergies']
         self.food_intolerances = new_data['food_intolerances']
@@ -215,16 +218,14 @@ class Uniform(models.Model):
         else:
             return None
 
-    def recommend_sizes(self, chest, waist):
-        sizes = UniformSize.objects.filter(uniform=self)
+    def recommend_sizes(self, player):
+        sizes = UniformSize.objects.filter(uniform=self, gender=player.gender)
         if not sizes:
             return None
-
-        perfect_fit = self.find_perfect_fit(sizes, chest, waist)
+        perfect_fit = self.find_perfect_fit(sizes, player.chest, player.waist)
         if perfect_fit:
             return perfect_fit
-
-        return self.find_valid_fit(sizes, chest, waist)
+        return self.find_valid_fit(sizes, player.chest, player.waist)
 
 class UniformSize(models.Model):
     uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)

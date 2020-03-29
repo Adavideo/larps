@@ -152,9 +152,9 @@ def get_players_list(uniform_id):
     selected_uniform = Uniform.objects.get(id=uniform_id)
     players_profiles = selected_uniform.group.get_player_profiles()
     players_list = []
-    for player_info in players_profiles:
-        sizes = selected_uniform.recommend_sizes(chest=player_info.chest, waist=player_info.waist)
-        players_list.append( { "info": player_info, "sizes": sizes} )
+    for player in players_profiles:
+        sizes = selected_uniform.recommend_sizes(player=player)
+        players_list.append( { "info": player, "sizes": sizes} )
     return players_list
 
 def uniform_sizes_view(request, uniform_id):
@@ -162,6 +162,7 @@ def uniform_sizes_view(request, uniform_id):
     uniforms_list = Uniform.objects.all()
     sizes = UniformSize.objects.filter(uniform=uniform_id)
     players_list = get_players_list(uniform_id)
+    group = Uniform.objects.get(id=uniform_id).group
 
-    context = {"uniforms": uniforms_list, "sizes": sizes, "players": players_list}
+    context = {"uniforms": uniforms_list, "sizes": sizes, "players": players_list, "group": group }
     return render(request, template, context)

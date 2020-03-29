@@ -9,7 +9,7 @@
   {% endfor %}
 
   <hr>
-  <h3>Sizes</h3>
+  <h3>Sizes for {{ group.name }}</h3>
   {% for size in sizes %}
       {{ size }}<br>
   {% endfor %}
@@ -21,8 +21,8 @@
     {% for player in players %}
         {{ player.info }} chest: {{ player.info.chest }} waist: {{ player.info.waist }} - recommended sizes:
           {% for size in player.sizes %}
-              {{ size.american_size }} / {{ size.european_size }}
-          {% endfor %}
+              {{ size.american_size }}/{{ size.european_size }}
+          {% endfor %}<br>
     {% endfor %}
   {% endif %}
 
