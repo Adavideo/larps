@@ -177,7 +177,7 @@ def uniform_sizes_view(request, uniform_id):
 
     context = {}
     context["group"] = selected_uniform.group
-    context["uniforms_list"] = Uniform.objects.all()
+    context["uniforms"] = Uniform.objects.all()
 
     players_list = get_players_list(selected_uniform)
     context["players"] = players_list
