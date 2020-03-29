@@ -148,11 +148,20 @@ def uniforms_view(request):
     context = {"uniforms": uniforms}
     return render(request, template, context)
 
+def get_players_list(uniform_id):
+    selected_uniform = Uniform.objects.get(id=uniform_id)
+    players_profiles = selected_uniform.group.get_player_profiles()
+    players_list = []
+    for player_info in players_profiles:
+        sizes = selected_uniform.recommend_sizes(chest=player_info.chest, waist=player_info.waist)
+        players_list.append( { "info": player_info, "sizes": sizes} )
+    return players_list
+
 def uniform_sizes_view(request, uniform_id):
     template = "larps/uniforms.html"
-    uniforms = Uniform.objects.all()
-    group = Uniform.objects.get(id=uniform_id).group
-    players_profiles = group.get_player_profiles()
+    uniforms_list = Uniform.objects.all()
     sizes = UniformSize.objects.filter(uniform=uniform_id)
-    context = {"uniforms": uniforms, "sizes": sizes, "players": players_profiles}
+    players_list = get_players_list(uniform_id)
+
+    context = {"uniforms": uniforms_list, "sizes": sizes, "players": players_list}
     return render(request, template, context)

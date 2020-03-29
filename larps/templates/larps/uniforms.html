@@ -19,7 +19,10 @@
   {% if players %}
     <h3>Players of this group</h3>
     {% for player in players %}
-        {{ player }} chest: {{ player.chest }} waist: {{ player.waist }}
+        {{ player.info }} chest: {{ player.info.chest }} waist: {{ player.info.waist }} - recommended sizes:
+          {% for size in player.sizes %}
+              {{ size.american_size }} / {{ size.european_size }}
+          {% endfor %}
     {% endfor %}
   {% endif %}
 
