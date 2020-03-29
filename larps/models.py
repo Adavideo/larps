@@ -182,7 +182,7 @@ class Uniform(models.Model):
     def find_perfect_fit(self, sizes, chest, waist):
         perfect_fit = []
         for size in sizes:
-            if size.chest_fit(chest) and size.waist_fit(waist):
+            if size.perfect_fit(chest, waist):
                 perfect_fit.append(size)
         return perfect_fit
 
@@ -193,7 +193,6 @@ class Uniform(models.Model):
                 valid_fit.append(size)
             elif (size.chest_minimum_fit(chest) and size.waist_fit(waist)):
                 valid_fit.append(size)
-
         if valid_fit:
             return valid_fit
         else:
@@ -208,7 +207,7 @@ class Uniform(models.Model):
         if perfect_fit:
             return perfect_fit
 
-        return find_valid_fit(sizes, chest, waist)
+        return self.find_valid_fit(sizes, chest, waist)
 
 class UniformSize(models.Model):
     uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)
@@ -221,8 +220,15 @@ class UniformSize(models.Model):
     waist_max = models.IntegerField()
 
     def __str__(self):
-        text = self.gender + ". "
-        text += str(self.american_size) + "/" + str(self.european_size) +" "
+        text = ""
+        if self.gender:
+            text = self.gender + ". "
+        if self.american_size:
+            text += str(self.american_size)
+            if self.european_size:
+                text += "/" + str(self.european_size) +" "
+        elif self.european_size:
+            str(self.european_size) +" "
         text += "chest(" + str(self.chest_min) + ","+ str(self.chest_max)+ ") "
         text += "waist(" + str(self.waist_min) + ","+ str(self.waist_max)+ ")"
         return text
@@ -242,15 +248,17 @@ class UniformSize(models.Model):
         self.waist_min = self.get_measurement(size_info, "waist_min")
         self.waist_max = self.get_measurement(size_info, "waist_max")
 
+    def perfect_fit(self, chest, waist):
+        return self.chest_fit(chest) and self.waist_fit(waist)
 
     def chest_fit(self, chest):
         return (self.chest_min <= chest and self.chest_max >= chest)
 
     def chest_minimum_fit(self, chest):
-        return self.chest_min <= chest
+        return self.chest_fit(chest) or self.chest_min >= chest
 
     def waist_fit(self, waist):
         return (self.waist_min <= waist and self.waist_max >= waist)
 
     def waist_minimum_fit(self, waist):
-        return self.waist_min <= waist
+        return self.waist_fit(waist) or self.waist_min >= waist

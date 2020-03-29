@@ -228,7 +228,7 @@ class UniformModelTests(TestCase):
     example_sizes = [
              {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
              {  "gender":"female", "american_size":"M", "european_size":"40", "chest_min":"90", "chest_max":"94", "waist_min":"74", "waist_max":"78" },
-             {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"94", "waist_min":"78", "waist_max":"82" },
+             {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"98", "waist_min":"78", "waist_max":"82" },
          ]
     empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
     group_name = "Pilots"
@@ -298,11 +298,76 @@ class UniformModelTests(TestCase):
         self.assertEqual(size.chest_max, 0)
         self.assertEqual(size.waist_min, 0)
         self.assertEqual(size.waist_max, 0)
-        #self.assertEqual(str(size), "")
+        self.assertEqual(str(size), "chest(0,0) waist(0,0)")
 
-    def test_recommend_sizes(self):
+    def test_recommend_sizes_perfect_fit(self):
         chest = 90
         waist = 75
         uniform = self.create_uniform_with_sizes()
         sizes = uniform.recommend_sizes(chest, waist)
+        self.assertEqual(len(sizes), 1)
         self.assertEqual(sizes[0].american_size,"M")
+        self.assertEqual(sizes[0].european_size,"40")
+        self.assertEqual(str(sizes[0]), "female. M/40 chest(90,94) waist(74,78)")
+
+    def test_recommend_sizes_valid_fit(self):
+        chest = 88
+        waist = 75
+        uniform = self.create_uniform_with_sizes()
+        sizes = uniform.recommend_sizes(chest, waist)
+        self.assertEqual(len(sizes), 1)
+        self.assertEqual(sizes[0].american_size,"M")
+        self.assertEqual(sizes[0].european_size,"40")
+        self.assertEqual(str(sizes[0]), "female. M/40 chest(90,94) waist(74,78)")
+
+    def test_perfect_fit_true(self):
+        chest = 90
+        waist = 75
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.perfect_fit(chest, waist), True)
+
+    def test_perfect_fit_false(self):
+        chest = 90
+        waist = 75
+        size = self.create_uniform_size(self.example_sizes[0])
+        self.assertIs(size.perfect_fit(chest, waist), False)
+
+    def test_waist_fit_true(self):
+        waist = 75
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.waist_fit(waist), True)
+
+    def test_waist_fit_false(self):
+        waist = 75
+        size = self.create_uniform_size(self.example_sizes[0])
+        self.assertIs(size.waist_fit(waist), False)
+
+    def test_chest_fit_true(self):
+        chest = 90
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.chest_fit(chest), True)
+
+    def test_chest_fit_false(self):
+        chest = 89
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.chest_fit(chest), False)
+
+    def test_chest_minimum_fit_true(self):
+        chest = 89
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.chest_minimum_fit(chest), True)
+
+    def test_chest_minimum_fit_size_too_small(self):
+        chest = 91
+        size = self.create_uniform_size(self.example_sizes[0])
+        self.assertIs(size.chest_minimum_fit(chest), False)
+
+    def test_waist_minimum_fit_true(self):
+        waist = 74
+        size = self.create_uniform_size(self.example_sizes[1])
+        self.assertIs(size.waist_minimum_fit(waist), True)
+
+    def test_waist_minimum_fit_size_too_small(self):
+        waist = 80
+        size = self.create_uniform_size(self.example_sizes[0])
+        self.assertIs(size.waist_minimum_fit(waist), False)
