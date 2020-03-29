@@ -9,9 +9,18 @@
   {% endfor %}
 
   <hr>
-
+  <h3>Sizes</h3>
   {% for size in sizes %}
       {{ size }}<br>
   {% endfor %}
+
+  <hr>
+
+  {% if players %}
+    <h3>Players of this group</h3>
+    {% for player in players %}
+        {{ player }} chest: {{ player.chest }} waist: {{ player.waist }}
+    {% endfor %}
+  {% endif %}
 
 {% endblock %}

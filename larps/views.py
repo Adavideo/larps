@@ -151,6 +151,8 @@ def uniforms_view(request):
 def uniform_sizes_view(request, uniform_id):
     template = "larps/uniforms.html"
     uniforms = Uniform.objects.all()
+    group = Uniform.objects.get(id=uniform_id).group
+    players_profiles = group.get_player_profiles()
     sizes = UniformSize.objects.filter(uniform=uniform_id)
-    context = {"uniforms": uniforms, "sizes": sizes}
+    context = {"uniforms": uniforms, "sizes": sizes, "players": players_profiles}
     return render(request, template, context)
