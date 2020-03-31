@@ -89,26 +89,29 @@ class Group(models.Model):
 
     # returns the profiles of the players assigned to this group.
     def get_player_profiles(self):
+        players = []
+        character_assigments = self.get_character_assigments()
+        for assigment in character_assigments:
+            player_profile = assigment.get_player_profile()
+            if player_profile:
+                players.append(player_profile)
+        return players
+
+    def get_character_assigments(self):
+        character_assigments = []
         characters_list = Character.objects.filter(group=self)
-        assigments_list = []
         for character in characters_list:
             assigments = CharacterAssigment.objects.filter(character=character)
-            assigments_list.extend(assigments)
-
-        player_profiles_list = []
-        for assigment in assigments_list:
-            player_profiles = Player.objects.filter(user=assigment.user)
-            player_profiles_list.extend(player_profiles)
-
-        return player_profiles_list
+            character_assigments.extend(assigments)
+        return character_assigments
 
     def character_assigment_for_user(self, user):
-        user_assigments = CharacterAssigment.objects.filter(user=user)
-        assigments_on_this_group = []
-        for assigment in user_assigments:
-            if assigment.character.group == self:
-                assigments_on_this_group.append(assigment)
-        return assigments_on_this_group
+        character_assigments = self.get_character_assigments()
+        user_assigments = []
+        for assigment in character_assigments:
+            if assigment.user == user:
+                user_assigments.append(assigment)
+        return user_assigments
 
 
 class Race(models.Model):
@@ -139,6 +142,20 @@ class CharacterAssigment(models.Model):
 
     def larp(self):
         return self.character.group.larp
+
+    def create_player_profile(self):
+        player_profile = Player(user=self.user)
+        player_profile.save()
+        return player_profile
+
+    def get_player_profile(self):
+        if not self.user:
+            return None
+        player_profiles = Player.objects.filter(user=self.user)
+        if player_profiles:
+            return player_profiles[0]
+        else:
+            return self.create_player_profile()
 
 
 # BOOKINGS
@@ -193,6 +210,8 @@ class Uniform(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     color = models.CharField(max_length=50)
+    all_sizes = []
+    players_that_use_this_uniform = []
 
     def __str__(self):
         if self.group:
@@ -200,6 +219,11 @@ class Uniform(models.Model):
         else:
             text = "Group not assigned"
         return text
+
+    def get_sizes(self):
+        if not self.all_sizes:
+            self.all_sizes = UniformSize.objects.filter(uniform=self)
+        return self.all_sizes
 
     def add_size(self, size_information):
         size = UniformSize(uniform=self)
@@ -226,14 +250,51 @@ class Uniform(models.Model):
         else:
             return None
 
+    def get_players_that_use_this_uniform(self):
+        if not self.players_that_use_this_uniform:
+            self.players_that_use_this_uniform = self.group.get_player_profiles()
+        return self.players_that_use_this_uniform
+
     def recommend_sizes(self, player):
-        sizes = UniformSize.objects.filter(uniform=self, gender=player.gender)
+        sizes = self.get_sizes().filter(gender=player.gender)
         if not sizes:
             return None
         perfect_fit = self.find_perfect_fit(sizes, player.chest, player.waist)
         if perfect_fit:
             return perfect_fit
         return self.find_valid_fit(sizes, player.chest, player.waist)
+
+    def get_players_with_recommended_sizes(self):
+        players_profiles = self.get_players_that_use_this_uniform()
+        players_with_sizes = []
+        for player in players_profiles:
+            sizes = self.recommend_sizes(player=player)
+            character_assigments = self.group.character_assigment_for_user(player.user)
+            players_with_sizes.append( { "info": player, "sizes": sizes, "character_assigments": character_assigments } )
+        return players_with_sizes
+
+    def increment_quantity(self, sizes_with_quantities, size_to_increment):
+        for size in sizes_with_quantities:
+            if size["name"] == size_to_increment:
+                size["quantity"] += 1
+
+    def update_quantities(self, sizes_with_quantities, players_with_sizes):
+        for player in players_with_sizes:
+            if player["sizes"]:
+                player_size = player["sizes"][0].get_name()
+                self.increment_quantity(sizes_with_quantities, player_size)
+
+    def initialize_sizes_with_quantities(self):
+        sizes_with_quantities = []
+        for size in self.get_sizes():
+            sizes_with_quantities.append({ "name":size.get_name(), "info": size, "quantity": 0 })
+        return sizes_with_quantities
+
+    def get_sizes_with_quantities(self, players_with_sizes):
+        sizes_with_quantities = self.initialize_sizes_with_quantities()
+        self.update_quantities(sizes_with_quantities, players_with_sizes)
+        return sizes_with_quantities
+
 
 class UniformSize(models.Model):
     uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)

@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from .util_test_views import test_correct_page, test_login
 from larps.config import login_required_enabled
+from larps.models import Uniform
+from .util_test import *
 
 
 class ViewsTests(TestCase):

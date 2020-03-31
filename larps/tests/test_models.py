@@ -3,14 +3,41 @@ from django.contrib.auth.models import User
 
 from larps.models import *
 from larps.config import larp_name
-from .util_test_models import *
+from .util_test import *
 
-example_characters = [ "Marie Curie", "Ada Lovelace" ]
+example_characters = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May Parker" ]
 example_groups = [ "Scientists", "Doctors", "Mecanics" ]
-example_players = [
+
+example_players_complete = [
     { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75 },
     { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78 }
 ]
+
+example_players_incomplete = [
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0 },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0 }
+]
+
+example_sizes = [
+         {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
+         {  "gender":"female", "american_size":"M", "european_size":"40", "chest_min":"90", "chest_max":"94", "waist_min":"74", "waist_max":"78" },
+         {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"98", "waist_min":"78", "waist_max":"82" },
+         {  "gender":"male", "american_size":"M", "european_size":"46", "chest_min":"90", "chest_max":"94", "waist_min":"78", "waist_max":"82" },
+         {  "gender":"male", "american_size":"M", "european_size":"48", "chest_min":"94", "chest_max":"98", "waist_min":"82", "waist_max":"86" },
+         {  "gender":"male", "american_size":"L", "european_size":"50", "chest_min":"98", "chest_max":"102", "waist_min":"86", "waist_max":"90" },
+     ]
+
+example_sizes_info = [
+    "female. S/38 chest(86,90) waist(70,74)",
+    "female. M/40 chest(90,94) waist(74,78)",
+    "female. M/42 chest(94,98) waist(78,82)",
+    "male. M/46 chest(90,94) waist(78,82)",
+    "male. M/48 chest(94,98) waist(82,86)",
+    "male. L/50 chest(98,102) waist(86,90)"
+]
+
+empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
+
 
 # PLAYER PROFILES
 
@@ -20,7 +47,7 @@ class PlayerModelTests(TestCase):
         """
         create_player_profile() creates a Player object asociated to a test User account.
         """
-        player_info = example_players[0]
+        player_info = example_players_complete[0]
         player = create_player(player_info)
         self.assertEqual(player.user.username, player_info["username"])
         self.assertEqual(str(player), player_info["first_name"] + " " + player_info["last_name"])
@@ -83,7 +110,7 @@ class GroupModelTests(TestCase):
         """
         create_group creates a Group associated with a Larp.
         """
-        group_name = example_groups[1]
+        group_name = example_groups[0]
         group = create_group(group_name)
         self.assertEqual(group.name, group_name)
         self.assertEqual(group.larp.name, larp_name())
@@ -100,25 +127,54 @@ class GroupModelTests(TestCase):
 
     def test_get_player_profiles_empty(self):
         """
-        create_get_player_profiles returns the profiles of the players assigned to this group.
+        create_get_player_profiles_empty returns an empty array
         """
-        group = create_group(group_name=example_groups[1])
+        group = create_group(example_groups[0])
         player_profiles = group.get_player_profiles()
         self.assertEqual(player_profiles, [])
+        all_profiles = Player.objects.all()
+        self.assertEqual(str(all_profiles), "<QuerySet []>" )
+
+    def test_get_character_assigments(self):
+        group = create_group(example_groups[0])
+        create_characters_assigments(group, players=example_players_complete[:2], characters=example_characters[2:4])
+        assigments = CharacterAssigment.objects.all()
+        self.assertEqual(assigments[0].user.username, example_players_complete[0]["username"])
+        self.assertEqual(assigments[1].user.username, example_players_complete[1]["username"])
+        self.assertEqual(assigments[0].character.name, example_characters[2])
+        self.assertEqual(assigments[1].character.name, example_characters[3])
+        assigments_group = group.get_character_assigments()
+        self.assertEqual(len(assigments), len(assigments_group))
+
+    def test_get_player_profiles_users_with_no_profile(self):
+        """
+        create_get_player_profiles returns empty profiles associated with the users assigned to this group.
+        """
+        group = create_group(example_groups[1])
+        create_characters_assigments(group, players=example_players_incomplete, characters=example_characters[:2])
+        player_profiles = group.get_player_profiles()
+        self.assertEqual(str(player_profiles), "[<Player: Maria Gonzalez>, <Player: Andrea Hernandez>]")
+        self.assertEqual(player_profiles[0].user.username, example_players_incomplete[0]["username"])
+        self.assertEqual(player_profiles[0].chest, 0)
+        self.assertEqual(player_profiles[0].waist, 0)
+        self.assertEqual(player_profiles[1].user.username, example_players_incomplete[1]["username"])
+        self.assertEqual(player_profiles[1].chest, 0)
+        self.assertEqual(player_profiles[1].waist, 0)
 
     def test_get_player_profiles_with_correct_examples(self):
         """
         create_get_player_profiles returns the profiles of the players assigned to this group.
         """
-        group = create_group(example_groups[1])
-        create_characters_assigments(group, example_players, example_characters)
+        group = create_group(example_groups[2])
+        create_characters_assigments(group, players=example_players_complete, characters=example_characters[2:4])
         player_profiles = group.get_player_profiles()
-        self.assertEqual(player_profiles[0].user.username, example_players[0]["username"])
-        self.assertEqual(player_profiles[0].chest, example_players[0]["chest"])
-        self.assertEqual(player_profiles[0].waist, example_players[0]["waist"])
-        self.assertEqual(player_profiles[1].user.username, example_players[1]["username"])
-        self.assertEqual(player_profiles[1].chest, example_players[1]["chest"])
-        self.assertEqual(player_profiles[1].waist, example_players[1]["waist"])
+        self.assertEqual(str(player_profiles), "[<Player: Ana Garcia>, <Player: Pepa Perez>]")
+        self.assertEqual(player_profiles[0].user.username, example_players_complete[0]["username"])
+        self.assertEqual(player_profiles[0].chest, example_players_complete[0]["chest"])
+        self.assertEqual(player_profiles[0].waist, example_players_complete[0]["waist"])
+        self.assertEqual(player_profiles[1].user.username, example_players_complete[1]["username"])
+        self.assertEqual(player_profiles[1].chest, example_players_complete[1]["chest"])
+        self.assertEqual(player_profiles[1].waist, example_players_complete[1]["waist"])
 
 
 
@@ -253,37 +309,26 @@ class BookingsModelTests(TestCase):
 # UNIFORMS
 
 class UniformModelTests(TestCase):
-    example_sizes = [
-             {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
-             {  "gender":"female", "american_size":"M", "european_size":"40", "chest_min":"90", "chest_max":"94", "waist_min":"74", "waist_max":"78" },
-             {  "gender":"female", "american_size":"M", "european_size":"42", "chest_min":"94", "chest_max":"98", "waist_min":"78", "waist_max":"82" },
-             {  "gender":"male", "american_size":"M", "european_size":"46", "chest_min":"90", "chest_max":"94", "waist_min":"78", "waist_max":"82" },
-             {  "gender":"male", "american_size":"M", "european_size":"48", "chest_min":"94", "chest_max":"98", "waist_min":"82", "waist_max":"86" },
-             {  "gender":"male", "american_size":"L", "european_size":"50", "chest_min":"98", "chest_max":"102", "waist_min":"86", "waist_max":"90" },
-         ]
-
-    empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
-    group_name = "Pilots"
 
     def test_create_uniform(self):
-        uniform = create_uniform(group_name=self.group_name)
-        self.assertEqual(uniform.group.name, self.group_name)
-        self.assertEqual(uniform.name, self.group_name)
+        uniform = create_uniform(group_name=example_groups[0])
+        self.assertEqual(uniform.group.name, example_groups[0])
+        self.assertEqual(uniform.name, example_groups[0])
 
     def test_create_uniform_with_full_info(self):
-        uniform = create_uniform(group_name=self.group_name)
+        uniform = create_uniform(group_name=example_groups[0])
         color = "Red"
         uniform.color = color
-        self.assertEqual(uniform.group.name, self.group_name)
-        self.assertEqual(uniform.name, self.group_name)
+        self.assertEqual(uniform.group.name, example_groups[0])
+        self.assertEqual(uniform.name, example_groups[0])
 
     def test_create_uniform_size_with_no_info(self):
-        uniform = create_uniform(group_name=self.group_name)
+        uniform = create_uniform(group_name=example_groups[0])
         size = UniformSize(uniform=uniform)
-        self.assertEqual(size.uniform.name, self.group_name)
+        self.assertEqual(size.uniform.name, example_groups[0])
 
     def test_create_uniform_size_with_info(self):
-        size_information = self.example_sizes[0]
+        size_information = example_sizes[0]
         size = create_uniform_size(size_information)
         self.assertEqual(size.gender, size_information["gender"])
         self.assertEqual(size.american_size, size_information["american_size"])
@@ -295,7 +340,7 @@ class UniformModelTests(TestCase):
         self.assertEqual(str(size), "female. S/38 chest(86,90) waist(70,74)")
 
     def test_create_uniform_size_with_empty_info(self):
-        size_information = self.empty_size_info
+        size_information = empty_size_info
         size = create_uniform_size(size_information)
         self.assertEqual(size.gender, size_information["gender"])
         self.assertEqual(size.american_size, size_information["american_size"])
@@ -307,9 +352,9 @@ class UniformModelTests(TestCase):
         self.assertEqual(str(size), "chest(0,0) waist(0,0)")
 
     def test_recommend_sizes_perfect_fit(self):
-        player_info = example_players[0]
+        player_info = example_players_complete[0]
         player = create_player(player_info=player_info)
-        uniform = create_uniform_with_sizes(self.example_sizes)
+        uniform = create_uniform_with_sizes(example_sizes)
         sizes = uniform.recommend_sizes(player)
         self.assertEqual(len(sizes), 1)
         self.assertEqual(sizes[0].gender,"female")
@@ -318,8 +363,8 @@ class UniformModelTests(TestCase):
         self.assertEqual(str(sizes[0]), "female. M/40 chest(90,94) waist(74,78)")
 
     def test_recommend_sizes_valid_fit(self):
-        uniform = create_uniform_with_sizes(self.example_sizes)
-        player_info = example_players[0]
+        uniform = create_uniform_with_sizes(example_sizes)
+        player_info = example_players_complete[0]
         player = create_player(player_info=player_info)
         sizes = uniform.recommend_sizes(player=player)
         self.assertEqual(len(sizes), 1)
@@ -330,51 +375,83 @@ class UniformModelTests(TestCase):
     def test_perfect_fit_true(self):
         chest = 90
         waist = 75
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.perfect_fit(chest, waist), True)
 
     def test_perfect_fit_false(self):
         chest = 90
         waist = 75
-        size = create_uniform_size(self.example_sizes[0])
+        size = create_uniform_size(example_sizes[0])
         self.assertIs(size.perfect_fit(chest, waist), False)
 
     def test_waist_fit_true(self):
         waist = 75
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.waist_fit(waist), True)
 
     def test_waist_fit_false(self):
         waist = 75
-        size = create_uniform_size(self.example_sizes[0])
+        size = create_uniform_size(example_sizes[0])
         self.assertIs(size.waist_fit(waist), False)
 
     def test_chest_fit_true(self):
         chest = 90
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.chest_fit(chest), True)
 
     def test_chest_fit_false(self):
         chest = 89
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.chest_fit(chest), False)
 
     def test_chest_minimum_fit_true(self):
         chest = 89
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.chest_minimum_fit(chest), True)
 
     def test_chest_minimum_fit_size_too_small(self):
         chest = 91
-        size = create_uniform_size(self.example_sizes[0])
+        size = create_uniform_size(example_sizes[0])
         self.assertIs(size.chest_minimum_fit(chest), False)
 
     def test_waist_minimum_fit_true(self):
         waist = 74
-        size = create_uniform_size(self.example_sizes[1])
+        size = create_uniform_size(example_sizes[1])
         self.assertIs(size.waist_minimum_fit(waist), True)
 
     def test_waist_minimum_fit_size_too_small(self):
         waist = 80
-        size = create_uniform_size(self.example_sizes[0])
+        size = create_uniform_size(example_sizes[0])
         self.assertIs(size.waist_minimum_fit(waist), False)
+
+    def test_get_sizes_with_quantities_empty(self):
+        players = []
+        uniform = Uniform(name="")
+        sizes_with_quantities = uniform.get_sizes_with_quantities(players)
+        self.assertEqual(sizes_with_quantities, [])
+
+    def test_get_sizes_with_quantities_no_players(self):
+        players = []
+        uniform = create_uniform_with_sizes(example_sizes)
+        sizes_with_quantities = uniform.get_sizes_with_quantities(players)
+        self.assertEqual(len(sizes_with_quantities), len(example_sizes))
+        for i in range(0,len(example_sizes)):
+            self.assertEqual(sizes_with_quantities[i]["name"], example_sizes[i]["american_size"]+" / "+example_sizes[i]["european_size"])
+            self.assertEqual(sizes_with_quantities[i]["quantity"], 0)
+            self.assertEqual(str(sizes_with_quantities[i]["info"]), example_sizes_info[i])
+
+    def test_get_sizes_with_quantities(self):
+        players = []
+        uniform = create_uniform_with_sizes(example_sizes)
+        sizes_with_quantities = uniform.get_sizes_with_quantities(players)
+        self.assertEqual(len(sizes_with_quantities), len(example_sizes))
+        for i in range(0,len(example_sizes)):
+            self.assertEqual(sizes_with_quantities[i]["name"], example_sizes[i]["american_size"]+" / "+example_sizes[i]["european_size"])
+            self.assertEqual(sizes_with_quantities[i]["quantity"], 0)
+            self.assertEqual(str(sizes_with_quantities[i]["info"]), example_sizes_info[i])
+
+    def test_update_quantities_no_valid_sizes(self):
+        uniform = create_uniform("")
+        players_with_sizes = uniform.get_players_with_recommended_sizes()
+        sizes_with_quantities = uniform.initialize_sizes_with_quantities()
+        uniform.update_quantities(sizes_with_quantities, players_with_sizes)

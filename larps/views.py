@@ -144,44 +144,16 @@ def file_upload_view(request, file_type_number):
 
 def uniforms_view(request):
     template = "larps/uniforms.html"
-    uniforms = Uniform.objects.all()
-    context = {"uniforms": uniforms}
+    context = {"uniforms": Uniform.objects.all()}
     return render(request, template, context)
-
-def get_players_list(selected_uniform):
-    players_profiles = selected_uniform.group.get_player_profiles()
-    players_list = []
-    for player in players_profiles:
-        sizes = selected_uniform.recommend_sizes(player=player)
-        character_assigments = selected_uniform.group.character_assigment_for_user(player.user)
-        players_list.append( { "info": player, "sizes": sizes, "character_assigments": character_assigments } )
-    return players_list
-
-def increment_quantity(sizes_with_quantities, size_to_increment):
-    for size in sizes_with_quantities:
-        if size["name"] == size_to_increment:
-            size["quantity"] += 1
-
-def get_sizes_with_quantities(players_list, selected_uniform):
-    all_sizes = UniformSize.objects.filter(uniform=selected_uniform)
-    sizes_with_quantities = []
-    for size in all_sizes:
-        sizes_with_quantities.append({ "name":size.get_name(), "info": size, "quantity": 0 })
-    for player in players_list:
-        player_size = player["sizes"][0].get_name()
-        increment_quantity(sizes_with_quantities, player_size)
-    return sizes_with_quantities
 
 def uniform_sizes_view(request, uniform_id):
     template = "larps/uniforms.html"
     selected_uniform = Uniform.objects.get(id=uniform_id)
-
+    players_with_sizes = selected_uniform.get_players_with_recommended_sizes()
     context = {}
     context["group"] = selected_uniform.group
     context["uniforms"] = Uniform.objects.all()
-
-    players_list = get_players_list(selected_uniform)
-    context["players"] = players_list
-    context["sizes"] = get_sizes_with_quantities(players_list, selected_uniform)
-
+    context["players"] = players_with_sizes
+    context["sizes"] = selected_uniform.get_sizes_with_quantities(players_with_sizes)
     return render(request, template, context)
