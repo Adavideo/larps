@@ -5,12 +5,14 @@ from larps.models import *
 from larps.config import larp_name
 from .util_test import *
 
-example_characters = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May Parker" ]
+example_characters = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May Parker", "Peter Parker", "Leopold Fitz" ]
 example_groups = [ "Scientists", "Doctors", "Mecanics" ]
 
 example_players_complete = [
     { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75 },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78 }
+    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78 },
+    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90 },
+    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86 },
 ]
 
 example_players_incomplete = [
@@ -440,15 +442,26 @@ class UniformModelTests(TestCase):
             self.assertEqual(sizes_with_quantities[i]["quantity"], 0)
             self.assertEqual(str(sizes_with_quantities[i]["info"]), example_sizes_info[i])
 
+    def test_get_players_with_recommended_sizes(self):
+        uniform = create_uniform_with_players_and_sizes(sizes=example_sizes, players_info=example_players_complete, characters_names=example_characters, group_name="Mechanics")
+        players_with_sizes = uniform.get_players_with_recommended_sizes()
+        self.assertEqual(len(players_with_sizes), len(example_players_complete))
+
     def test_get_sizes_with_quantities(self):
-        players = []
-        uniform = create_uniform_with_sizes(example_sizes)
-        sizes_with_quantities = uniform.get_sizes_with_quantities(players)
+        uniform = create_uniform_with_players_and_sizes(sizes=example_sizes, players_info=example_players_complete, characters_names=example_characters, group_name="Pilots")
+        players_with_sizes = uniform.get_players_with_recommended_sizes()
+        sizes_with_quantities = uniform.get_sizes_with_quantities(players_with_sizes)
         self.assertEqual(len(sizes_with_quantities), len(example_sizes))
         for i in range(0,len(example_sizes)):
             self.assertEqual(sizes_with_quantities[i]["name"], example_sizes[i]["american_size"]+" / "+example_sizes[i]["european_size"])
-            self.assertEqual(sizes_with_quantities[i]["quantity"], 0)
             self.assertEqual(str(sizes_with_quantities[i]["info"]), example_sizes_info[i])
+        self.assertEqual(sizes_with_quantities[0]["quantity"], 0)
+        self.assertEqual(sizes_with_quantities[1]["quantity"], 1)
+        self.assertEqual(sizes_with_quantities[2]["quantity"], 1)
+        self.assertEqual(sizes_with_quantities[3]["quantity"], 0)
+        self.assertEqual(sizes_with_quantities[4]["quantity"], 0)
+        self.assertEqual(sizes_with_quantities[5]["quantity"], 2)
+
 
     def test_update_quantities_no_valid_sizes(self):
         uniform = create_uniform("")

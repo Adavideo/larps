@@ -210,8 +210,6 @@ class Uniform(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     color = models.CharField(max_length=50)
-    all_sizes = []
-    players_that_use_this_uniform = []
 
     def __str__(self):
         if self.group:
@@ -221,9 +219,7 @@ class Uniform(models.Model):
         return text
 
     def get_sizes(self):
-        if not self.all_sizes:
-            self.all_sizes = UniformSize.objects.filter(uniform=self)
-        return self.all_sizes
+        return UniformSize.objects.filter(uniform=self)
 
     def add_size(self, size_information):
         size = UniformSize(uniform=self)
@@ -250,11 +246,6 @@ class Uniform(models.Model):
         else:
             return None
 
-    def get_players_that_use_this_uniform(self):
-        if not self.players_that_use_this_uniform:
-            self.players_that_use_this_uniform = self.group.get_player_profiles()
-        return self.players_that_use_this_uniform
-
     def recommend_sizes(self, player):
         sizes = self.get_sizes().filter(gender=player.gender)
         if not sizes:
@@ -265,7 +256,7 @@ class Uniform(models.Model):
         return self.find_valid_fit(sizes, player.chest, player.waist)
 
     def get_players_with_recommended_sizes(self):
-        players_profiles = self.get_players_that_use_this_uniform()
+        players_profiles = self.group.get_player_profiles()
         players_with_sizes = []
         for player in players_profiles:
             sizes = self.recommend_sizes(player=player)

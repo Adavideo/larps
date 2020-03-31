@@ -14,6 +14,9 @@ def create_player(player_info):
     return player
 
 def create_group(group_name):
+    group_search = Group.objects.filter(name=group_name)
+    if group_search:
+        return group_search[0]
     larp = Larp(name = larp_name())
     larp.save()
     group = Group(larp=larp, name=group_name)
@@ -38,33 +41,42 @@ def create_character_assigment(group, player_info, character_name, run=1):
 
 def create_characters_assigments(group, players, characters):
     assigments = []
-    for n in range(0, 2):
-        player_info = players[n]
-        character_name = characters[n]
-        a = create_character_assigment(group=group, player_info=player_info, character_name=character_name)
-        assigments.append(a)
+    if len(players) > len(characters):
+        n = len(characters)
+    else:
+        n = len(players)
+    for i in range(0, n):
+        player_info = players[i]
+        character_name = characters[i]
+        assigment = create_character_assigment(group=group, player_info=player_info, character_name=character_name)
+        assigment.save()
+        assigments.append(assigment)
     return assigments
 
-def create_uniform(group_name):
-    larp = Larp(name=larp_name())
-    larp.save()
-    group = Group(name=group_name, larp=larp)
-    group.save()
+def create_uniform(group_name="", group=None):
+    if not group:
+        group = create_group(group_name)
     uniform = Uniform(group=group, name=group_name)
     uniform.save()
     return uniform
 
-def create_uniform_size(size_information):
-    uniform = create_uniform(group_name="")
+def create_uniform_size(size_information, group_name=""):
+    uniform = create_uniform(group_name)
     size = UniformSize(uniform=uniform)
     size.set_values(size_information)
     size.save()
     return size
 
-def create_uniform_with_sizes(example_sizes):
-    uniform = create_uniform(group_name="")
-    for size_information in example_sizes:
+def create_uniform_with_sizes(sizes, group_name=""):
+    uniform = create_uniform(group_name)
+    for size_information in sizes:
         size = UniformSize(uniform=uniform)
         size.set_values(size_information)
         size.save()
+    return uniform
+
+def create_uniform_with_players_and_sizes(sizes, players_info, characters_names, group_name=""):
+    group = create_group(group_name=group_name)
+    uniform = create_uniform_with_sizes(sizes=sizes, group_name=group_name)
+    assigments = create_characters_assigments(group, players_info, characters_names)
     return uniform
