@@ -121,11 +121,35 @@ class GroupModelTests(TestCase):
         """
         create_empty_group creates agroup associated with a Larp.
         """
-        larp = Larp(name = larp_name())
-        empty_group = Group(larp=larp, name="")
+        empty_group = create_group("")
         self.assertEqual(empty_group.larp.name, larp_name())
-        self.assertIs(empty_group.larp, larp)
         self.assertEqual(str(empty_group), larp_name()+" - no group")
+
+    def test_create_characters_assigments(self):
+        group = create_group(example_groups[1])
+        create_characters_assigments(group=group, players=example_players_complete, characters=example_characters)
+        for i in range(0,len(example_players_complete)):
+            # Testing user creation
+            player_info = example_players_complete[i]
+            user_search = User.objects.filter(username=player_info["username"])
+            self.assertEqual(len(user_search), 1)
+            user = user_search[0]
+            self.assertEqual(user.username, player_info["username"])
+            # Testins player profile creation
+            player_profiles = Player.objects.filter(user=user)
+            self.assertEqual(len(player_profiles), 1)
+            self.assertEqual(player_profiles[0].gender, player_info["gender"])
+            # Testing character creation
+            character_name = example_characters[i]
+            character_search = Character.objects.filter(name=character_name)
+            self.assertEqual(len(character_search), 1)
+            character = character_search[0]
+            self.assertEqual(character.name, character_name)
+            self.assertEqual(character.group, group)
+            # Testing character assigment
+            assigments = CharacterAssigment.objects.filter(character=character, user=user)
+            self.assertEqual(len(assigments), 1)
+
 
     def test_get_player_profiles_empty(self):
         """
@@ -139,21 +163,20 @@ class GroupModelTests(TestCase):
 
     def test_get_character_assigments(self):
         group = create_group(example_groups[0])
-        create_characters_assigments(group, players=example_players_complete[:2], characters=example_characters[2:4])
-        assigments = CharacterAssigment.objects.all()
-        self.assertEqual(assigments[0].user.username, example_players_complete[0]["username"])
-        self.assertEqual(assigments[1].user.username, example_players_complete[1]["username"])
-        self.assertEqual(assigments[0].character.name, example_characters[2])
-        self.assertEqual(assigments[1].character.name, example_characters[3])
+        create_characters_assigments(group, players=example_players_complete, characters=example_characters)
+        #assigments = CharacterAssigment.objects.all()
         assigments_group = group.get_character_assigments()
-        self.assertEqual(len(assigments), len(assigments_group))
+        self.assertEqual(len(assigments_group), len(example_players_complete))
+        for i in range(0,len(example_players_complete)):
+            self.assertEqual(assigments_group[i].user.username, example_players_complete[i]["username"])
+            self.assertEqual(assigments_group[i].character.name, example_characters[i])
 
     def test_get_player_profiles_users_with_no_profile(self):
         """
         create_get_player_profiles returns empty profiles associated with the users assigned to this group.
         """
         group = create_group(example_groups[1])
-        create_characters_assigments(group, players=example_players_incomplete, characters=example_characters[:2])
+        create_characters_assigments(group=group, players=example_players_incomplete, characters=example_characters)
         player_profiles = group.get_player_profiles()
         self.assertEqual(str(player_profiles), "[<Player: Maria Gonzalez>, <Player: Andrea Hernandez>]")
         self.assertEqual(player_profiles[0].user.username, example_players_incomplete[0]["username"])
@@ -461,7 +484,6 @@ class UniformModelTests(TestCase):
         self.assertEqual(sizes_with_quantities[3]["quantity"], 0)
         self.assertEqual(sizes_with_quantities[4]["quantity"], 0)
         self.assertEqual(sizes_with_quantities[5]["quantity"], 2)
-
 
     def test_update_quantities_no_valid_sizes(self):
         uniform = create_uniform("")
