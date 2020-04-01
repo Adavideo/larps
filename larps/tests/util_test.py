@@ -92,6 +92,12 @@ def create_uniform_with_sizes(sizes, group_name="", group=None):
 
 def create_uniform_with_players_and_sizes(sizes, players_info, characters_names, group_name="", run=1):
     group = create_group(group_name=group_name)
-    uniform = create_uniform_with_sizes(sizes=sizes, group_name=group_name)
-    assigments = create_characters_assigments(group, players_info, characters_names)
+    uniform = create_uniform_with_sizes(sizes, group_name=group_name)
+    assigments = create_characters_assigments(group, players_info, characters_names, run)
+    return uniform
+
+def create_uniform_with_player_in_several_runs(sizes, players_info, characters_names, player_in_several_runs, group_name="", runs=2):
+    uniform = create_uniform_with_players_and_sizes(sizes, players_info, characters_names, group_name=group_name, run=1)
+    for i in range(2,runs+1):
+        create_character_assigment(uniform.group, player_in_several_runs, characters_names[1], run=i)
     return uniform

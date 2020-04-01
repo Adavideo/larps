@@ -201,7 +201,14 @@ class GroupModelTests(TestCase):
         self.assertEqual(player_profiles[1].chest, example_players_complete[1]["chest"])
         self.assertEqual(player_profiles[1].waist, example_players_complete[1]["waist"])
 
-
+    def test_get_player_profiles_player_in_2_runs(self):
+        player_repeated = example_players_complete[1]
+        uniform = create_uniform_with_player_in_several_runs(sizes=example_sizes, players_info=example_players_complete,
+                                                            characters_names=example_characters, player_in_several_runs=player_repeated,
+                                                            group_name=example_groups[0], runs=2)
+        profiles = uniform.group.get_player_profiles()
+        self.assertEqual(len(profiles), len(example_players_complete))
+        
 
 class CharacterModelTests(TestCase):
 
@@ -465,11 +472,6 @@ class UniformModelTests(TestCase):
             self.assertEqual(sizes_with_quantities[i]["quantity"], 0)
             self.assertEqual(str(sizes_with_quantities[i]["info"]), example_sizes_info[i])
 
-    def test_get_players_with_recommended_sizes(self):
-        uniform = create_uniform_with_players_and_sizes(sizes=example_sizes, players_info=example_players_complete, characters_names=example_characters, group_name="Mechanics")
-        players_with_sizes = uniform.get_players_with_recommended_sizes()
-        self.assertEqual(len(players_with_sizes), len(example_players_complete))
-
     def test_get_sizes_with_quantities(self):
         uniform = create_uniform_with_players_and_sizes(sizes=example_sizes, players_info=example_players_complete, characters_names=example_characters, group_name="Pilots")
         players_with_sizes = uniform.get_players_with_recommended_sizes()
@@ -490,3 +492,23 @@ class UniformModelTests(TestCase):
         players_with_sizes = uniform.get_players_with_recommended_sizes()
         sizes_with_quantities = uniform.initialize_sizes_with_quantities()
         uniform.update_quantities(sizes_with_quantities, players_with_sizes)
+
+    def test_get_players_with_recommended_sizes(self):
+        uniform = create_uniform_with_players_and_sizes(sizes=example_sizes, players_info=example_players_complete, characters_names=example_characters, group_name="Mechanics")
+        players_with_sizes = uniform.get_players_with_recommended_sizes()
+        self.assertEqual(len(players_with_sizes), len(example_players_complete))
+
+    def test_get_players_with_recommended_sizes_a_player_in_several_runs(self):
+        player_repeated = example_players_complete[1]
+        uniform = create_uniform_with_player_in_several_runs(sizes=example_sizes, players_info=example_players_complete,
+                                                            characters_names=example_characters, player_in_several_runs=player_repeated,
+                                                            group_name=example_groups[0], runs=3)
+        players_with_sizes = uniform.get_players_with_recommended_sizes()
+        # Ensure that the player in several runs does not appear repeated in the list that this function returns.
+        self.assertEqual(len(players_with_sizes), len(example_players_complete))
+        player_returned = players_with_sizes[1]
+        self.assertEqual(player_returned["info"].user.username, player_repeated["username"])
+        # Ensure that only returns one size for the repeated player
+        self.assertEqual(len(player_returned["sizes"]), 1)
+        # Ensure that it returns the correct size for the repeated player
+        self.assertEqual(str(player_returned["sizes"][0]), "female. M/42 chest(94,98) waist(78,82)")

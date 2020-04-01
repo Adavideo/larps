@@ -94,7 +94,9 @@ class Group(models.Model):
         for assigment in character_assigments:
             player_profile = assigment.get_player_profile()
             if player_profile:
-                players.append(player_profile)
+                # check that the profile is not already on the list.
+                if player_profile not in players:
+                    players.append(player_profile)
         return players
 
     def get_character_assigments(self):
