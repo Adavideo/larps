@@ -15,7 +15,7 @@ from .config import csv_file_types
 
 
 
-def not_allowed(request):
+def not_allowed_view(request):
     template = "larps/not_allowed.html"
     context = {}
     return render(request, template, context)
@@ -126,7 +126,7 @@ def get_context_info():
 
 def file_upload_index_view(request):
     if not request.user.is_staff:
-        return not_allowed(request)
+        return not_allowed_view(request)
     template = "csv_import/csv_index.html"
     file_types = csv_file_types()
     context = {'user': request.user, 'file_types': file_types}
@@ -135,7 +135,7 @@ def file_upload_index_view(request):
 
 def file_upload_view(request, file_type_number):
     if not request.user.is_staff:
-        return not_allowed(request)
+        return not_allowed_view(request)
     template = "csv_import/file_upload.html"
     file_type = csv_file_types()[file_type_number][0]
     form = ImportCSVForm()
@@ -154,7 +154,7 @@ def file_upload_view(request, file_type_number):
 
 def uniforms_view(request):
     if not request.user.is_staff:
-        return not_allowed(request)
+        return not_allowed_view(request)
     template = "larps/uniforms.html"
     context = {"uniforms": Uniform.objects.all()}
     return render(request, template, context)
@@ -162,7 +162,7 @@ def uniforms_view(request):
 
 def uniform_sizes_view(request, uniform_id):
     if not request.user.is_staff:
-        return not_allowed(request)
+        return not_allowed_view(request)
     template = "larps/uniforms.html"
     selected_uniform = Uniform.objects.get(id=uniform_id)
     players_with_sizes = selected_uniform.get_players_with_recommended_sizes()
