@@ -3,16 +3,22 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.views import generic
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
-
 
 from .forms import *
 from .models import *
 from .csv_importer import process_csv
 from .config import csv_file_types
+
+
+
+def not_allowed(request):
+    template = "larps/not_allowed.html"
+    context = {}
+    return render(request, template, context)
 
 
 # HOME AND LOGOUT
@@ -119,6 +125,8 @@ def get_context_info():
 
 
 def file_upload_index_view(request):
+    if not request.user.is_staff:
+        return not_allowed(request)
     template = "csv_import/csv_index.html"
     file_types = csv_file_types()
     context = {'user': request.user, 'file_types': file_types}
@@ -126,6 +134,8 @@ def file_upload_index_view(request):
 
 
 def file_upload_view(request, file_type_number):
+    if not request.user.is_staff:
+        return not_allowed(request)
     template = "csv_import/file_upload.html"
     file_type = csv_file_types()[file_type_number][0]
     form = ImportCSVForm()
@@ -143,11 +153,16 @@ def file_upload_view(request, file_type_number):
 # UNIFORMS
 
 def uniforms_view(request):
+    if not request.user.is_staff:
+        return not_allowed(request)
     template = "larps/uniforms.html"
     context = {"uniforms": Uniform.objects.all()}
     return render(request, template, context)
 
+
 def uniform_sizes_view(request, uniform_id):
+    if not request.user.is_staff:
+        return not_allowed(request)
     template = "larps/uniforms.html"
     selected_uniform = Uniform.objects.get(id=uniform_id)
     players_with_sizes = selected_uniform.get_players_with_recommended_sizes()
