@@ -61,7 +61,7 @@ def player_profile_view(request):
         form = PlayerForm(request.POST)
         if form.is_valid():
             player.save_profile(form.cleaned_data)
-            url = '/larps/'
+            url = reverse('larps:home')
             return HttpResponseRedirect(url)
     else:
         player_data = player.get_data()

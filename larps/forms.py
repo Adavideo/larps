@@ -9,6 +9,7 @@ def process_options(options_list):
     return processed_options
 
 class PlayerForm(forms.Form):
+    gender = forms.CharField(max_length=100)
     allergies = forms.CharField(max_length=100)
     food_allergies = forms.CharField(max_length=100)
     food_intolerances = forms.CharField(max_length=100)
