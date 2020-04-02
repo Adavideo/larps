@@ -139,10 +139,19 @@ def process_csv_line(column, file_type):
         result = "File type "+ str(file_type) + " not recognised"
     return result
 
-def process_data(data_set, file_type):
+def get_file_type(header):
+    file_type = "incorrect"
+    file_headers = get_file_headers()
+    for f in file_headers:
+        if f["header"] in header:
+            file_type = f["file_type"]
+    return file_type
+
+def process_data(data_set):
     io_string = io.StringIO(data_set)
     header = next(io_string)
-    if not correct_file_type(header, file_type):
+    file_type = get_file_type(header)
+    if file_type == "incorrect":
         return ["Incorrect file type"]
 
     result = []
@@ -155,7 +164,7 @@ def read_csv_file(file):
     data_set = file.read().decode('UTF-8')
     return data_set
 
-def process_csv(file, file_type):
+def process_csv(file):
     data_set = read_csv_file(file)
-    result = process_data(data_set, file_type)
+    result = process_data(data_set)
     return result

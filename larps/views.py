@@ -124,26 +124,16 @@ def get_context_info():
     return context
 
 
-def file_upload_index_view(request):
-    if not request.user.is_staff:
-        return not_allowed_view(request)
-    template = "csv_import/csv_index.html"
-    file_types = csv_file_types()
-    context = {'user': request.user, 'file_types': file_types}
-    return render(request, template, context)
-
-
-def file_upload_view(request, file_type_number):
+def file_upload_view(request):
     if not request.user.is_staff:
         return not_allowed_view(request)
     template = "csv_import/file_upload.html"
-    file_type = csv_file_types()[file_type_number][0]
     form = ImportCSVForm()
-    context = {'form': form, 'user': request.user, 'file_type':file_type}
+    context = {'form': form, 'user': request.user}
 
     if request.method == "POST":
         file = request.FILES['file']
-        result = process_csv(file, file_type)
+        result = process_csv(file)
         context["result"] = result
 
     return render(request, template, context)
