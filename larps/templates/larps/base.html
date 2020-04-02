@@ -11,24 +11,27 @@
         <div class="page-header">
             <center><h1><a href="{% url 'larps:home' %}">Not only Larps</a></h1></center>
 
-            <p style="text-align:left;">
-              <a href="{% url 'larps:player_profile' %}">
-              Player profile
-              </a> |
-              <a href="{% url 'larps:bookings_list' %}">
-              Bookings
-              </a> |
+            <p style="text-align:center;">
+              {% if not user.is_staff %}
+                <a href="{% url 'larps:player_profile' %}">
+                Player profile
+                </a> |
+                <a href="{% url 'larps:bookings_list' %}">
+                Bookings
+                </a> |
+              {% else %}
+                <a href="{% url 'larps:uniforms' %}">
+                Uniforms
+                </a> |
+                <a href="{% url 'larps:file_upload' %}">
+                File upload
+                </a> |
+              {% endif %}
               <a href="{% url 'larps:characters_list' %}">
               Characters
               </a> |
               <a href="{% url 'larps:players_list' %}">
               Players
-              </a> |
-              <a href="{% url 'larps:uniforms' %}">
-              Uniforms
-              </a> |
-              <a href="{% url 'larps:file_upload' %}">
-              File upload
               </a>
             </p>
 
