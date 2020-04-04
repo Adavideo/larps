@@ -84,30 +84,42 @@ class Larp(models.Model):
             character_assigments.extend(assigments)
         return character_assigments
 
-    def get_food(self):
-        assigments = self.get_character_assigments()
-        runs = 0
-        diets_list = []
-        for assigment in assigments:
-            if assigment.run > runs:
-                runs = assigment.run
-            profile = assigment.get_player_profile()
-            player_name = assigment.user.first_name + " " + assigment.user.last_name
-            player_diet = { "character": assigment.character.name, "run": assigment.run, "player": player_name, "diet": profile.dietary_restrictions }
-            diets_list.append(player_diet)
-
+    def get_food_count(self, diets_list):
+        return []
         food_count = []
         for run in range(1,runs):
-            #print()
-            #print("run "+ str(run))
             for player_diet in diets_list:
                 run_diets = []
                 if player_diet["run"] == run:
-                    #print(player_diet)
                     run_diets.append(player_diet)
-                #print(run_diets)
 
-        result = { "player_diets": diets_list, "food_count": food_count }
+    def get_runs_number(self, assigments):
+        runs = 0
+        for assigment in assigments:
+            if assigment.run > runs:
+                runs = assigment.run
+        return runs
+
+    def get_players_diets(self, assigments):
+        number_of_runs = self.get_runs_number(assigments)
+        diets_list = []
+        # Create empty list for each run
+        for i in range(0, number_of_runs):
+            diets_list.append([])
+        # populate the lists with the information of the players diets
+        for assigment in assigments:
+            profile = assigment.get_player_profile()
+            player_name = assigment.user.first_name + " " + assigment.user.last_name
+            player_diet = { "character": assigment.character.name, "run": assigment.run, "player": player_name, "diet": profile.dietary_restrictions }
+            run_index = assigment.run-1
+            diets_list[run_index].append(player_diet)
+        return diets_list
+
+    def get_food(self):
+        assigments = self.get_character_assigments()
+        players_diets = self.get_players_diets(assigments)
+        food_count = self.get_food_count(players_diets)
+        result = { "players_diets": players_diets, "food_count": food_count }
         return result
 
 class Group(models.Model):

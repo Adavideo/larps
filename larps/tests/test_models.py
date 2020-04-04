@@ -538,17 +538,19 @@ class LarpModelTests(TestCase):
     def test_get_food_empty(self):
         larp = Larp(name=larp_name())
         food = larp.get_food()
-        self.assertEqual(food, {'player_diets': [], 'food_count': []})
+        self.assertEqual(food, {'players_diets': [], 'food_count': []})
 
     def test_get_food_1_group(self):
         create_diets(diets)
         larp = create_larp_with_diet_info(example_players_with_diets, example_characters, group_name="group1", larp_name=larp_name())
         result = larp.get_food()
-        player_diets = result["player_diets"]
-        self.assertEqual(len(player_diets), 4)
-        for player_diet in player_diets:
-            test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
-        self.assertEqual(result["food_count"], [])
+        players_diets_all_runs = result["players_diets"]
+        self.assertEqual(len(players_diets_all_runs), 2)
+        for players_diets in players_diets_all_runs:
+            self.assertEqual(len(players_diets), 2)
+            for player_diet in players_diets:
+                test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
+            self.assertEqual(result["food_count"], [])
 
     def test_get_food_2_groups(self):
         create_diets(diets)
@@ -556,8 +558,10 @@ class LarpModelTests(TestCase):
         players_info2 = example_players_with_diets[:5]
         create_group_with_diet_info(larp, players_info2, example_characters, group_name="group2")
         result = larp.get_food()
-        player_diets = result["player_diets"]
-        self.assertEqual(len(player_diets), 8)
-        for player_diet in player_diets:
-            test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
-        self.assertEqual(result["food_count"], [])
+        players_diets_all_runs = result["players_diets"]
+        self.assertEqual(len(players_diets_all_runs), 2)
+        for players_diets in players_diets_all_runs:
+            self.assertEqual(len(players_diets), 4)
+            for player_diet in players_diets:
+                test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
+            self.assertEqual(result["food_count"], [])

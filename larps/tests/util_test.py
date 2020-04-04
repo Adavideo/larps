@@ -137,8 +137,4 @@ def test_character_diets(test, original_list, returned_info):
         name = info["first_name"] + " " + info["last_name"]
         if name == returned_info["player"]:
             original_info = info
-
-    #if original_info["diet"]:
     test.assertEqual(returned_info["diet"].name, original_info["diet"])
-    #else:
-    #    test.assertEqual(returned_info["diet"], None)
