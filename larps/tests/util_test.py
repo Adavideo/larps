@@ -10,6 +10,11 @@ def create_user(player_info):
     user.save()
     return user
 
+def create_diets(diets):
+    for diet_name in diets:
+        new_diet = DietaryRestriction(name=diet_name)
+        new_diet.save()
+
 def get_diet(diet_name):
     diet = None
     diet_search = DietaryRestriction.objects.filter(name=diet_name)
@@ -26,11 +31,6 @@ def create_player(player_info):
     player = Player(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"], dietary_restrictions=diet)
     player.save()
     return player
-
-def create_diets(diets):
-    for diet_name in diets:
-        new_diet = DietaryRestriction(name=diet_name)
-        new_diet.save()
 
 def create_group(group_name):
     group_search = Group.objects.filter(name=group_name)
@@ -114,27 +114,3 @@ def create_uniform_with_player_in_several_runs(sizes, players_info, characters_n
     for i in range(2,runs+1):
         create_character_assigment(uniform.group, player_in_several_runs, characters_names[1], run=i)
     return uniform
-
-def create_group_with_diet_info(larp, players_info, characters_names, group_name=""):
-    group = Group(larp=larp, name=group_name)
-    group.save()
-    players_info1 = [ players_info[0], players_info[1] ]
-    players_info2 = [ players_info[2], players_info[3] ]
-    characters_names1 = [ characters_names[0], characters_names[1] ]
-    characters_names2 = [ characters_names[2], characters_names[3] ]
-    create_characters_assigments(group, players_info1, characters_names1, run=1)
-    create_characters_assigments(group, players_info2, characters_names1, run=2)
-
-
-def create_larp_with_diet_info(players_info, characters_names, group_name="", larp_name=""):
-    larp = Larp(name=larp_name)
-    larp.save()
-    create_group_with_diet_info(larp, players_info, characters_names, group_name)
-    return larp
-
-def test_character_diets(test, original_list, returned_info):
-    for info in original_list:
-        name = info["first_name"] + " " + info["last_name"]
-        if name == returned_info["player"]:
-            original_info = info
-    test.assertEqual(returned_info["diet"].name, original_info["diet"])

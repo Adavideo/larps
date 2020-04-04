@@ -20,17 +20,6 @@ example_players_incomplete = [
     { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
 ]
 
-example_players_with_diets = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"" },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"Vegan" },
-    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"" },
-    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"Vegan" },
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"Vegetarian" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
-    { "username": "Juan_Perez", "first_name": "Juan", "last_name": "Perez", "gender":"male", "chest":100, "waist":90, "diet":"" },
-    { "username": "Carlos_Hernandez", "first_name": "Carlos", "last_name": "Hernandez", "gender":"male", "chest":102, "waist":86, "diet":"Vegan" },
-]
-diets = [ "", "Vegetarian", "Vegan" ]
 
 example_sizes = [
          {  "gender":"female", "american_size":"S", "european_size":"38", "chest_min":"86", "chest_max":"90", "waist_min":"70", "waist_max":"74" },
@@ -527,41 +516,9 @@ class UniformModelTests(TestCase):
 
 
 class DietaryRestrictionModelTests(TestCase):
+    diets = [ "", "Vegetarian", "Vegan" ]
 
     def test_create_dietary_restrictions(self):
-        create_diets(diets)
+        create_diets(self.diets)
         all_diets= DietaryRestriction.objects.all()
         self.assertIs(len(all_diets),3)
-
-class LarpModelTests(TestCase):
-
-    def test_get_food_empty(self):
-        larp = Larp(name=larp_name())
-        food = larp.get_food()
-        self.assertEqual(food, {'players_diets': [], 'food_count': []})
-
-    def test_get_food_1_group(self):
-        create_diets(diets)
-        larp = create_larp_with_diet_info(example_players_with_diets, example_characters, group_name="group1", larp_name=larp_name())
-        result = larp.get_food()
-        players_diets_all_runs = result["players_diets"]
-        self.assertEqual(len(players_diets_all_runs), 2)
-        for players_diets in players_diets_all_runs:
-            self.assertEqual(len(players_diets), 2)
-            for player_diet in players_diets:
-                test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
-            self.assertEqual(result["food_count"], [])
-
-    def test_get_food_2_groups(self):
-        create_diets(diets)
-        larp = create_larp_with_diet_info(example_players_with_diets, example_characters, group_name="group1", larp_name=larp_name())
-        players_info2 = example_players_with_diets[:5]
-        create_group_with_diet_info(larp, players_info2, example_characters, group_name="group2")
-        result = larp.get_food()
-        players_diets_all_runs = result["players_diets"]
-        self.assertEqual(len(players_diets_all_runs), 2)
-        for players_diets in players_diets_all_runs:
-            self.assertEqual(len(players_diets), 4)
-            for player_diet in players_diets:
-                test_character_diets(test=self, original_list=example_players_with_diets,returned_info=player_diet)
-            self.assertEqual(result["food_count"], [])

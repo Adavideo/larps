@@ -3,13 +3,25 @@
 {% block content %}
 <center>
   {% for larp in food_all_larps %}
-    <h2>{{ larp.larp }} menus </h2>
+        {% for run_diets_amounts in larp.food.diets_amounts %}
+          <h3> {{ larp.larp }} run {{ run_diets_amounts.0.run }} </h3>
 
-    {{ larp.food.food_count }}
+          <table border=1 style="width:100%">
+            <th align="center">diet</th>
+            <th align="center">amount</th>
+            <tr>
+            {% for diets_amounts in run_diets_amounts %}
+              <tr>
+                <td align="center"> {{ diets_amounts.diet_name }}</td>
+                <td align="center"> {{ diets_amounts.amount }}</td>
+              </tr>
+            {% endfor %}
+          </table> <br>
+        {% endfor %}
 
     <hr>
 
-    <h2>All diet requirements</h2>
+
     {% for run in larp.food.players_diets %}
         <h3>{{ larp.larp }} run {{ run.0.run }} </h3>
         <table border=1 style="width:100%">

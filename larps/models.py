@@ -87,7 +87,8 @@ class Larp(models.Model):
 
     def get_food(self):
         assigments = self.get_character_assigments()
-        food_info = get_food_information(assigments)
+        diets_types = DietaryRestriction.objects.all()
+        food_info = get_food_information(assigments, diets_types)
         return food_info
 
 class Group(models.Model):
