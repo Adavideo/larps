@@ -1,0 +1,32 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+
+  {% for larp in food_all_larps %}
+    <h3>{{ larp.larp }}</h3>
+
+    {{ larp.food.food_count }}
+
+    <hr>
+    <center>
+    <table border=1 style="width:100%">
+      <th align="center">character</th>
+      <th align="center">run</th>
+      <th align="center">player</th>
+      <th align="center">diet</th>
+
+          {% for player_diet in larp.food.player_diets %}
+          <tr>
+            <td align="center"> {{ player_diet.character }}</td>
+            <td align="center"> {{ player_diet.run }}</td>
+            <td align="center"> {{ player_diet.player }}</td>
+            <td align="center"> {{ player_diet.diet }}</td>
+            </tr>
+          {% endfor %}
+
+      </table>
+    </center>
+  {% endfor %}
+
+
+{% endblock %}

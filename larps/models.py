@@ -76,6 +76,40 @@ class Larp(models.Model):
     def __str__(self):
         return self.name
 
+    def get_character_assigments(self):
+        groups = Group.objects.filter(larp=self)
+        character_assigments = []
+        for group in groups:
+            assigments = group.get_character_assigments()
+            character_assigments.extend(assigments)
+        return character_assigments
+
+    def get_food(self):
+        assigments = self.get_character_assigments()
+        runs = 0
+        diets_list = []
+        for assigment in assigments:
+            if assigment.run > runs:
+                runs = assigment.run
+            profile = assigment.get_player_profile()
+            player_name = assigment.user.first_name + " " + assigment.user.last_name
+            player_diet = { "character": assigment.character.name, "run": assigment.run, "player": player_name, "diet": profile.dietary_restrictions }
+            diets_list.append(player_diet)
+
+        food_count = []
+        for run in range(1,runs):
+            #print()
+            #print("run "+ str(run))
+            for player_diet in diets_list:
+                run_diets = []
+                if player_diet["run"] == run:
+                    #print(player_diet)
+                    run_diets.append(player_diet)
+                #print(run_diets)
+
+        result = { "player_diets": diets_list, "food_count": food_count }
+        return result
+
 class Group(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default="", blank=True)

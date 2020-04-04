@@ -15,7 +15,7 @@ urlpatterns = [
     path('bookings/<int:pk>/', login_required(views.BookingsView.as_view()), name='bookings'),
     path('bookings/larp_<int:larp_id>/run_<int:run>/', login_required(views.manage_bookings_view), name='manage_bookings'),
     path('file_upload/', login_required(views.file_upload_view), name='file_upload'),
-    #path('file_upload/<int:file_type_number>/', login_required(views.file_upload_view), name='file_upload'),
     path('uniforms', login_required(views.uniforms_view), name="uniforms"),
     path('uniform_sizes/<int:uniform_id>', login_required(views.uniform_sizes_view), name="uniform_sizes"),
+    path('food', login_required(views.food_view), name="food"),
 ]

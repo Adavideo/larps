@@ -162,3 +162,17 @@ def uniform_sizes_view(request, uniform_id):
     context["players"] = players_with_sizes
     context["sizes"] = selected_uniform.get_sizes_with_quantities(players_with_sizes)
     return render(request, template, context)
+
+
+# ADMINS VIEWS
+
+def food_view(request):
+    if not request.user.is_staff:
+        return not_allowed_view(request)
+    template = "larps/food.html"
+    larps = Larp.objects.all()
+    food_list = []
+    for larp in larps:
+        food_list.append( { "larp": larp.name, "food": larp.get_food() } )
+    context = { "food_all_larps" : food_list }
+    return render(request, template, context)
