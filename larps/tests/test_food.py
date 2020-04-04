@@ -18,6 +18,10 @@ example_players_with_diets2 = [
     { "username": "Carlos_Hernandez", "first_name": "Carlos", "last_name": "Hernandez", "gender":"male", "chest":102, "waist":86, "diet":"Vegan" },
 ]
 
+example_players_incomplete = [
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"" },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
+]
 
 diets = [ "", "Vegetarian", "Vegan" ]
 
@@ -46,7 +50,7 @@ def test_character_diets(test, original_list, returned_info):
         name = info["first_name"] + " " + info["last_name"]
         if name == returned_info["player"]:
             original_info = info
-    test.assertEqual(returned_info["diet"].name, original_info["diet"])
+    test.assertEqual(returned_info["diet"], original_info["diet"])
 
 def create_all_1_group():
     larp = create_larp_with_diet_info(example_players_with_diets1, example_characters, group_name="group1", larp_name="")
@@ -55,6 +59,14 @@ def create_all_1_group():
 def create_all_2_groups():
     larp = create_all_1_group()
     create_group_with_diet_info(larp, example_players_with_diets2, example_characters, group_name="group2")
+    return larp
+
+def create_all_without_profiles():
+    larp = Larp(name="")
+    larp.save()
+    group = Group(larp=larp, name="")
+    group.save()
+    create_characters_assigments(group, example_players_incomplete, example_characters, run=1)
     return larp
 
 
@@ -92,6 +104,17 @@ class FoodTests(TestCase):
             for player_diet in players_diets:
                 test_character_diets(test=self, original_list=example_players_with_diets1,returned_info=player_diet)
 
+    def test_get_players_diets_without_profiles(self):
+        # Initialize
+        larp = create_all_without_profiles()
+        assigments = larp.get_character_assigments()
+        number_of_runs = 1
+        # Obtain results
+        players_diets_all_runs = get_players_diets(assigments, number_of_runs)
+        # Validate
+        self.assertEqual(len(players_diets_all_runs), 1)
+        for player_diet in players_diets_all_runs[0]:
+            self.assertEqual(player_diet["diet"], "Not provided yet")
 
     def test_get_food_empty(self):
         larp = Larp(name="")

@@ -1,5 +1,8 @@
 
-
+example_players_incomplete = [
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"" },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
+]
 
 def initialize_diets_amounts(diets_types, run_number):
     all_diets_amounts = []
@@ -20,8 +23,7 @@ def get_diets_amounts(diets_all_runs, number_of_runs, diets_types):
     for diets_for_this_run in diets_all_runs:
         diets_amounts = initialize_diets_amounts(diets_types, run_number=count)
         for player_diet in diets_for_this_run:
-            if player_diet["diet"]:
-                increment_diet_ammount(diets_amounts, player_diet["diet"].name)
+            increment_diet_ammount(diets_amounts, player_diet["diet"])
         diets_amounts_all_runs.append(diets_amounts)
         count += 1
     return diets_amounts_all_runs
@@ -44,9 +46,16 @@ def get_players_diets(assigments, number_of_runs):
     diets_list = get_empty_run_list(number_of_runs)
     # populate the lists with the information of the players diets
     for assigment in assigments:
+        player_diet = { "character": assigment.character.name, "run": assigment.run }
+        if assigment.user:
+            player_diet["player"] = assigment.user.first_name + " " + assigment.user.last_name
+        else:
+            player_diet["player"] = ""
         profile = assigment.get_player_profile()
-        player_name = assigment.user.first_name + " " + assigment.user.last_name
-        player_diet = { "character": assigment.character.name, "run": assigment.run, "player": player_name, "diet": profile.dietary_restrictions }
+        if profile and profile.dietary_restrictions:
+            player_diet["diet"] = profile.dietary_restrictions.name
+        else:
+            player_diet["diet"] = "Not provided yet"
         run_index = assigment.run-1
         diets_list[run_index].append(player_diet)
     return diets_list
