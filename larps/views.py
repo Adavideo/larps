@@ -196,5 +196,19 @@ def players_missing_info_view(request, larp_id):
     template = "larps/missing_info.html"
     larp = Larp.objects.get(id=larp_id)
     players_information = larp.get_players_information()
-    context = { "larp" : larp.name, "players_information": players_information }
+    context = { "larp" : larp.name, "larp_id": larp_id, "players_information": players_information }
+    return render(request, template, context)
+
+
+def players_missing_info_by_run_view(request, larp_id, run):
+    if not request.user.is_staff:
+        return not_allowed_view(request)
+    template = "larps/missing_info.html"
+    larp = Larp.objects.get(id=larp_id)
+    players_information_all_runs = larp.get_players_information()
+    if run <= len(players_information_all_runs):
+        players_information = [ players_information_all_runs[run-1] ]
+    else:
+        players_information = [ ]
+    context = { "larp" : larp.name, "run": run, "players_information": players_information }
     return render(request, template, context)

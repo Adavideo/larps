@@ -4,7 +4,13 @@
 <center>
 <h2>{{ larp }} players missing information</h2>
      {% for run_players in players_information %}
-        <h3>{{ larp }} run {{ run_players.0.run }}</h3>
+        <h3>
+          {% if not run %}
+          <a href="{% url 'larps:missing_info_run' larp_id run_players.0.run %}">{{ larp }} run {{ run_players.0.run }}</a>
+          {% else %}
+             {{ larp }} run {{ run }}
+          {% endif %}
+        </h3>
 
         <table border=1 style="width:100%">
           <th align="center">Player</th>
