@@ -531,7 +531,7 @@ class CharacterAssigmentModelTests(TestCase):
         character_name = example_characters[0]
         assigment = create_character_assigment(group, player_info, character_name)
         # generate
-        bookings = assigment.create_booking()
+        bookings = assigment.get_bookings()
         bookings_search = Bookings.objects.filter(user=assigment.user)
         # validate
         self.assertEqual(len(bookings_search), 1)

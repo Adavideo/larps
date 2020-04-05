@@ -125,3 +125,23 @@ def create_uniform_with_player_in_several_runs(sizes, players_info, characters_n
     for i in range(2,runs+1):
         create_character_assigment(uniform.group, player_in_several_runs, characters_names[1], run=i)
     return uniform
+
+
+def set_bookings(assigment, booking_info):
+    user = assigment.user
+    larp = assigment.character.group.larp
+    run = assigment.run
+    weapon = booking_info["weapon"]
+    sleeping_bag = booking_info["sleeping_bag"]
+
+    bus = None
+    if booking_info["bus"]:
+        bus, created = BusStop.objects.update_or_create(name=booking_info["bus"])
+
+    accomodation = None
+    if booking_info["accomodation"]:
+        accomodation, created = Accomodation.objects.update_or_create(name=booking_info["accomodation"])
+
+    bookings = Bookings( user=user, larp=larp, run=run,
+                         weapon=weapon, bus=bus, sleeping_bag=sleeping_bag, accomodation=accomodation )
+    bookings.save()
