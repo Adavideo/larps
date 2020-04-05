@@ -1,0 +1,46 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+<center>
+<h2>{{ larp }} players missing information</h2>
+     {% for run_players in players_information %}
+        <h3>{{ larp }} run {{ run_players.0.run }}</h3>
+
+        <table border=1 style="width:100%">
+          <th align="center">Player</th>
+          <th align="center">profile</th>
+          <th align="center">bookings</th>
+
+           {% for player in run_players %}
+               {% if not player.profile or not player.bookings %}
+               <tr>
+                 <td align="center">{{ player.user.first_name }} {{ player.user.last_name }}</td>
+
+                 <td align="center">
+                   {% if not player.profile %}
+                      All information missing
+                   {% else %}
+                      {{ player.profile }}
+                  {% endif %}
+                 </td>
+
+                 <td align="center">
+                   {% if not player.bookings %}
+                      All information missing
+                   {% else %}
+                      {{ player.bookings }}
+                  {% endif %}
+                 </td>
+
+                </tr>
+              {% endif %}
+           {% endfor %}
+
+         </table><br>
+
+      {% endfor %}
+
+</center>
+
+
+{% endblock %}

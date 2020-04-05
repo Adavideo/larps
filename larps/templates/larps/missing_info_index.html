@@ -1,0 +1,10 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+
+<center>
+  {% for larp in larps %}
+      <a href="{% url 'larps:missing_info' larp.id %}">{{ larp.name }}</a><br>
+  {% endfor %}
+</center>
+{% endblock %}

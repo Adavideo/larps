@@ -181,3 +181,20 @@ def food_view(request):
         food_list.append( { "larp": larp.name, "food": larp.get_food() } )
     context = { "food_all_larps" : food_list }
     return render(request, template, context)
+
+def missing_info_index_view(request):
+    if not request.user.is_staff:
+        return not_allowed_view(request)
+    template = "larps/missing_info_index.html"
+    larps = Larp.objects.all()
+    context = { "larps" : larps }
+    return render(request, template, context)
+
+def players_missing_info_view(request, larp_id):
+    if not request.user.is_staff:
+        return not_allowed_view(request)
+    template = "larps/missing_info.html"
+    larp = Larp.objects.get(id=larp_id)
+    players_information = larp.get_players_information()
+    context = { "larp" : larp.name, "players_information": players_information }
+    return render(request, template, context)
