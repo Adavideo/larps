@@ -224,6 +224,9 @@ class Bookings(models.Model):
     def __str__(self):
         text = self.larp.name + " run " + str(self.run)
         text += " - " + self.user.first_name + " " + self.user.last_name
+        character = self.get_character()
+        if character:
+            text += ". " + character.name
         return text
 
     def get_data(self):
@@ -243,6 +246,13 @@ class Bookings(models.Model):
         self.sleeping_bag = new_data['sleeping_bag']
         self.comments = new_data['comments']
         self.save()
+
+    def get_character(self):
+        assigments_search = CharacterAssigment.objects.filter(user=self.user, run=self.run)
+        for assigment in assigments_search:
+            if assigment.character.group.larp == self.larp:
+                return assigment.character
+        return None
 
 
 # UNIFORMS
