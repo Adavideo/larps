@@ -5,17 +5,31 @@ from larps.food import *
 
 
 example_players_with_diets1 = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"none" },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"Vegan" },
-    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"none" },
-    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"Vegan" },
+    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"none", "comments":"" },
+    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"Vegan", "comments":"" },
+    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"none", "comments":"" },
+    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"Vegan", "comments":"" },
 ]
 
 example_players_with_diets2 = [
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"female", "chest":0, "waist":0, "diet":"Vegetarian" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"female", "chest":0, "waist":0, "diet":"none" },
-    { "username": "Juan_Perez", "first_name": "Juan", "last_name": "Perez", "gender":"male", "chest":100, "waist":90, "diet":"none" },
-    { "username": "Carlos_Hernandez", "first_name": "Carlos", "last_name": "Hernandez", "gender":"male", "chest":102, "waist":86, "diet":"Vegan" },
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"female", "chest":0, "waist":0, "diet":"Vegetarian", "comments":"" },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"female", "chest":0, "waist":0, "diet":"none", "comments":"" },
+    { "username": "Juan_Perez", "first_name": "Juan", "last_name": "Perez", "gender":"male", "chest":100, "waist":90, "diet":"none", "comments":"" },
+    { "username": "Carlos_Hernandez", "first_name": "Carlos", "last_name": "Hernandez", "gender":"male", "chest":102, "waist":86, "diet":"Vegan", "comments":"" },
+]
+
+example_player_food_info = [
+    { "diet":"Vegetarian", "comments":"", 'allergies': "", 'food_allergies' : "", 'food_intolerances': "" },
+    { "diet":"none", "comments":"", 'allergies': "polen", 'food_allergies' : "", 'food_intolerances': "lactose" },
+    { "diet":"none", "comments":"", 'allergies': "", 'food_allergies' : "peanuts", 'food_intolerances': "" },
+    { "diet":"Vegan", "comments":"", 'allergies': "", 'food_allergies' : "pineaple", 'food_intolerances': "lactose" },
+]
+
+example_comments = [
+    "",
+    "intolerant to: lactose",
+    "allergies: peanuts",
+    "allergies: pineaple, intolerant to: lactose"
 ]
 
 example_diets_counts = [
@@ -24,8 +38,8 @@ example_diets_counts = [
 ]
 
 example_players_incomplete = [
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"", "comments":"" },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"", "comments":"" },
 ]
 
 diets = [ "Vegetarian", "Vegan", "none" ]
@@ -33,19 +47,25 @@ diets = [ "Vegetarian", "Vegan", "none" ]
 example_characters1 = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May Parker" ]
 example_characters2 = [ "Peter Parker", "Leopold Fitz", "Tony Stark", "Gemma Simmons" ]
 
-def create_group_with_diet_info(larp, players_info, characters_names, group_name=""):
+def create_group_with_diet_info(larp, players_info, characters_names, diet_info="", group_name=""):
     group = Group(larp=larp, name=group_name)
     group.save()
     players_info1 = [ players_info[0], players_info[1] ]
     players_info2 = [ players_info[2], players_info[3] ]
-    create_characters_assigments(group, players_info1, characters_names, run=1)
-    create_characters_assigments(group, players_info2, characters_names, run=2)
+    if diet_info:
+        diet_info1 = [ diet_info[0], diet_info[1] ]
+        diet_info2 = [ diet_info[2], diet_info[3] ]
+    else:
+        diet_info1 = ""
+        diet_info2 = ""
+    create_characters_assigments(group, players_info1, characters_names, run=1, diet_info=diet_info1)
+    create_characters_assigments(group, players_info2, characters_names, run=2, diet_info=diet_info2)
 
-def create_larp_with_diet_info(players_info, characters_names, group_name="", larp_name=""):
+def create_larp_with_diet_info(players_info, characters_names, diet_info="", group_name="", larp_name=""):
     create_diets(diets)
     larp = Larp(name=larp_name)
     larp.save()
-    create_group_with_diet_info(larp, players_info, characters_names, group_name)
+    create_group_with_diet_info(larp, players_info, characters_names, diet_info=diet_info, group_name=group_name)
     return larp
 
 def test_character_diets(test, original_list, returned_info):
@@ -106,6 +126,20 @@ class FoodTests(TestCase):
             self.assertEqual(len(players_diets), 2)
             for player_diet in players_diets:
                 test_character_diets(test=self, original_list=example_players_with_diets1,returned_info=player_diet)
+
+    def test_get_players_diets_with_comments(self):
+        # Initialize
+        larp = create_larp_with_diet_info(example_players_with_diets1, example_characters1, diet_info=example_player_food_info)
+        # Obtain results
+        result = larp.get_food()
+        diets_all_runs = result["players_diets"]
+        # Validate
+        count = 0
+        for run in diets_all_runs:
+            for player_diet in run:
+                self.assertEqual(player_diet["comments"], example_comments[count])
+                count += 1
+
 
     def test_get_players_diets_without_profiles(self):
         # Initialize

@@ -42,20 +42,30 @@ def get_empty_run_list(number_of_runs):
         runs_list.append([])
     return runs_list
 
+def get_player_diet_info(assigment):
+    player_diet = { "character": assigment.character.name, "run": assigment.run }
+
+    if assigment.user:
+        player_diet["player"] = assigment.user.first_name + " " + assigment.user.last_name
+    else:
+        player_diet["player"] = ""
+
+    profile = assigment.get_player_profile()
+    if profile and profile.dietary_restrictions:
+        player_diet["diet"] = profile.dietary_restrictions.name
+        player_diet["comments"] = profile.get_diet_comments()
+    else:
+        player_diet["diet"] = "Not provided yet"
+        player_diet["comments"] = ""
+        
+    return player_diet
+
+
 def get_players_diets(assigments, number_of_runs):
     diets_list = get_empty_run_list(number_of_runs)
     # populate the lists with the information of the players diets
     for assigment in assigments:
-        player_diet = { "character": assigment.character.name, "run": assigment.run }
-        if assigment.user:
-            player_diet["player"] = assigment.user.first_name + " " + assigment.user.last_name
-        else:
-            player_diet["player"] = ""
-        profile = assigment.get_player_profile()
-        if profile and profile.dietary_restrictions:
-            player_diet["diet"] = profile.dietary_restrictions.name
-        else:
-            player_diet["diet"] = "Not provided yet"
+        player_diet = get_player_diet_info(assigment)
         run_index = assigment.run-1
         diets_list[run_index].append(player_diet)
     return diets_list

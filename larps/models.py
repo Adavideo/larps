@@ -69,6 +69,20 @@ class Player(models.Model):
         self.waist = new_data['waist']
         self.save()
 
+    def get_diet_comments(self):
+        diet_comments = ""
+        if self.food_allergies:
+            diet_comments = "allergies: " + self.food_allergies
+        if self.food_intolerances:
+            if diet_comments:
+                diet_comments += ", "
+            diet_comments += "intolerant to: " + self.food_intolerances
+        if self.comments and not self.comments == "no":
+            if diet_comments:
+                diet_comments += ", "
+            diet_comments += self.comments
+        return diet_comments
+
 
 # LARPS AND CHARACTERS
 

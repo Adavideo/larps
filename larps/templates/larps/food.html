@@ -28,12 +28,14 @@
           <th align="center">character</th>
           <th align="center">player</th>
           <th align="center">diet</th>
+          <th align="center">comments</th>
 
               {% for player_diet in run %}
               <tr>
                 <td align="center"> {{ player_diet.character }}</td>
                 <td align="center"> {{ player_diet.player }}</td>
                 <td align="center"> {{ player_diet.diet }}</td>
+                <td align="center"> {{ player_diet.comments }}</td>
                 </tr>
               {% endfor %}
 

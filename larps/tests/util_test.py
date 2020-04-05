@@ -22,13 +22,20 @@ def get_diet(diet_name):
         diet = diet_search[0]
     return diet
 
-def create_player(player_info):
+def fill_diet_info(player, info):
+    player.food_allergies = info["food_allergies"]
+    player.food_intolerances = info["food_intolerances"]
+    player.comments = info["comments"]
+
+def create_player(player_info, diet_info=""):
     user = create_user(player_info)
     player_search = Player.objects.filter(user=user)
     if player_search:
         return player_search[0]
-    diet = get_diet(player_info["diet"])
-    player = Player(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"], dietary_restrictions=diet)
+    player = Player(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
+    player.dietary_restrictions = get_diet(player_info["diet"])
+    if diet_info:
+        fill_diet_info(player, diet_info)
     player.save()
     return player
 
@@ -55,9 +62,9 @@ def create_character(character_name, group=None, group_name=""):
 def contains_profile_info(player_info):
     return player_info["gender"] or player_info["chest"] or player_info["waist"]
 
-def create_character_assigment(group, player_info, character_name, run=1):
+def create_character_assigment(group, player_info, character_name, run=1, diet_info="" ):
     if contains_profile_info(player_info):
-        player = create_player(player_info)
+        player = create_player(player_info, diet_info )
         user=player.user
     else:
         user = create_user(player_info)
@@ -67,7 +74,7 @@ def create_character_assigment(group, player_info, character_name, run=1):
     assigment.save()
     return assigment
 
-def create_characters_assigments(group, players, characters, run=1):
+def create_characters_assigments(group, players, characters, run=1, diet_info=""):
     assigments = []
     if len(players) > len(characters):
         n = len(characters)
@@ -76,7 +83,11 @@ def create_characters_assigments(group, players, characters, run=1):
     for i in range(0, n):
         player_info = players[i]
         character_name = characters[i]
-        assigment = create_character_assigment(group=group, player_info=player_info, character_name=character_name, run=run)
+        if diet_info:
+            player_diet_info = diet_info[i]
+        else:
+            player_diet_info = ""
+        assigment = create_character_assigment(group=group, player_info=player_info, character_name=character_name, run=run, diet_info=player_diet_info)
         assigment.save()
         assigments.append(assigment)
     return assigments
