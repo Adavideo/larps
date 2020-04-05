@@ -26,16 +26,16 @@ example_bookings = [
 class MissingInformationTests(TestCase):
 
 
-    def test_get_missing_information_empty(self):
+    def test_get_players_information_empty(self):
         # Initialize
         larp = Larp(name="")
         # Get information
-        missing_info = larp.get_missing_information()
+        missing_info = larp.get_players_information()
         # Validate
         self.assertIs(len(missing_info), 0)
 
 
-    def test_get_missing_information_empty_one_run(self):
+    def test_get_players_information_empty_one_run(self):
         # Initialize
         group = create_group()
         larp = group.larp
@@ -43,7 +43,7 @@ class MissingInformationTests(TestCase):
         player_info = example_players_incomplete[0]
         assigment = create_character_assigment(group, player_info, example_characters[0], run=1)
         # Get information
-        missing_info = larp.get_missing_information()
+        missing_info = larp.get_players_information()
         # Validate
         self.assertIs(len(missing_info), 1)
         self.assertIs(len(missing_info[0]), 1)
@@ -59,7 +59,7 @@ class MissingInformationTests(TestCase):
         self.assertEqual(missing_player_info["bookings"].sleeping_bag, None)
         self.assertEqual(missing_player_info["run"], 1)
 
-    def test_get_missing_information_with_profile_info(self):
+    def test_get_players_information_with_profile_info(self):
         # Initialize
         group = create_group(example_groups[0])
         larp = group.larp
@@ -67,7 +67,7 @@ class MissingInformationTests(TestCase):
         players_info = example_players_complete
         create_characters_assigments(group, players=players_info, characters=example_characters)
         # Get information
-        missing_info = larp.get_missing_information()
+        missing_info = larp.get_players_information()
         # Validate
         self.assertIs(len(missing_info), 1)
         players_run1 = missing_info[0]
@@ -86,7 +86,7 @@ class MissingInformationTests(TestCase):
             self.assertEqual(missing_player_info["run"], 1)
             count += 1
 
-    def test_get_missing_information_with_some_booking_info(self):
+    def test_get_missing_players_with_some_booking_info(self):
         # Initialize
         group = create_group(example_groups[0])
         larp = group.larp
@@ -95,7 +95,7 @@ class MissingInformationTests(TestCase):
         assigment = create_character_assigment(group, player_info, example_characters[0])
         set_bookings(assigment, bookings_info)
         # Get information
-        missing_info = larp.get_missing_information()
+        missing_info = larp.get_players_information()
         # Validate
         self.assertIs(len(missing_info), 1)
         missing_player_info = missing_info[0][0]
@@ -105,9 +105,9 @@ class MissingInformationTests(TestCase):
         self.assertEqual(missing_player_info["bookings"].bus, None)
         self.assertEqual(missing_player_info["bookings"].accomodation, None)
         self.assertEqual(missing_player_info["bookings"].sleeping_bag, False)
-        
 
-    def test_get_missing_information_with_all_booking_info(self):
+
+    def test_get_players_information_with_all_booking_info(self):
         # Initialize
         group = create_group(example_groups[0])
         larp = group.larp
@@ -116,7 +116,7 @@ class MissingInformationTests(TestCase):
         assigment = create_character_assigment(group, player_info, example_characters[0])
         set_bookings(assigment, bookings_info)
         # Get information
-        missing_info = larp.get_missing_information()
+        missing_info = larp.get_players_information()
         # Validate
         self.assertIs(len(missing_info), 1)
         missing_player_info = missing_info[0][0]

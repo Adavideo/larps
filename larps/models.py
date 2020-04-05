@@ -118,7 +118,7 @@ class Larp(models.Model):
             missing_info.append([])
         return missing_info
 
-    def get_missing_information(self):
+    def get_players_information(self):
         assigments = self.get_character_assigments()
         number_of_runs = self.get_number_of_runs(assigments)
         missing_info = self.initialize_missing_info(number_of_runs)
