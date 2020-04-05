@@ -12,15 +12,23 @@
           <th align="center">bookings</th>
 
            {% for player in run_players %}
-               {% if not player.profile or not player.bookings %}
+               {% if not player.profile or not player.bookings or not player.profile.gender or not player.profile.dietary_restrictions %}
                <tr>
-                 <td align="center">{{ player.user.first_name }} {{ player.user.last_name }}</td>
-
+                 <td align="center">
+                 {% if player.user.first_name or player.user.last_name %}
+                    {{ player.user.first_name }} {{ player.user.last_name }}
+                 {% else %}
+                    {{ player.user.username }} 
+                 {% endif %}
+                 </td>
                  <td align="center">
                    {% if not player.profile %}
                       All information missing
                    {% else %}
-                      {{ player.profile }}
+                      {% if not player.profile.gender %}gender {% endif %}
+                      {% if not player.profile.dietary_restrictions %}dietary restrictions {% endif %}
+                      {% if player.profile.chest == 0 %}chest {% endif %}
+                      {% if player.profile.waist == 0 %}waist {% endif %}
                   {% endif %}
                  </td>
 
@@ -28,7 +36,9 @@
                    {% if not player.bookings %}
                       All information missing
                    {% else %}
-                      {{ player.bookings }}
+                      {% if not player.bookings.bus %}bus {% endif %}
+                      {% if not player.bookings.accomodation %}accomodation {% endif %}
+                      {% if not player.bookings.sleeping_bag %}sleeping bag{% endif %}
                   {% endif %}
                  </td>
 
