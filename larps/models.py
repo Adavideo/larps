@@ -105,7 +105,9 @@ class Larp(models.Model):
         food_info = get_food_information(assigments, diets_types)
         return food_info
 
-    def get_number_of_runs(self, assigments):
+    def get_number_of_runs(self, assigments=None):
+        if not assigments:
+            assigments = self.get_character_assigments()
         number_of_runs = 0
         for assigment in assigments:
             if assigment.run > number_of_runs:

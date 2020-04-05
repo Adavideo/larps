@@ -187,7 +187,13 @@ def missing_info_index_view(request):
         return not_allowed_view(request)
     template = "larps/missing_info_index.html"
     larps = Larp.objects.all()
-    context = { "larps" : larps }
+    larps_info = []
+    for larp in larps:
+        number_of_runs = larp.get_number_of_runs()
+        info = { "name": larp.name, "id": larp.id, "runs": range(1,number_of_runs+1) }
+        larps_info.append(info)
+
+    context = { "larps" : larps_info }
     return render(request, template, context)
 
 def players_missing_info_view(request, larp_id):
