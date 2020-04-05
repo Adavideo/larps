@@ -105,6 +105,31 @@ class Larp(models.Model):
         food_info = get_food_information(assigments, diets_types)
         return food_info
 
+    def get_number_of_runs(self, assigments):
+        number_of_runs = 0
+        for assigment in assigments:
+            if assigment.run > number_of_runs:
+                number_of_runs = assigment.run
+        return number_of_runs
+
+    def initialize_missing_info(self, number_of_runs):
+        missing_info = [ ]
+        for i in range(0, number_of_runs):
+            missing_info.append([])
+        return missing_info
+
+    def get_missing_information(self):
+        assigments = self.get_character_assigments()
+        number_of_runs = self.get_number_of_runs(assigments)
+        missing_info = self.initialize_missing_info(number_of_runs)
+        for assigment in assigments:
+            profile = assigment.get_player_profile()
+            info = { "user": assigment.user, "profile": profile, "bookings": None, "run": assigment.run }
+            run_index = assigment.run -1
+            missing_info[run_index].append(info)
+        return missing_info
+
+
 class Group(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default="", blank=True)
