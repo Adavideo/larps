@@ -9,11 +9,11 @@
         <table border=1 style="width:100%">
           <th align="center">Player</th>
           <th align="center">Character</th>
-          <th align="center">profile</th>
-          <th align="center">bookings</th>
+          <th align="center">Player profile</th>
+          <th align="center">Bookings</th>
 
            {% for player in run_players %}
-               {% if not player.profile or not player.bookings or not player.profile.gender or not player.profile.dietary_restrictions %}
+               {% if not player.profile or not player.bookings or not player.profile.gender or not player.profile.dietary_restrictions or not player.bookings.bus or not player.bookings.accomodation or not player.bookings.sleeping_bag %}
                <tr>
                  <td align="center">{{ player.user }}</td>
                  <td align="center">{{ player.character }}</td>
@@ -22,8 +22,8 @@
                    {% if not player.profile %}
                       All information missing
                    {% else %}
-                      {% if not player.profile.gender %}gender {% endif %}
-                      {% if not player.profile.dietary_restrictions %}dietary restrictions {% endif %}
+                      {% if not player.profile.dietary_restrictions %}dietary restrictions{% endif %}<br>
+                      {% if not player.profile.gender %}gender {% endif %}<br>
                       {% if player.profile.chest == 0 %}chest {% endif %}
                       {% if player.profile.waist == 0 %}waist {% endif %}
                   {% endif %}
