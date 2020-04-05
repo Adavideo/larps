@@ -112,23 +112,23 @@ class Larp(models.Model):
                 number_of_runs = assigment.run
         return number_of_runs
 
-    def initialize_missing_info(self, number_of_runs):
-        missing_info = [ ]
+    def initialize_players_info(self, number_of_runs):
+        players_info = [ ]
         for i in range(0, number_of_runs):
-            missing_info.append([])
-        return missing_info
+            players_info.append([])
+        return players_info
 
     def get_players_information(self):
         assigments = self.get_character_assigments()
         number_of_runs = self.get_number_of_runs(assigments)
-        missing_info = self.initialize_missing_info(number_of_runs)
+        players_info = self.initialize_players_info(number_of_runs)
         for assigment in assigments:
             profile = assigment.get_player_profile()
             bookings = assigment.get_bookings()
             info = { "user": assigment.user, "profile": profile, "bookings": bookings, "run": assigment.run }
             run_index = assigment.run -1
-            missing_info[run_index].append(info)
-        return missing_info
+            players_info[run_index].append(info)
+        return players_info
 
 
 class Group(models.Model):
@@ -216,13 +216,14 @@ class CharacterAssigment(models.Model):
 
     def get_bookings(self):
         larp = self.character.group.larp
+        booking = None
         booking_search = Bookings.objects.filter(user=self.user, larp=larp, run=self.run)
         if booking_search:
-            return booking_search[0]
-        else:
+            booking = booking_search[0]
+        elif self.user:
             booking = Bookings(user=self.user, larp=larp, run=self.run)
             booking.save()
-            return booking
+        return booking
 
 
 # BOOKINGS
