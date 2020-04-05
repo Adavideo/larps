@@ -71,6 +71,14 @@ def player_profile_view(request):
 
 # BOOKINGS
 
+def generate_bookings(user):
+    #print("generate_bookings "+str(user))
+    assigments = CharacterAssigment.objects.filter(user=user)
+    #print(str(assigments))
+    for assigment in assigments:
+        booking = assigment.create_booking()
+        print("booking: "+str(booking))
+
 class BookingsView(generic.DetailView):
     model = Bookings
 
@@ -80,7 +88,9 @@ class BookingsListView(generic.ListView):
         if not user.is_authenticated:
             user_bookings = Bookings.objects.none()
         else:
+            generate_bookings(user)
             user_bookings = Bookings.objects.filter(user=user)
+            print("Bookings encontrados: "+ str(user_bookings))
         return user_bookings
 
 def get_bookings(user, larp, run):

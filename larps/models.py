@@ -188,6 +188,16 @@ class CharacterAssigment(models.Model):
         else:
             return self.create_player_profile()
 
+    def create_booking(self):
+        larp = self.character.group.larp
+        booking_search = Bookings.objects.filter(user=self.user, larp=larp, run=self.run)
+        if booking_search:
+            return booking_search[0]
+        else:
+            booking = Bookings(user=self.user, larp=larp, run=self.run)
+            booking.save()
+            return booking
+
 
 # BOOKINGS
 

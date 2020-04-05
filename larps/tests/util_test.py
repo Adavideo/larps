@@ -39,7 +39,7 @@ def create_player(player_info, diet_info=""):
     player.save()
     return player
 
-def create_group(group_name):
+def create_group(group_name=""):
     group_search = Group.objects.filter(name=group_name)
     if group_search:
         return group_search[0]

@@ -165,7 +165,6 @@ class GroupModelTests(TestCase):
     def test_get_character_assigments(self):
         group = create_group(example_groups[0])
         create_characters_assigments(group, players=example_players_complete, characters=example_characters)
-        #assigments = CharacterAssigment.objects.all()
         assigments_group = group.get_character_assigments()
         self.assertEqual(len(assigments_group), len(example_players_complete))
         for i in range(0,len(example_players_complete)):
@@ -522,3 +521,26 @@ class DietaryRestrictionModelTests(TestCase):
         create_diets(self.diets)
         all_diets= DietaryRestriction.objects.all()
         self.assertIs(len(all_diets),3)
+
+class CharacterAssigmentModelTests(TestCase):
+
+    def test_create_booking(self):
+        # initialize
+        group = create_group()
+        player_info = example_players_complete[0]
+        character_name = example_characters[0]
+        assigment = create_character_assigment(group, player_info, character_name)
+        # generate
+        bookings = assigment.create_booking()
+        bookings_search = Bookings.objects.filter(user=assigment.user)
+        # validate
+        self.assertEqual(len(bookings_search), 1)
+        self.assertEqual(bookings_search[0], bookings)
+        self.assertEqual(bookings.user.username, player_info["username"])
+        self.assertEqual(bookings.larp.name, group.larp.name)
+        self.assertEqual(bookings.run, 1)
+        self.assertIs(bookings.weapon, None)
+        self.assertIs(bookings.bus, None)
+        self.assertIs(bookings.accomodation, None)
+        self.assertIs(bookings.sleeping_bag, None)
+        self.assertIs(bookings.comments, "no")
