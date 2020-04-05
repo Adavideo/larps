@@ -48,7 +48,7 @@ class MissingInformationTests(TestCase):
         self.assertIs(len(missing_info), 1)
         self.assertIs(len(missing_info[0]), 1)
         missing_player_info = missing_info[0][0]
-        self.assertEqual(missing_player_info["user"].username, player_info["username"])
+        self.assertEqual(missing_player_info["user"], player_info["first_name"]+" "+player_info["last_name"])
         self.assertEqual(missing_player_info["profile"].user.username, player_info["username"])
         self.assertEqual(missing_player_info["profile"].gender, "")
         self.assertEqual(missing_player_info["profile"].allergies, "")
@@ -74,7 +74,7 @@ class MissingInformationTests(TestCase):
         self.assertEqual(len(players_run1), len(players_info))
         count = 0
         for missing_player_info in players_run1:
-            self.assertEqual(missing_player_info["user"].username, players_info[count]["username"])
+            self.assertEqual(missing_player_info["user"], players_info[count]["first_name"]+" "+players_info[count]["last_name"])
             self.assertEqual(missing_player_info["profile"].user.username, players_info[count]["username"])
             self.assertEqual(missing_player_info["profile"].gender, players_info[count]["gender"])
             self.assertEqual(missing_player_info["profile"].allergies, "")
@@ -99,7 +99,7 @@ class MissingInformationTests(TestCase):
         # Validate
         self.assertIs(len(missing_info), 1)
         missing_player_info = missing_info[0][0]
-        self.assertEqual(missing_player_info["user"].username, player_info["username"])
+        self.assertEqual(missing_player_info["user"], player_info["first_name"]+" "+player_info["last_name"])
         self.assertEqual(missing_player_info["profile"].user.username, player_info["username"])
         self.assertEqual(missing_player_info["bookings"].weapon, False)
         self.assertEqual(missing_player_info["bookings"].bus, None)
@@ -120,7 +120,7 @@ class MissingInformationTests(TestCase):
         # Validate
         self.assertIs(len(missing_info), 1)
         missing_player_info = missing_info[0][0]
-        self.assertEqual(missing_player_info["user"].username, player_info["username"])
+        self.assertEqual(missing_player_info["user"], player_info["first_name"]+" "+player_info["last_name"])
         self.assertEqual(missing_player_info["profile"].user.username, player_info["username"])
         self.assertEqual(missing_player_info["bookings"].weapon, False)
         self.assertEqual(missing_player_info["bookings"].bus.name, bookings_info["bus"])

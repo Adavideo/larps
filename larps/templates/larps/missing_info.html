@@ -8,19 +8,16 @@
 
         <table border=1 style="width:100%">
           <th align="center">Player</th>
+          <th align="center">Character</th>
           <th align="center">profile</th>
           <th align="center">bookings</th>
 
            {% for player in run_players %}
                {% if not player.profile or not player.bookings or not player.profile.gender or not player.profile.dietary_restrictions %}
                <tr>
-                 <td align="center">
-                 {% if player.user.first_name or player.user.last_name %}
-                    {{ player.user.first_name }} {{ player.user.last_name }}
-                 {% else %}
-                    {{ player.user.username }} 
-                 {% endif %}
-                 </td>
+                 <td align="center">{{ player.user }}</td>
+                 <td align="center">{{ player.character }}</td>
+
                  <td align="center">
                    {% if not player.profile %}
                       All information missing

@@ -125,7 +125,14 @@ class Larp(models.Model):
         for assigment in assigments:
             profile = assigment.get_player_profile()
             bookings = assigment.get_bookings()
-            info = { "user": assigment.user, "profile": profile, "bookings": bookings, "run": assigment.run }
+            if assigment.user:
+                if assigment.user.first_name or assigment.user.last_name:
+                    user_name = assigment.user.first_name + " " + assigment.user.last_name
+                else:
+                    user_name = assigment.user.username
+            else:
+                user_name = "Not assigned"
+            info = { "user": user_name, "profile": profile, "bookings": bookings, "run": assigment.run, "character": assigment.character.name }
             run_index = assigment.run -1
             players_info[run_index].append(info)
         return players_info
