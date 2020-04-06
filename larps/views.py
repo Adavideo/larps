@@ -74,7 +74,7 @@ def player_profile_view(request):
 def generate_bookings(user):
     assigments = CharacterAssigment.objects.filter(user=user)
     for assigment in assigments:
-        booking = assigment.create_booking()
+        booking = assigment.get_bookings()
 
 class BookingsView(generic.DetailView):
     model = Bookings

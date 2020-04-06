@@ -1,8 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
 from .util_test_views import test_correct_page, test_login
-from larps.models import Uniform
-from .util_test import *
+from larps.models import Uniform, Bookings
+from larps.views import generate_bookings
+from .util_test import create_group, create_character_assigment
+from .examples import example_characters, example_players_complete
+
 
 
 class ViewsTests(TestCase):
@@ -22,3 +25,17 @@ class ViewsTests(TestCase):
     def test_uniforms_page(self):
         url = reverse("larps:uniforms")
         #response = test_correct_page(self, url)
+
+
+    def test_generate_bookings(self):
+        # initialize
+        group = create_group()
+        player_info = example_players_complete[0]
+        assigment = create_character_assigment(group, player_info, example_characters[0])
+        user = assigment.user
+        # execute
+        generate_bookings(user)
+        # validate
+        bookings_search = Bookings.objects.all()
+        self.assertIs(len(bookings_search), 1)
+        self.assertEqual(bookings_search[0].user.username, user.username)
