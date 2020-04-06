@@ -1,26 +1,8 @@
 from django.test import TestCase
 from larps.models import Larp, Player, Bookings
-from .util_test import create_group, create_characters_assigments, create_character_assigment, create_diets, set_bookings
-
-example_characters = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May Parker", "Peter Parker", "Leopold Fitz" ]
-example_groups = [ "Scientists", "Doctors", "Mecanics" ]
-
-example_players_complete = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"none" },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"none" },
-    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"Vegetarian" },
-    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"none" },
-]
-example_players_incomplete = [
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
-]
-example_diets = [ "Vegetarian", "Vegan", "none" ]
-
-example_bookings = [
-    { "weapon": False, "bus": None, "accomodation": None, "sleeping_bag": False },
-    { "weapon": False, "bus": "Madrid", "accomodation": "on site", "sleeping_bag": True },
-]
+from .util_test import create_group, create_characters_assigments, create_character_assigment, set_bookings
+from .util_test_food import create_diets
+from .examples import example_players_complete, example_players_incomplete, example_bookings
 
 
 class MissingInformationTests(TestCase):
@@ -39,9 +21,9 @@ class MissingInformationTests(TestCase):
         # Initialize
         group = create_group()
         larp = group.larp
-        create_diets(example_diets)
+        create_diets()
         player_info = example_players_incomplete[0]
-        assigment = create_character_assigment(group, player_info, example_characters[0], run=1)
+        assigment = create_character_assigment(group, player_info, run=1)
         # Get information
         missing_info = larp.get_players_information()
         # Validate
@@ -59,13 +41,14 @@ class MissingInformationTests(TestCase):
         self.assertEqual(missing_player_info["bookings"].sleeping_bag, None)
         self.assertEqual(missing_player_info["run"], 1)
 
+
     def test_get_players_information_with_profile_info(self):
         # Initialize
-        group = create_group(example_groups[0])
+        group = create_group()
         larp = group.larp
-        create_diets(example_diets)
+        create_diets()
         players_info = example_players_complete
-        create_characters_assigments(group, players=players_info, characters=example_characters)
+        create_characters_assigments(group, players=players_info)
         # Get information
         missing_info = larp.get_players_information()
         # Validate
@@ -86,13 +69,14 @@ class MissingInformationTests(TestCase):
             self.assertEqual(missing_player_info["run"], 1)
             count += 1
 
+
     def test_get_missing_players_with_some_booking_info(self):
         # Initialize
-        group = create_group(example_groups[0])
+        group = create_group()
         larp = group.larp
         player_info = example_players_complete[0]
         bookings_info = example_bookings[0]
-        assigment = create_character_assigment(group, player_info, example_characters[0])
+        assigment = create_character_assigment(group, player_info)
         set_bookings(assigment, bookings_info)
         # Get information
         missing_info = larp.get_players_information()
@@ -109,11 +93,11 @@ class MissingInformationTests(TestCase):
 
     def test_get_players_information_with_all_booking_info(self):
         # Initialize
-        group = create_group(example_groups[0])
+        group = create_group()
         larp = group.larp
         player_info = example_players_complete[0]
         bookings_info = example_bookings[1]
-        assigment = create_character_assigment(group, player_info, example_characters[0])
+        assigment = create_character_assigment(group, player_info)
         set_bookings(assigment, bookings_info)
         # Get information
         missing_info = larp.get_players_information()

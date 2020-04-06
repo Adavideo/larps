@@ -1,19 +1,18 @@
-from larps.models import *
-from larps.config import *
+from django.contrib.auth.models import User
+from larps.config import larp_name
+from larps.models import Group, Larp, Player, DietaryRestriction, Character, CharacterAssigment, BusStop, Bookings, Accomodation
+from .examples import example_players_complete, example_characters
 
 
-def create_user(player_info):
+# Initialize testing - basic functions
+
+def create_user(player_info=example_players_complete[0]):
     user_search = User.objects.filter(username=player_info["username"])
     if user_search:
         return user_search[0]
     user = User(username=player_info["username"], first_name=player_info["first_name"], last_name=player_info["last_name"])
     user.save()
     return user
-
-def create_diets(diets):
-    for diet_name in diets:
-        new_diet = DietaryRestriction(name=diet_name)
-        new_diet.save()
 
 def get_diet(diet_name):
     diet = None
@@ -27,7 +26,7 @@ def fill_diet_info(player, info):
     player.food_intolerances = info["food_intolerances"]
     player.comments = info["comments"]
 
-def create_player(player_info, diet_info=""):
+def create_player(player_info=example_players_complete[0], diet_info=""):
     user = create_user(player_info)
     player_search = Player.objects.filter(user=user)
     if player_search:
@@ -49,7 +48,7 @@ def create_group(group_name=""):
     group.save()
     return group
 
-def create_character(character_name, group=None, group_name=""):
+def create_character(character_name=example_characters[0], group=None, group_name=""):
     character_search = Character.objects.filter(name=character_name)
     if character_search:
         return character_search[0]
@@ -62,7 +61,7 @@ def create_character(character_name, group=None, group_name=""):
 def contains_profile_info(player_info):
     return player_info["gender"] or player_info["chest"] or player_info["waist"]
 
-def create_character_assigment(group, player_info, character_name, run=1, diet_info="" ):
+def create_character_assigment(group="", player_info=example_players_complete[0], character_name=example_characters[0], run=1, diet_info=""):
     if contains_profile_info(player_info):
         player = create_player(player_info, diet_info )
         user=player.user
@@ -74,7 +73,7 @@ def create_character_assigment(group, player_info, character_name, run=1, diet_i
     assigment.save()
     return assigment
 
-def create_characters_assigments(group, players, characters, run=1, diet_info=""):
+def create_characters_assigments(group="", players=example_players_complete, characters=example_characters, run=1, diet_info=""):
     assigments = []
     if len(players) > len(characters):
         n = len(characters)
@@ -92,40 +91,8 @@ def create_characters_assigments(group, players, characters, run=1, diet_info=""
         assigments.append(assigment)
     return assigments
 
-def create_uniform(group_name="", group=None):
-    if not group:
-        group = create_group(group_name)
-    uniform = Uniform(group=group, name=group_name)
-    uniform.save()
-    return uniform
 
-def create_uniform_size(size_information, group_name=""):
-    uniform = create_uniform(group_name)
-    size = UniformSize(uniform=uniform)
-    size.set_values(size_information)
-    size.save()
-    return size
-
-def create_uniform_with_sizes(sizes, group_name="", group=None):
-    uniform = create_uniform(group_name=group_name, group=group)
-    for size_information in sizes:
-        size = UniformSize(uniform=uniform)
-        size.set_values(size_information)
-        size.save()
-    return uniform
-
-def create_uniform_with_players_and_sizes(sizes, players_info, characters_names, group_name="", run=1):
-    group = create_group(group_name=group_name)
-    uniform = create_uniform_with_sizes(sizes, group_name=group_name)
-    assigments = create_characters_assigments(group, players_info, characters_names, run)
-    return uniform
-
-def create_uniform_with_player_in_several_runs(sizes, players_info, characters_names, player_in_several_runs, group_name="", runs=2):
-    uniform = create_uniform_with_players_and_sizes(sizes, players_info, characters_names, group_name=group_name, run=1)
-    for i in range(2,runs+1):
-        create_character_assigment(uniform.group, player_in_several_runs, characters_names[1], run=i)
-    return uniform
-
+# OTHER util functions
 
 def set_bookings(assigment, booking_info):
     user = assigment.user

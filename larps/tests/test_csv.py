@@ -1,23 +1,11 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from larps.models import *
-from larps.csv_importer import *
-from larps.config import *
+from larps.models import Character
+from larps.csv_importer import process_csv_line, process_data, get_file_type, create_user, create_character, assign_character_to_user
+from larps.config import csv_file_types, larp_name
+from .examples import empty_data_set, uniforms_data_set, characters_data_set, incorrect_data_set, correct_size_examples, incorrect_size_examples
 
-empty_data_set = ""
-
-uniforms_data_set = '''name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
-Pilots (black red),Pilots,black red,women,S,38,86,90,70,74
-Pilots (black red),Pilots,black red,women,M,40,90,94,74,78'''
-
-characters_data_set = '''run,player,character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
-
-incorrect_data_set = '''character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
 
 # CSV IMPORT CHARACTERS
 
@@ -175,43 +163,25 @@ class CSVCharactersTests(TestCase):
 
 class CSVUniformsTests(TestCase):
     csv_type = csv_file_types()[1][0]
-    correct_size_examples = [
-        ["Pilots (black, red)","Pilots","black, red","women","S",38,86,90,70,74],
-        ["Pilots (black, red)","Pilots","black, red","women","M",40,90,94,74,78],
-        ["Pilots (black, red)","Pilots","black, red","women","M",42,94,98,78,82],
-        ["Pilots (black, red)","Pilots","black, red","women","L",44,98,102,82,86],
-        ["Pilots (black, red)","Pilots","black, red","women","L",46,102,107,86,91],
-        ["Pilots (black, red)","Pilots","black, red","women","XL",48,107,113,91,97]
-    ]
-    incorrect_size_examples = [
-        ["","Pilots","","women","L",44,98,102,82,86],
-        ["","","","women","L",44,98,102,82,86],
-        [""," ","","women","L",44,98,102,82,86],
-        ["","Pilots","","","L",44,98,102,82,86],
-        ["","Pilots","","women","",44,98,102,82,86],
-        ["","Pilots","","women","L","",98,102,82,86],
-        ["","Pilots","","women","","",98,102,82,86],
-        ["","Pilots","","women","L",44,"","","",""]
-    ]
 
     def test_process_csv_line_correct(self):
-        column = self.correct_size_examples[3]
+        column = correct_size_examples[3]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_not_esential_info_missing(self):
-        column = self.incorrect_size_examples[0]
+        column = incorrect_size_examples[0]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_no_group(self):
-        column = self.incorrect_size_examples[1]
+        column = incorrect_size_examples[1]
         result = process_csv_line(column, self.csv_type)
         expected_result = "Group not assigned - women. L/44 chest(98,102) waist(82,86)"
         self.assertEqual(result, expected_result)
 
     def test_process_csv_line_group_blank_space(self):
-        column = self.incorrect_size_examples[2]
+        column = incorrect_size_examples[2]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, "Group not assigned - women. L/44 chest(98,102) waist(82,86)")
 
@@ -219,7 +189,6 @@ class CSVUniformsTests(TestCase):
 class CSVFileTypesTests(TestCase):
     character_file_type = csv_file_types()[0][0]
     uniform_file_type = csv_file_types()[1][0]
-
 
     def test_incorrect_header(self):
         header = ""

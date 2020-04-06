@@ -1,11 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from .util_test_views import test_correct_page, test_login
-from larps.models import Uniform, Bookings
+from larps.models import Bookings
 from larps.views import generate_bookings
 from .util_test import create_group, create_character_assigment
-from .examples import example_characters, example_players_complete
-
 
 
 class ViewsTests(TestCase):
@@ -30,8 +28,7 @@ class ViewsTests(TestCase):
     def test_generate_bookings(self):
         # initialize
         group = create_group()
-        player_info = example_players_complete[0]
-        assigment = create_character_assigment(group, player_info, example_characters[0])
+        assigment = create_character_assigment(group)
         user = assigment.user
         # execute
         generate_bookings(user)
