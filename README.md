@@ -1,4 +1,4 @@
-# larps
+# LARPS Manager
 
 Managing site to organize LARPS (Live Rol Playing Games)
 
