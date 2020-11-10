@@ -1,7 +1,6 @@
 from django.test import TestCase
 from larps.models import Larp, Player, Bookings
 from .util_test import create_group, create_characters_assigments, create_character_assigment, set_bookings
-from .util_test_food import create_diets
 from .examples import example_players_complete, example_players_incomplete, example_bookings
 
 
@@ -21,7 +20,6 @@ class MissingInformationTests(TestCase):
         # Initialize
         group = create_group()
         larp = group.larp
-        create_diets()
         player_info = example_players_incomplete[0]
         assigment = create_character_assigment(group, player_info, run=1)
         # Get information
@@ -33,8 +31,6 @@ class MissingInformationTests(TestCase):
         self.assertEqual(missing_player_info["user"], player_info["first_name"]+" "+player_info["last_name"])
         self.assertEqual(missing_player_info["profile"].user.username, player_info["username"])
         self.assertEqual(missing_player_info["profile"].gender, "")
-        self.assertEqual(missing_player_info["profile"].allergies, "")
-        self.assertEqual(missing_player_info["profile"].dietary_restrictions, None)
         self.assertEqual(missing_player_info["bookings"].weapon, None)
         self.assertEqual(missing_player_info["bookings"].bus, None)
         self.assertEqual(missing_player_info["bookings"].accomodation, None)
@@ -46,7 +42,6 @@ class MissingInformationTests(TestCase):
         # Initialize
         group = create_group()
         larp = group.larp
-        create_diets()
         players_info = example_players_complete
         create_characters_assigments(group, players=players_info)
         # Get information
@@ -60,8 +55,6 @@ class MissingInformationTests(TestCase):
             self.assertEqual(missing_player_info["user"], players_info[count]["first_name"]+" "+players_info[count]["last_name"])
             self.assertEqual(missing_player_info["profile"].user.username, players_info[count]["username"])
             self.assertEqual(missing_player_info["profile"].gender, players_info[count]["gender"])
-            self.assertEqual(missing_player_info["profile"].allergies, "")
-            self.assertEqual(missing_player_info["profile"].dietary_restrictions.name, players_info[count]["diet"] )
             self.assertEqual(missing_player_info["bookings"].weapon, None)
             self.assertEqual(missing_player_info["bookings"].bus, None)
             self.assertEqual(missing_player_info["bookings"].accomodation, None)

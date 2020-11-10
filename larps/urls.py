@@ -17,7 +17,6 @@ urlpatterns = [
     path('file_upload/', login_required(views.file_upload_view), name='file_upload'),
     path('uniforms', login_required(views.uniforms_view), name="uniforms"),
     path('uniform_sizes/<int:uniform_id>', login_required(views.uniform_sizes_view), name="uniform_sizes"),
-    path('food', login_required(views.food_view), name="food"),
     path('missing_info/', login_required(views.missing_info_index_view), name="missing_info_index"),
     path('missing_info/larp_<int:larp_id>/', login_required(views.players_missing_info_view), name="missing_info"),
     path('missing_info/larp_<int:larp_id>/run_<int:run>/', login_required(views.players_missing_info_by_run_view), name="missing_info_run"),
