@@ -14,7 +14,7 @@ class BookingsForm(forms.Form):
     bus = forms.ChoiceField(choices=get_bus_stops())
     accomodation = forms.ChoiceField(choices=get_accomodations())
     sleeping_bag = forms.ChoiceField(choices=boolean_choices())
-    comments = forms.CharField(max_length=200)
+    comments = forms.CharField(max_length=200, required=False)
 
 class ImportCSVForm(forms.Form):
     file = forms.FileField()
