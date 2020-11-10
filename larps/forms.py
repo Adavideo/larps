@@ -4,10 +4,10 @@ from .forms_util import get_bus_stops, get_accomodations, boolean_choices
 
 class PlayerForm(forms.Form):
     gender = forms.CharField(max_length=100)
-    shoulder = forms.IntegerField()
-    height = forms.IntegerField()
-    chest = forms.IntegerField()
-    waist = forms.IntegerField()
+    shoulder = forms.IntegerField(help_text='in cm')
+    height = forms.IntegerField(help_text='in cm')
+    chest = forms.IntegerField(help_text='in cm')
+    waist = forms.IntegerField(help_text='in cm')
 
 class BookingsForm(forms.Form):
     weapon = forms.ChoiceField(choices=boolean_choices())
