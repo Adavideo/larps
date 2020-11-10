@@ -41,7 +41,7 @@
                    {% else %}
                       {% if not player.bookings.bus %}bus {% endif %}
                       {% if not player.bookings.accomodation %}accomodation {% endif %}
-                      {% if not player.bookings.sleeping_bag %}sleeping bag{% endif %}
+                      {% if player.bookings.sleeping_bag == None %}sleeping bag{% endif %}
                   {% endif %}
                  </td>
 
