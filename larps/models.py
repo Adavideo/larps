@@ -1,25 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .food import get_food_information
 
 
 # PLAYER PROFILES
 
-class DietaryRestriction(models.Model):
-    name = models.CharField(max_length=50)
-    def __str__(self):
-        return self.name
-
 class Player(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=200, blank=True)
-    allergies = models.CharField(max_length=200, blank=True)
-    food_allergies = models.CharField(max_length=200, blank=True)
-    food_intolerances = models.CharField(max_length=200, blank=True)
-    medical_conditions = models.CharField(max_length=200, blank=True)
-    emergency_contact = models.CharField(max_length=200, blank=True)
-    dietary_restrictions = models.ForeignKey(DietaryRestriction, on_delete=models.SET_NULL, null=True, blank=True)
-    comments = models.CharField(max_length=200, default="no", blank=True, null=True)
     shoulder = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
@@ -33,19 +20,8 @@ class Player(models.Model):
         return name
 
     def get_data(self):
-        if self.dietary_restrictions:
-            diet = self.dietary_restrictions.name
-        else:
-            diet = "none"
         data = {
             'gender' : self.gender,
-            'allergies': self.allergies,
-            'food_allergies' : self.food_allergies,
-            'food_intolerances': self.food_intolerances,
-            'medical_conditions': self.medical_conditions,
-            'emergency_contact': self.emergency_contact,
-            'dietary_restrictions' : diet,
-            'comments' : self.comments,
             'shoulder' : self.shoulder,
             'height' : self.height,
             'chest' : self.chest,
@@ -55,33 +31,11 @@ class Player(models.Model):
 
     def save_profile(self, new_data):
         self.gender = new_data['gender']
-        self.allergies = new_data['allergies']
-        self.food_allergies = new_data['food_allergies']
-        self.food_intolerances = new_data['food_intolerances']
-        self.medical_conditions = new_data['medical_conditions']
-        self.emergency_contact = new_data['emergency_contact']
-        diet =  new_data['dietary_restrictions']
-        self.dietary_restrictions = DietaryRestriction.objects.get(name=diet)
-        self.comments = new_data['comments']
         self.shoulder = new_data['shoulder']
         self.height = new_data['height']
         self.chest = new_data['chest']
         self.waist = new_data['waist']
         self.save()
-
-    def get_diet_comments(self):
-        diet_comments = ""
-        if self.food_allergies:
-            diet_comments = "allergies: " + self.food_allergies
-        if self.food_intolerances:
-            if diet_comments:
-                diet_comments += ", "
-            diet_comments += "intolerant to: " + self.food_intolerances
-        if self.comments and not self.comments == "no":
-            if diet_comments:
-                diet_comments += ", "
-            diet_comments += self.comments
-        return diet_comments
 
 
 # LARPS AND CHARACTERS
@@ -98,12 +52,6 @@ class Larp(models.Model):
             assigments = group.get_character_assigments()
             character_assigments.extend(assigments)
         return character_assigments
-
-    def get_food(self):
-        assigments = self.get_character_assigments()
-        diets_types = DietaryRestriction.objects.all()
-        food_info = get_food_information(assigments, diets_types)
-        return food_info
 
     def get_number_of_runs(self, assigments=None):
         if not assigments:
@@ -296,7 +244,7 @@ class Bookings(models.Model):
 class Uniform(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
-    color = models.CharField(max_length=50)
+    color = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         if self.group:

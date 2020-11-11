@@ -1,4 +1,4 @@
-from .models import DietaryRestriction, BusStop, Accomodation
+from .models import BusStop, Accomodation
 
 
 def process_options(options_list):
@@ -10,11 +10,6 @@ def process_options(options_list):
     for option in options_list:
         processed_options.append((option.name, option.name))
     return processed_options
-
-def get_diets():
-    diets = DietaryRestriction.objects.all()
-    dietary_options = process_options(diets)
-    return dietary_options
 
 def get_bus_stops():
     bus_stops = BusStop.objects.all()

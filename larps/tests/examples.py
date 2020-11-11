@@ -8,54 +8,17 @@ example_characters1 = [ "Marie Curie", "Ada Lovelace", "Mary Jane Watson", "May 
 example_characters2 = [ "Peter Parker", "Leopold Fitz", "Tony Stark", "Gemma Simmons" ]
 
 example_players_complete = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"none" },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"none" },
-    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"Vegetarian" },
-    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"none" },
+    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75 },
+    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78 },
+    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90 },
+    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86 },
 ]
 
 example_players_incomplete = [
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0, "diet":"" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0, "diet":"" },
+    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"", "chest":0, "waist":0 },
+    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"", "chest":0, "waist":0 },
 ]
 
-
-# Examples for testing food and diets funtionality
-
-example_diets = [ "Vegetarian", "Vegan", "none" ]
-
-example_players_with_diets1 = [
-    { "username": "Ana_Garcia", "first_name": "Ana", "last_name": "Garcia", "gender":"female", "chest":90, "waist":75, "diet":"none", "comments":"" },
-    { "username": "Pepa_Perez", "first_name": "Pepa", "last_name": "Perez", "gender":"female", "chest":95, "waist":78, "diet":"Vegan", "comments":"" },
-    { "username": "Manolo_Garcia", "first_name": "Manolo", "last_name": "Garcia", "gender":"male", "chest":100, "waist":90, "diet":"none", "comments":"" },
-    { "username": "Paco_Garcia", "first_name": "Paco", "last_name": "Garcia", "gender":"male", "chest":102, "waist":86, "diet":"Vegan", "comments":"" },
-]
-
-example_players_with_diets2 = [
-    { "username": "Maria_Gonzalez", "first_name": "Maria", "last_name": "Gonzalez", "gender":"female", "chest":0, "waist":0, "diet":"Vegetarian", "comments":"" },
-    { "username": "Andrea_Hernandez", "first_name": "Andrea", "last_name": "Hernandez", "gender":"female", "chest":0, "waist":0, "diet":"none", "comments":"" },
-    { "username": "Juan_Perez", "first_name": "Juan", "last_name": "Perez", "gender":"male", "chest":100, "waist":90, "diet":"none", "comments":"" },
-    { "username": "Carlos_Hernandez", "first_name": "Carlos", "last_name": "Hernandez", "gender":"male", "chest":102, "waist":86, "diet":"Vegan", "comments":"" },
-]
-
-example_diets_counts = [
-    { "none" : 2, "Vegetarian": 1, "Vegan": 1 },
-    { "none" : 2, "Vegetarian": 0, "Vegan": 2 },
-]
-
-example_player_food_info = [
-    { "diet":"Vegetarian", "comments":"", 'allergies': "", 'food_allergies' : "", 'food_intolerances': "" },
-    { "diet":"none", "comments":"", 'allergies': "polen", 'food_allergies' : "", 'food_intolerances': "lactose" },
-    { "diet":"none", "comments":"", 'allergies': "", 'food_allergies' : "peanuts", 'food_intolerances': "" },
-    { "diet":"Vegan", "comments":"", 'allergies': "", 'food_allergies' : "pineaple", 'food_intolerances': "lactose" },
-]
-
-example_comments = [
-    "",
-    "intolerant to: lactose",
-    "allergies: peanuts",
-    "allergies: pineaple, intolerant to: lactose"
-]
 
 # BOOKINGS examples
 

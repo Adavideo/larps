@@ -1,9 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from larps.config import larp_name
-from larps.models import Player, DietaryRestriction, Character, CharacterAssigment, Larp, Group, Bookings
+from larps.models import Player, Character, CharacterAssigment, Larp, Group, Bookings
 from .util_test import create_player, create_group, create_characters_assigments, create_character_assigment
-from .util_test_food import create_diets
 from .util_test_uniforms import create_uniform_with_player_in_several_runs
 from .examples import example_players_complete, example_players_incomplete, example_characters, example_groups, example_sizes
 
@@ -21,42 +20,6 @@ class PlayerModelTests(TestCase):
         self.assertEqual(player.user.username, player_info["username"])
         self.assertEqual(str(player), player_info["first_name"] + " " + player_info["last_name"])
         self.assertEqual(player.gender, player_info["gender"])
-
-    def test_create_player_profile_with_no_dietary_information(self):
-        """
-        create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
-        and adds medical and dietary information.
-        """
-        test_user = User(username="ana")
-        diet = DietaryRestriction(name="None")
-        test_player = Player(user=test_user, dietary_restrictions = diet)
-        self.assertEqual(test_player.dietary_restrictions.name, "None")
-        self.assertIs(test_player.dietary_restrictions, diet)
-        self.assertIs(test_player.comments,"no")
-
-    def test_create_player_profile_with_dietary_information(self):
-        """
-        create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
-        and adds medical and dietary information.
-        """
-        test_user = User(username="ana")
-        diet = DietaryRestriction(name="Vegan")
-        test_player = Player(user=test_user, dietary_restrictions = diet)
-        self.assertEqual(test_player.dietary_restrictions.name, "Vegan")
-        self.assertIs(test_player.dietary_restrictions, diet)
-
-    def test_create_player_profile_with_alternative_dietary_information(self):
-        """
-        create_player_profile_with_dietary_information() creates a Player object asociated to a test User account
-        and adds medical and dietary information.
-        """
-        test_user = User(username="ana")
-        diet = DietaryRestriction(name="Other")
-        test_player = Player(user=test_user, dietary_restrictions = diet)
-        test_player.comments = "I'm a pescatarian"
-        self.assertEqual(test_player.dietary_restrictions.name, "Other")
-        self.assertIs(test_player.dietary_restrictions, diet)
-        self.assertEqual(test_player.comments, "I'm a pescatarian")
 
     def test_create_player_profile_with_size_information(self):
         """
@@ -235,15 +198,6 @@ class CharacterModelTests(TestCase):
         self.assertEqual(character_assigment.character.group.larp.name, larp_name())
         self.assertIs(character_assigment.user.username, "ana")
         self.assertEqual(str(character_assigment), larp_name()+" run 1 - Marie Curie assigned to Ana Garcia")
-
-
-
-class DietaryRestrictionModelTests(TestCase):
-
-    def test_create_dietary_restrictions(self):
-        create_diets()
-        all_diets= DietaryRestriction.objects.all()
-        self.assertIs(len(all_diets),3)
 
 
 class CharacterAssigmentModelTests(TestCase):
