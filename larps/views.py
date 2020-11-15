@@ -104,14 +104,14 @@ def manage_bookings_view(request, larp_id, run):
         return HttpResponseRedirect('/larps/bookings')
 
     if request.method == 'POST':
-        form = BookingsForm(request.POST)
+        form = BookingsForm(request.POST, larp_id)
         if form.is_valid():
             bookings.save_bookings(form.cleaned_data)
             url = '/larps/bookings/'+ str(bookings.id)
             return HttpResponseRedirect(url)
     else:
         bookings_data = bookings.get_data()
-        form = BookingsForm(bookings_data)
+        form = BookingsForm(bookings_data, larp_id)
     return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp, 'run': run })
 
 
