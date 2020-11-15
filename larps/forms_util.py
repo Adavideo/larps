@@ -11,13 +11,13 @@ def process_options(options_list):
         processed_options.append((option.name, option.name))
     return processed_options
 
-def get_bus_stops():
-    bus_stops = BusStop.objects.all()
+def get_bus_stops(larp):
+    bus_stops = BusStop.objects.filter(larp=larp)
     bus_options = process_options(bus_stops)
     return bus_options
 
-def get_accomodations():
-    accomodations = Accomodation.objects.all()
+def get_accomodations(larp):
+    accomodations = Accomodation.objects.filter(larp=larp)
     accomodation_options = process_options(accomodations)
     return accomodation_options
 

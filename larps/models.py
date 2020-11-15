@@ -186,11 +186,13 @@ class CharacterAssigment(models.Model):
 # BOOKINGS
 
 class Accomodation(models.Model):
+    larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=50)
     def __str__(self):
         return self.name
 
 class BusStop(models.Model):
+    larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
     name= models.CharField(max_length=50)
     def __str__(self):
         return self.name
