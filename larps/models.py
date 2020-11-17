@@ -11,6 +11,7 @@ class Player(models.Model):
     height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
+    sleeve_length = models.IntegerField(default=0)
 
     def __str__(self):
         if (self.user.first_name):
@@ -26,6 +27,7 @@ class Player(models.Model):
             'height' : self.height,
             'chest' : self.chest,
             'waist' : self.waist,
+            'sleeve_length' : self.sleeve_length,
         }
         return data
 
@@ -35,6 +37,7 @@ class Player(models.Model):
         self.height = new_data['height']
         self.chest = new_data['chest']
         self.waist = new_data['waist']
+        self.sleeve_length = new_data['sleeve_length']
         self.save()
 
 
