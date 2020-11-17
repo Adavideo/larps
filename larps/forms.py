@@ -9,6 +9,8 @@ class PlayerForm(forms.Form):
     height = forms.IntegerField(help_text='in cm')
     chest = forms.IntegerField(help_text='in cm')
     waist = forms.IntegerField(help_text='in cm')
+    sleeve_length = forms.IntegerField(help_text='in cm')
+    
 
 class BookingsForm(forms.Form):
 
