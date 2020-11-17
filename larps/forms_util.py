@@ -24,3 +24,7 @@ def get_accomodations(larp):
 def boolean_choices():
     choices = [(True, "Yes"), (False, "No")]
     return choices
+
+def gender_choices():
+    choices = [("female", "female"), ("male", "male")]
+    return choices

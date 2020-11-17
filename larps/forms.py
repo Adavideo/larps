@@ -1,10 +1,10 @@
 from django import forms
 from .models import Larp
-from .forms_util import get_bus_stops, get_accomodations, boolean_choices
+from .forms_util import *
 
 
 class PlayerForm(forms.Form):
-    gender = forms.CharField(max_length=100)
+    gender = forms.ChoiceField(choices=gender_choices(), label="Gender", help_text="for the clothes")
     shoulder = forms.IntegerField(help_text='in cm')
     height = forms.IntegerField(help_text='in cm')
     chest = forms.IntegerField(help_text='in cm')
