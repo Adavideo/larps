@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from larps.models import Character
-from larps.csv_importer import process_csv_line, process_data, get_file_type, create_user, create_character, assign_character_to_user
+from larps.csv_importer import *
 from larps.config import csv_file_types, larp_name
-from .examples import empty_data_set, uniforms_data_set, characters_data_set, incorrect_data_set, correct_size_examples, incorrect_size_examples
+from .examples import *
 
 
 # CSV IMPORT CHARACTERS
@@ -136,7 +136,7 @@ class CSVCharactersTests(TestCase):
         """
         process_data() checks that the data from the csv file is processed correctly
         """
-        result = process_data(characters_data_set)
+        result = process_data(characters_csv)
         self.assertEqual(result, ['Character Ono assigned to Werner Mikolasch', 'Character Fuertes assigned to Fabio '])
 
 
@@ -206,15 +206,15 @@ class CSVFileTypesTests(TestCase):
         self.assertEqual(result, self.uniform_file_type)
 
     def test_correct_data_set_characters(self):
-        result = process_data(characters_data_set)
+        result = process_data(characters_csv)
         self.assertEqual(result, ["Character Ono assigned to Werner Mikolasch",
                                 "Character Fuertes assigned to Fabio "])
 
     def test_correct_data_set_uniforms(self):
-        result = process_data(uniforms_data_set)
+        result = process_data(uniforms_csv)
         self.assertEqual(result, ["Pilots - women. S/38 chest(86,90) waist(70,74)",
                                 "Pilots - women. M/40 chest(90,94) waist(74,78)"])
 
-    def test_incorrect_data_set(self):
-        result = process_data(incorrect_data_set)
+    def test_incorrect_csv(self):
+        result = process_data(incorrect_csv)
         self.assertEqual(result, ["Incorrect file type"])
