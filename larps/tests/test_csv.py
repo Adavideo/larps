@@ -201,7 +201,7 @@ class CSVFileTypesTests(TestCase):
         self.assertEqual(result, self.character_file_type)
 
     def test_correct_header_uniforms(self):
-        header = "name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max"
+        header = "uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max"
         result = get_file_type(header)
         self.assertEqual(result, self.uniform_file_type)
 

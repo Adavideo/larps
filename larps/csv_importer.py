@@ -116,7 +116,7 @@ def process_size_info(column):
     return size_information
 
 def process_uniform_info(column):
-    # name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+    # uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
     uniform_name = column[0]
     group_name = column[1]
     uniform = create_uniform(uniform_name, group_name)

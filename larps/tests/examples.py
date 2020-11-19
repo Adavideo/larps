@@ -73,7 +73,7 @@ empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_
 
 empty_data_set = ""
 
-uniforms_data_set = '''name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+uniforms_data_set = '''uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
 Pilots (black red),Pilots,black red,women,S,38,86,90,70,74
 Pilots (black red),Pilots,black red,women,M,40,90,94,74,78'''
 
