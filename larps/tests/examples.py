@@ -69,18 +69,16 @@ incorrect_size_examples = [
 empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
 
 
-# Datasets for CSV csv_importer
+# CSV examples for csv_importer
 
-empty_data_set = ""
-
-uniforms_data_set = '''uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+uniforms_csv = '''uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
 Pilots (black red),Pilots,black red,women,S,38,86,90,70,74
 Pilots (black red),Pilots,black red,women,M,40,90,94,74,78'''
 
-characters_data_set = '''run,player,character,group,planet,rank
+characters_csv = '''run,player,character,group,planet,rank
 1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
 2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
 
-incorrect_data_set = '''character,group,planet,rank
+incorrect_csv = '''character,group,planet,rank
 1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
 2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
