@@ -99,9 +99,9 @@ def process_character_info(column):
             result += ". Character invalid"
     return result
 
-def create_uniform(uniform_name, group_name, color):
+def create_uniform(uniform_name, group_name):
     group = get_group(group_name, larp_name())
-    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group, color=color)
+    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group)
     return uniform
 
 def process_size_info(column):
@@ -116,11 +116,10 @@ def process_size_info(column):
     return size_information
 
 def process_uniform_info(column):
-    # name ,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+    # uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
     uniform_name = column[0]
     group_name = column[1]
-    color = column[2]
-    uniform = create_uniform(uniform_name, group_name, color)
+    uniform = create_uniform(uniform_name, group_name)
     if uniform:
         size_information = process_size_info(column)
         size = uniform.add_size(size_information)
