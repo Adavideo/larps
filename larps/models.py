@@ -246,7 +246,6 @@ class Bookings(models.Model):
 class Uniform(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
-    color = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         if self.group:
