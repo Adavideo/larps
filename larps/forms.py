@@ -22,7 +22,6 @@ class BookingsForm(forms.Form):
         self.fields['bus'] = forms.ChoiceField(choices=get_bus_stops(larp))
         self.fields['accomodation'] = forms.ChoiceField(choices=get_accomodations(larp))
 
-    weapon = forms.ChoiceField(choices=boolean_choices())
     sleeping_bag = forms.ChoiceField(choices=boolean_choices(), help_text="price 23€")
     comments = forms.CharField(max_length=200, required=False)
 

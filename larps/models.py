@@ -37,7 +37,7 @@ class PlayerMeasurement(models.Model):
     def save_profile(self, new_data):
         self.gender = new_data['gender']
         self.chest = new_data['chest']
-        self.arm_length = new_data['sleeve_length']
+        self.arm_length = new_data['arm_length']
         self.waist = new_data['waist']
         self.shoulder_length = new_data['shoulder_length']
         self.torso_length = new_data['torso_length']
@@ -208,7 +208,6 @@ class Bookings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
     run = models.IntegerField(default=1)
-    weapon = models.BooleanField(null=True, blank=True)
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
     sleeping_bag = models.BooleanField(null=True, blank=True)
@@ -223,7 +222,6 @@ class Bookings(models.Model):
 
     def get_data(self):
         data = {
-            'weapon': self.weapon,
             'bus' : self.bus,
             'accomodation': self.accomodation,
             'sleeping_bag' : self.sleeping_bag,
@@ -232,7 +230,6 @@ class Bookings(models.Model):
         return data
 
     def save_bookings(self, new_data):
-        self.weapon = new_data['weapon']
         self.bus = BusStop.objects.get(name=new_data['bus'])
         self.accomodation = Accomodation.objects.get(name=new_data['accomodation'])
         self.sleeping_bag = new_data['sleeping_bag']
@@ -252,7 +249,6 @@ class Bookings(models.Model):
 class Uniform(models.Model):
     name = models.CharField(max_length=200)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
-    color = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         text = self.name

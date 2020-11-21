@@ -217,7 +217,6 @@ class CharacterAssigmentModelTests(TestCase):
         self.assertEqual(bookings.user.username, player_info["username"])
         self.assertEqual(bookings.larp.name, group.larp.name)
         self.assertEqual(bookings.run, 1)
-        self.assertIs(bookings.weapon, None)
         self.assertIs(bookings.bus, None)
         self.assertIs(bookings.accomodation, None)
         self.assertIs(bookings.sleeping_bag, None)

@@ -78,7 +78,6 @@ def set_bookings(assigment, booking_info):
     user = assigment.user
     larp = assigment.character.group.larp
     run = assigment.run
-    weapon = booking_info["weapon"]
     sleeping_bag = booking_info["sleeping_bag"]
 
     bus = None
@@ -89,6 +88,6 @@ def set_bookings(assigment, booking_info):
     if booking_info["accomodation"]:
         accomodation, created = Accomodation.objects.update_or_create(name=booking_info["accomodation"])
 
-    bookings = Bookings( user=user, larp=larp, run=run,
-                         weapon=weapon, bus=bus, sleeping_bag=sleeping_bag, accomodation=accomodation )
+    bookings = Bookings( user=user, larp=larp, run=run, bus=bus,
+                         sleeping_bag=sleeping_bag, accomodation=accomodation )
     bookings.save()
