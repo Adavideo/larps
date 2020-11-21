@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from larps.config import larp_name
-from larps.models import PlayerMeasurement, Character, CharacterAssigment, Larp, Group, Bookings
-from .util_test import create_player, create_group, create_characters_assigments, create_character_assigment
+from larps.models import *
+from .util_test import *
 from .util_test_uniforms import create_uniform_with_player_in_several_runs
-from .examples import example_players_complete, example_players_incomplete, example_characters, example_groups, example_sizes
+from .examples import *
 
+larp_name = "Mission Together"
 
 # PLAYER PROFILES
 
@@ -45,15 +45,15 @@ class GroupModelTests(TestCase):
         group_name = "test group name"
         group = create_group(group_name)
         self.assertEqual(group.name, group_name)
-        self.assertEqual(group.larp.name, larp_name())
+        self.assertEqual(group.larp.name, larp_name)
 
     def test_create_empty_group(self):
         """
         create_empty_group creates agroup associated with a Larp.
         """
         empty_group = create_group("")
-        self.assertEqual(empty_group.larp.name, larp_name())
-        self.assertEqual(str(empty_group), larp_name()+" - no group")
+        self.assertEqual(empty_group.larp.name, larp_name)
+        self.assertEqual(str(empty_group), larp_name+" - no group")
 
     def test_create_characters_assigments(self):
         group = create_group()
@@ -150,7 +150,7 @@ class CharacterModelTests(TestCase):
         self.assertEqual(character.name, example_characters[0])
         self.assertIs(character.group, group)
         self.assertEqual(character.group.name, example_groups[1])
-        self.assertEqual(character.group.larp.name, larp_name())
+        self.assertEqual(character.group.larp.name, larp_name)
 
     def test_create_character_assigment(self):
         """
@@ -160,44 +160,44 @@ class CharacterModelTests(TestCase):
         group = create_group(example_groups[1])
         character = Character(group = group, name=example_characters[0])
         character_assigment = CharacterAssigment(run=1, character=character, user=user)
-        self.assertIs(character_assigment.character.group.larp.name, larp_name())
+        self.assertIs(character_assigment.character.group.larp.name, larp_name)
         self.assertIs(character_assigment.character.name, example_characters[0])
         self.assertIs(character_assigment.character.group.name, example_groups[1])
         self.assertIs(character_assigment.user.username, "ana")
-        self.assertEqual(str(character_assigment), larp_name()+" run 1 - Marie Curie assigned to Ana Garcia")
+        self.assertEqual(str(character_assigment), larp_name+" run 1 - Marie Curie assigned to Ana Garcia")
 
     def test_create_character_assigment_without_user(self):
         """
         create_character_assigment assigns a character to a larp run but without an asigned user.
         This is useful when you have a new character that has no player assigned yet.
         """
-        larp = Larp(name = larp_name())
+        larp = Larp(name = larp_name)
         group_name = example_groups[1]
         group = Group(larp=larp, name=group_name)
         character = Character(group = group, name="Marie Curie")
         character_assigment = CharacterAssigment(run=1, character=character)
         self.assertIs(character_assigment.character.group.larp, larp)
-        self.assertEqual(character_assigment.character.group.larp.name, larp_name())
+        self.assertEqual(character_assigment.character.group.larp.name, larp_name)
         self.assertIs(character_assigment.character, character)
         self.assertEqual(character_assigment.character.name, example_characters[0])
         self.assertIs(character_assigment.character.group, group)
         self.assertEqual(character_assigment.character.group.name, example_groups[1])
-        self.assertEqual(str(character_assigment), larp_name()+" run 1 - Marie Curie")
+        self.assertEqual(str(character_assigment), larp_name+" run 1 - Marie Curie")
 
     def test_create_character_assigment(self):
         """
         create_character_assigment assigns a character to a player on a concrete larp run for a character without a group.
         """
         user = User(username="ana", first_name="Ana", last_name="Garcia")
-        larp = Larp(name = larp_name())
+        larp = Larp(name = larp_name)
         empty_group = Group(name="", larp = larp)
         character = Character(group = empty_group, name="Marie Curie")
         character_assigment = CharacterAssigment(run=1, character=character, user=user)
         self.assertIs(character_assigment.character.name, "Marie Curie")
         self.assertIs(character_assigment.character.group.larp, larp)
-        self.assertEqual(character_assigment.character.group.larp.name, larp_name())
+        self.assertEqual(character_assigment.character.group.larp.name, larp_name)
         self.assertIs(character_assigment.user.username, "ana")
-        self.assertEqual(str(character_assigment), larp_name()+" run 1 - Marie Curie assigned to Ana Garcia")
+        self.assertEqual(str(character_assigment), larp_name+" run 1 - Marie Curie assigned to Ana Garcia")
 
 
 class CharacterAssigmentModelTests(TestCase):

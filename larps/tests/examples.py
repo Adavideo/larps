@@ -1,4 +1,3 @@
-
 # Basic characters and players examples
 
 example_groups = [ "Scientists", "Doctors", "Mecanics" ]
@@ -69,18 +68,16 @@ incorrect_size_examples = [
 empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
 
 
-# Datasets for CSV csv_importer
+# csv examples
 
-#empty_data_set = ""
+uniforms_csv_example = '''uniform_name;gender;american_size;european_size;chest_min;chest_max;arm_min;arm_max;waist_min;waist_max;shoulder_ min;shoulder_max;torso_min;torso_max;body_min;body_max
+Pilots;female;S;38;86;90;70;74;70;74
+Pilots;female;M;40;90;94;74;78;74;78'''
 
-uniforms_csv_example = '''uniform_name,gender,american_size,european_size,chest_min,chest_max,arm_min,arm_max,waist_min,waist_max,shoulder_ min,shoulder_max,torso_min,torso_max,body_min,body_max
-Pilots,female,S,38,86,90,70,74,70,74
-Pilots,female,M,40,90,94,74,78,74,78'''
+characters_csv_example = '''larp;run;player;character;group;race
+Mission Together;1;Werner Mikolasch;Ono;agriculture teacher;Rhea
+Mission Together;2;Fabio;Fuertes;artist teacher;Kepler'''
 
-characters_csv_example = '''run,player,character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
-
-incorrect_csv = '''character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
+incorrect_csv = '''character;group;planet
+1;Werner Mikolasch;Ono;agriculture teacher;Rhea
+2;Fabio;Fuertes;artist teacher;Kepler'''

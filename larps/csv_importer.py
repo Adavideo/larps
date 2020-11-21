@@ -78,15 +78,16 @@ def assign_character_to_user(user, character, run):
 # PROCESS CSV FILE
 
 def process_character_info(column):
-    # run	player	character	group	planet	rank
-    run = column[0]
-    player_name = column[1]
-    character_name = column[2]
-    character_group = column[3]
-    character_race = column[4]
+    # larp;run;player;character;group;race
+    larp = column[0]
+    run = column[1]
+    player_name = column[2]
+    character_name = column[3]
+    character_group = column[4]
+    character_race = column[5]
 
     user = create_user(player_name)
-    character = create_character(larp_name(), character_name, character_group, character_race)
+    character = create_character(larp, character_name, character_group, character_race)
 
     if user and character:
         result = assign_character_to_user(user, character, run)
