@@ -211,11 +211,10 @@ class Bookings(models.Model):
     comments = models.CharField(max_length=200, default="no", blank=True, null=True)
 
     def __str__(self):
-        text = self.larp.name + " run " + str(self.run)
+        text = ""
+        if self.larp:
+            text += self.larp.name + " run " + str(self.run)
         text += " - " + self.user.first_name + " " + self.user.last_name
-        character = self.get_character()
-        if character:
-            text += ". " + character.name
         return text
 
     def get_data(self):
@@ -252,10 +251,9 @@ class Uniform(models.Model):
     color = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
+        text = self.name
         if self.group:
-            text = self.group.name
-        else:
-            text = "Group not assigned"
+            text += " - "+ self.group.name
         return text
 
     def get_sizes(self):
