@@ -1,4 +1,3 @@
-
 # Basic characters and players examples
 
 example_groups = [ "Scientists", "Doctors", "Mecanics" ]
@@ -48,37 +47,37 @@ example_sizes_info = [
 ]
 
 correct_size_examples = [
-    ["Pilots (black, red)","Pilots","black, red","women","S",38,86,90,70,74],
-    ["Pilots (black, red)","Pilots","black, red","women","M",40,90,94,74,78],
-    ["Pilots (black, red)","Pilots","black, red","women","M",42,94,98,78,82],
-    ["Pilots (black, red)","Pilots","black, red","women","L",44,98,102,82,86],
-    ["Pilots (black, red)","Pilots","black, red","women","L",46,102,107,86,91],
-    ["Pilots (black, red)","Pilots","black, red","women","XL",48,107,113,91,97]
+    ["Pilots","female","S",38,86,90,70,74,70,74],
+    ["Pilots","female","M",40,90,94,74,78,74,78],
+    ["Pilots","female","M",42,94,98,78,82,78,82],
+    ["Pilots","female","L",44,98,102,82,86,82,86],
+    ["Pilots","female","L",46,102,107,86,91,86,91],
+    ["Pilots","female","XL",48,107,113,91,97,91,97]
 ]
 incorrect_size_examples = [
-    ["","Pilots","","women","L",44,98,102,82,86],
-    ["","","","women","L",44,98,102,82,86],
-    [""," ","","women","L",44,98,102,82,86],
-    ["","Pilots","","","L",44,98,102,82,86],
-    ["","Pilots","","women","",44,98,102,82,86],
-    ["","Pilots","","women","L","",98,102,82,86],
-    ["","Pilots","","women","","",98,102,82,86],
-    ["","Pilots","","women","L",44,"","","",""]
+    ["Pilots","female","L",44,98,102,82,86,82,86],
+    ["","female","L",44,98,102,82,86,82,86],
+    ["","female","L",44,98,102,82,86,82,86],
+    ["Pilots","","L",44,98,102,82,86,82,86],
+    ["Pilots","female","",44,98,102,82,86,82,86],
+    ["Pilots","female","L","",98,102,82,86,82,86],
+    ["Pilots","female","","",98,102,82,86,82,86],
+    ["Pilots","female","L",44,"","","","",82,86]
 ]
 
 empty_size_info = { "gender":"", "american_size":"", "european_size":"", "chest_min":"", "chest_max":"", "waist_min":"", "waist_max" :"" }
 
 
-# CSV examples for csv_importer
+# csv examples
 
-uniforms_csv = '''uniform_name,group,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
-Pilots (black red),Pilots,black red,women,S,38,86,90,70,74
-Pilots (black red),Pilots,black red,women,M,40,90,94,74,78'''
+uniforms_csv_example = '''uniform_name;gender;american_size;european_size;chest_min;chest_max;arm_min;arm_max;waist_min;waist_max;shoulder_ min;shoulder_max;torso_min;torso_max;body_min;body_max
+Pilots;female;S;38;86;90;70;74;70;74
+Pilots;female;M;40;90;94;74;78;74;78'''
 
-characters_csv = '''run,player,character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
+characters_csv_example = '''larp;run;player;character;group;race
+Mission Together;1;Werner Mikolasch;Ono;agriculture teacher;Rhea
+Mission Together;2;Fabio;Fuertes;artist teacher;Kepler'''
 
-incorrect_csv = '''character,group,planet,rank
-1,Werner Mikolasch,Ono,agriculture teacher,Rhea,lieutenant
-2,Fabio,Fuertes,artist teacher,Kepler,lieutenant'''
+incorrect_csv = '''character;group;planet
+1;Werner Mikolasch;Ono;agriculture teacher;Rhea
+2;Fabio;Fuertes;artist teacher;Kepler'''

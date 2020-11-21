@@ -2,16 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# PLAYER PROFILES
+# PLAYER MEASUREMENT
 
-class Player(models.Model):
+class PlayerMeasurement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=200, blank=True)
-    shoulder = models.IntegerField(default=0)
-    height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
+    arm_length = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
-    sleeve_length = models.IntegerField(default=0)
+    shoulder_length = models.IntegerField(default=0)
+    torso_length = models.IntegerField(default=0)
+    body_length = models.IntegerField(default=0)
+
 
     def __str__(self):
         if (self.user.first_name):
@@ -23,21 +25,23 @@ class Player(models.Model):
     def get_data(self):
         data = {
             'gender' : self.gender,
-            'shoulder' : self.shoulder,
-            'height' : self.height,
             'chest' : self.chest,
+            'arm_length' : self.arm_length,
             'waist' : self.waist,
-            'sleeve_length' : self.sleeve_length,
+            'shoulder_length' : self.shoulder_length,
+            'torso_length' : self.torso_length,
+            'body_length' : self.body_length,
         }
         return data
 
     def save_profile(self, new_data):
         self.gender = new_data['gender']
-        self.shoulder = new_data['shoulder']
-        self.height = new_data['height']
         self.chest = new_data['chest']
+        self.arm_length = new_data['arm_length']
         self.waist = new_data['waist']
-        self.sleeve_length = new_data['sleeve_length']
+        self.shoulder_length = new_data['shoulder_length']
+        self.torso_length = new_data['torso_length']
+        self.body_length = new_data['body_length']
         self.save()
 
 
@@ -161,14 +165,14 @@ class CharacterAssigment(models.Model):
         return self.character.group.larp
 
     def create_player_profile(self):
-        player_profile = Player(user=self.user)
+        player_profile = PlayerMeasurement(user=self.user)
         player_profile.save()
         return player_profile
 
     def get_player_profile(self):
         if not self.user:
             return None
-        player_profiles = Player.objects.filter(user=self.user)
+        player_profiles = PlayerMeasurement.objects.filter(user=self.user)
         if player_profiles:
             return player_profiles[0]
         else:
@@ -210,11 +214,10 @@ class Bookings(models.Model):
     comments = models.CharField(max_length=200, default="no", blank=True, null=True)
 
     def __str__(self):
-        text = self.larp.name + " run " + str(self.run)
+        text = ""
+        if self.larp:
+            text += self.larp.name + " run " + str(self.run)
         text += " - " + self.user.first_name + " " + self.user.last_name
-        character = self.get_character()
-        if character:
-            text += ". " + character.name
         return text
 
     def get_data(self):
@@ -248,10 +251,9 @@ class Uniform(models.Model):
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
+        text = self.name
         if self.group:
-            text = self.group.name
-        else:
-            text = "Group not assigned"
+            text += self.group.name
         return text
 
     def get_sizes(self):
@@ -334,7 +336,7 @@ class UniformSize(models.Model):
     waist_max = models.IntegerField()
 
     def __str__(self):
-        text = ""
+        text = self.uniform.name + " "
         if self.gender:
             text = self.gender + ". "
         if self.american_size:

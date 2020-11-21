@@ -45,12 +45,12 @@ class CharactersListView(generic.ListView):
 
 class PlayersListView(generic.ListView):
     def get_queryset(self):
-        return Player.objects.all()
+        return PlayerMeasurement.objects.all()
 
 def get_player_profile(user):
-    profiles = Player.objects.filter(user=user)
+    profiles = PlayerMeasurement.objects.filter(user=user)
     if len(profiles) == 0:
-        player = Player(user=user)
+        player = PlayerMeasurement(user=user)
     else:
         player = profiles[0]
     return player

@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from larps.config import larp_name
 from larps.models import *
 from .examples import example_players_complete, example_characters
 
@@ -16,18 +15,18 @@ def create_user(player_info=example_players_complete[0]):
 
 def create_player(player_info=example_players_complete[0]):
     user = create_user(player_info)
-    player_search = Player.objects.filter(user=user)
+    player_search = PlayerMeasurement.objects.filter(user=user)
     if player_search:
         return player_search[0]
-    player = Player(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
+    player = PlayerMeasurement(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
     player.save()
     return player
 
-def create_group(group_name=""):
+def create_group(group_name="", larp_name = "Mission Together"):
     group_search = Group.objects.filter(name=group_name)
     if group_search:
         return group_search[0]
-    larp = Larp(name = larp_name())
+    larp = Larp(name = larp_name)
     larp.save()
     group = Group(larp=larp, name=group_name)
     group.save()

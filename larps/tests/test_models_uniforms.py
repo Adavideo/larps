@@ -46,7 +46,7 @@ class UniformModelTests(TestCase):
         self.assertEqual(size.chest_max, 0)
         self.assertEqual(size.waist_min, 0)
         self.assertEqual(size.waist_max, 0)
-        self.assertEqual(str(size), "chest(0,0) waist(0,0)")
+        self.assertEqual(str(size), " chest(0,0) waist(0,0)")
 
     def test_recommend_sizes_perfect_fit(self):
         player_info = example_players_complete[0]

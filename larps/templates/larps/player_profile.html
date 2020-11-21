@@ -8,6 +8,7 @@
 <form action="/larps/player_profile/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    * Our uniform provider does not have their sizes as unisex, unfortunately. We understand gender is not binary, and encourage participants to order what clothing style they prefer.<br>
     <input type="submit" value="Save">
 </form>
 {% endblock %}
