@@ -99,28 +99,28 @@ def process_character_info(column):
             result += ". Character invalid"
     return result
 
-def create_uniform(uniform_name, group_name, color):
-    group = get_group(group_name, larp_name())
-    uniform, created = Uniform.objects.update_or_create(name=uniform_name, group=group, color=color)
+def create_uniform(uniform_name):
+    uniform, created = Uniform.objects.update_or_create(name=uniform_name)
     return uniform
 
 def process_size_info(column):
+    # uniform_name	gender	american_size	european_size	chest_min	chest_max	arm_min	arm_max	waist_min	waist_max	shoulder_ min	shoulder_max	torso_min	torso_max	body_min	body_max
     size_information = {}
-    size_information["gender"] = column[3]
-    size_information["american_size"] = column[4]
-    size_information["european_size"] = column[5]
-    size_information["chest_min"] = column[6]
-    size_information["chest_max"] = column[7]
+    size_information["gender"] = column[1]
+    size_information["american_size"] = column[2]
+    size_information["european_size"] = column[3]
+    size_information["chest_min"] = column[4]
+    size_information["chest_max"] = column[5]
+    size_information["arm_min"] = column[6]
+    size_information["arm_max"] = column[7]
     size_information["waist_min"] = column[8]
     size_information["waist_max"] = column[9]
     return size_information
 
 def process_uniform_info(column):
-    # name ,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max
+    # uniform_name	gender	american_size	european_size	chest_min	chest_max	arm_min	arm_max	waist_min	waist_max	shoulder_ min	shoulder_max	torso_min	torso_max	body_min	body_max
     uniform_name = column[0]
-    group_name = column[1]
-    color = column[2]
-    uniform = create_uniform(uniform_name, group_name, color)
+    uniform = create_uniform(uniform_name)
     if uniform:
         size_information = process_size_info(column)
         size = uniform.add_size(size_information)
@@ -155,7 +155,7 @@ def process_data(data_set):
         return ["Incorrect file type"]
 
     result = []
-    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+    for column in csv.reader(io_string, delimiter=';', quotechar="|"):
         r = process_csv_line(column, file_type)
         result.append(r)
     return result

@@ -7,11 +7,13 @@ from django.contrib.auth.models import User
 class Player(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=200, blank=True)
-    shoulder = models.IntegerField(default=0)
-    height = models.IntegerField(default=0)
     chest = models.IntegerField(default=0)
+    arm_length = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
-    sleeve_length = models.IntegerField(default=0)
+    shoulder_length = models.IntegerField(default=0)
+    torso_length = models.IntegerField(default=0)
+    body_length = models.IntegerField(default=0)
+
 
     def __str__(self):
         if (self.user.first_name):
@@ -23,21 +25,23 @@ class Player(models.Model):
     def get_data(self):
         data = {
             'gender' : self.gender,
-            'shoulder' : self.shoulder,
-            'height' : self.height,
             'chest' : self.chest,
+            'arm_length' : self.arm_length,
             'waist' : self.waist,
-            'sleeve_length' : self.sleeve_length,
+            'shoulder_length' : self.shoulder_length,
+            'torso_length' : self.torso_length,
+            'body_length' : self.body_length,
         }
         return data
 
     def save_profile(self, new_data):
         self.gender = new_data['gender']
-        self.shoulder = new_data['shoulder']
-        self.height = new_data['height']
         self.chest = new_data['chest']
+        self.arm_length = new_data['sleeve_length']
         self.waist = new_data['waist']
-        self.sleeve_length = new_data['sleeve_length']
+        self.shoulder_length = new_data['shoulder_length']
+        self.torso_length = new_data['torso_length']
+        self.body_length = new_data['body_length']
         self.save()
 
 
@@ -253,7 +257,7 @@ class Uniform(models.Model):
     def __str__(self):
         text = self.name
         if self.group:
-            text += " - "+ self.group.name
+            text += self.group.name
         return text
 
     def get_sizes(self):
@@ -336,7 +340,7 @@ class UniformSize(models.Model):
     waist_max = models.IntegerField()
 
     def __str__(self):
-        text = ""
+        text = self.uniform.name + " "
         if self.gender:
             text = self.gender + ". "
         if self.american_size:

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from larps.models import Character
 from larps.csv_importer import process_csv_line, process_data, get_file_type, create_user, create_character, assign_character_to_user
 from larps.config import csv_file_types, larp_name
-from .examples import empty_data_set, uniforms_data_set, characters_data_set, incorrect_data_set, correct_size_examples, incorrect_size_examples
+from .examples import uniforms_csv_example, characters_csv_example, incorrect_csv, correct_size_examples, incorrect_size_examples
 
 
 # CSV IMPORT CHARACTERS
@@ -136,7 +136,7 @@ class CSVCharactersTests(TestCase):
         """
         process_data() checks that the data from the csv file is processed correctly
         """
-        result = process_data(characters_data_set)
+        result = process_data(characters_csv_example)
         self.assertEqual(result, ['Character Ono assigned to Werner Mikolasch', 'Character Fuertes assigned to Fabio '])
 
 
@@ -167,23 +167,23 @@ class CSVUniformsTests(TestCase):
     def test_process_csv_line_correct(self):
         column = correct_size_examples[3]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, "Pilots - female. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_not_esential_info_missing(self):
         column = incorrect_size_examples[0]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, "Pilots - women. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, "Pilots - female. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_no_group(self):
         column = incorrect_size_examples[1]
         result = process_csv_line(column, self.csv_type)
-        expected_result = "Group not assigned - women. L/44 chest(98,102) waist(82,86)"
+        expected_result = " - female. L/44 chest(98,102) waist(82,86)"
         self.assertEqual(result, expected_result)
 
     def test_process_csv_line_group_blank_space(self):
         column = incorrect_size_examples[2]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, "Group not assigned - women. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, " - female. L/44 chest(98,102) waist(82,86)")
 
 
 class CSVFileTypesTests(TestCase):
@@ -201,20 +201,20 @@ class CSVFileTypesTests(TestCase):
         self.assertEqual(result, self.character_file_type)
 
     def test_correct_header_uniforms(self):
-        header = "name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max"
+        header = "uniform_name,gender,american_size,european_size,chest_min,chest_max,arm_min,arm_max,waist_min,waist_max,shoulder_ min,shoulder_max,torso_min,torso_max,body_min,body_max"
         result = get_file_type(header)
         self.assertEqual(result, self.uniform_file_type)
 
     def test_correct_data_set_characters(self):
-        result = process_data(characters_data_set)
+        result = process_data(characters_csv_example)
         self.assertEqual(result, ["Character Ono assigned to Werner Mikolasch",
                                 "Character Fuertes assigned to Fabio "])
 
-    def test_correct_data_set_uniforms(self):
-        result = process_data(uniforms_data_set)
-        self.assertEqual(result, ["Pilots - women. S/38 chest(86,90) waist(70,74)",
-                                "Pilots - women. M/40 chest(90,94) waist(74,78)"])
+    def test_correct_uniforms(self):
+        result = process_data(uniforms_csv_example)
+        self.assertEqual(result, ["Pilots - female. S/38 chest(86,90) waist(70,74)",
+                                "Pilots - female. M/40 chest(90,94) waist(74,78)"])
 
     def test_incorrect_data_set(self):
-        result = process_data(incorrect_data_set)
+        result = process_data(incorrect_csv)
         self.assertEqual(result, ["Incorrect file type"])

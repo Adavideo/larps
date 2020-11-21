@@ -1,8 +1,10 @@
 file_types = [("Characters","Characters"),
             ("Uniforms", "Uniforms")]
 
-file_headers = [ {"file_type":"Characters", "header": "run,player,character,group,planet,rank"},
-                {"file_type":"Uniforms", "header": "name,group,color,gender,american_size,european_size,chest_min,chest_max,waist_min,waist_max"}
+file_headers = [ {"file_type":"Characters",
+                    "header": "run,player,character,group,planet,rank"},
+                 {"file_type":"Uniforms",
+                    "header": "uniform_name;gender;american_size;european_size;chest_min;chest_max;arm_min;arm_max;waist_min;waist_max;shoulder_ min;shoulder_max;torso_min;torso_max;body_min;body_max"},
                 ]
 
 
