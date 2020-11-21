@@ -16,10 +16,10 @@ def create_user(player_info=example_players_complete[0]):
 
 def create_player(player_info=example_players_complete[0]):
     user = create_user(player_info)
-    player_search = Player.objects.filter(user=user)
+    player_search = PlayerMeasurement.objects.filter(user=user)
     if player_search:
         return player_search[0]
-    player = Player(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
+    player = PlayerMeasurement(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
     player.save()
     return player
 

@@ -3,7 +3,7 @@ from .models import *
 
 admin.site.register(Larp)
 admin.site.register(Group)
-admin.site.register(Player)
+admin.site.register(PlayerMeasurement)
 admin.site.register(Character)
 admin.site.register(CharacterAssigment)
 admin.site.register(Bookings)

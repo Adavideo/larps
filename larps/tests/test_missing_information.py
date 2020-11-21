@@ -1,5 +1,5 @@
 from django.test import TestCase
-from larps.models import Larp, Player, Bookings
+from larps.models import Larp, Bookings
 from .util_test import create_group, create_characters_assigments, create_character_assigment, set_bookings
 from .examples import example_players_complete, example_players_incomplete, example_bookings
 

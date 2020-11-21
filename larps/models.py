@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# PLAYER PROFILES
+# PLAYER MEASUREMENT
 
-class Player(models.Model):
+class PlayerMeasurement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=200, blank=True)
     chest = models.IntegerField(default=0)
@@ -165,14 +165,14 @@ class CharacterAssigment(models.Model):
         return self.character.group.larp
 
     def create_player_profile(self):
-        player_profile = Player(user=self.user)
+        player_profile = PlayerMeasurement(user=self.user)
         player_profile.save()
         return player_profile
 
     def get_player_profile(self):
         if not self.user:
             return None
-        player_profiles = Player.objects.filter(user=self.user)
+        player_profiles = PlayerMeasurement.objects.filter(user=self.user)
         if player_profiles:
             return player_profiles[0]
         else:

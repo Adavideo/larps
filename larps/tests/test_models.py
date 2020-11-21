@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from larps.config import larp_name
-from larps.models import Player, Character, CharacterAssigment, Larp, Group, Bookings
+from larps.models import PlayerMeasurement, Character, CharacterAssigment, Larp, Group, Bookings
 from .util_test import create_player, create_group, create_characters_assigments, create_character_assigment
 from .util_test_uniforms import create_uniform_with_player_in_several_runs
 from .examples import example_players_complete, example_players_incomplete, example_characters, example_groups, example_sizes
@@ -9,11 +9,11 @@ from .examples import example_players_complete, example_players_incomplete, exam
 
 # PLAYER PROFILES
 
-class PlayerModelTests(TestCase):
+class PlayerMeasurementModelTests(TestCase):
 
     def test_create_player_profile(self):
         """
-        create_player_profile() creates a Player object asociated to a test User account.
+        create_player_profile() creates a PlayerMeasurement object asociated to a test User account.
         """
         player_info = example_players_complete[0]
         player = create_player(player_info)
@@ -23,13 +23,13 @@ class PlayerModelTests(TestCase):
 
     def test_create_player_profile_with_size_information(self):
         """
-        create_player_profile_with_size_information() creates a Player object asociated to a test User account
+        create_player_profile_with_size_information() creates a PlayerMeasurement object asociated to a test User account
         and adds information about the size of the player.
         """
         test_user = User(username="ana")
-        test_player = Player(user=test_user, shoulder= 40, height = 160, chest = 90, waist = 90)
-        self.assertIs(test_player.shoulder, 40)
-        self.assertIs(test_player.height, 160)
+        test_player = PlayerMeasurement(user=test_user, shoulder_length= 40, body_length = 160, chest = 90, waist = 90)
+        self.assertIs(test_player.shoulder_length, 40)
+        self.assertIs(test_player.body_length, 160)
         self.assertIs(test_player.chest, 90)
         self.assertIs(test_player.waist, 90)
 
@@ -66,7 +66,7 @@ class GroupModelTests(TestCase):
             user = user_search[0]
             self.assertEqual(user.username, player_info["username"])
             # Testins player profile creation
-            player_profiles = Player.objects.filter(user=user)
+            player_profiles = PlayerMeasurement.objects.filter(user=user)
             self.assertEqual(len(player_profiles), 1)
             self.assertEqual(player_profiles[0].gender, player_info["gender"])
             # Testing character creation
@@ -88,7 +88,7 @@ class GroupModelTests(TestCase):
         group = create_group()
         player_profiles = group.get_player_profiles()
         self.assertEqual(player_profiles, [])
-        all_profiles = Player.objects.all()
+        all_profiles = PlayerMeasurement.objects.all()
         self.assertEqual(str(all_profiles), "<QuerySet []>" )
 
     def test_get_character_assigments(self):
@@ -107,7 +107,7 @@ class GroupModelTests(TestCase):
         group = create_group()
         create_characters_assigments(group=group, players=example_players_incomplete, characters=example_characters)
         player_profiles = group.get_player_profiles()
-        self.assertEqual(str(player_profiles), "[<Player: Maria Gonzalez>, <Player: Andrea Hernandez>]")
+        self.assertEqual(str(player_profiles), "[<PlayerMeasurement: Maria Gonzalez>, <PlayerMeasurement: Andrea Hernandez>]")
         self.assertEqual(player_profiles[0].user.username, example_players_incomplete[0]["username"])
         self.assertEqual(player_profiles[0].chest, 0)
         self.assertEqual(player_profiles[0].waist, 0)
@@ -122,7 +122,7 @@ class GroupModelTests(TestCase):
         group = create_group()
         create_characters_assigments(group, players=example_players_complete, characters=example_characters[2:4])
         player_profiles = group.get_player_profiles()
-        self.assertEqual(str(player_profiles), "[<Player: Ana Garcia>, <Player: Pepa Perez>]")
+        self.assertEqual(str(player_profiles), "[<PlayerMeasurement: Ana Garcia>, <PlayerMeasurement: Pepa Perez>]")
         self.assertEqual(player_profiles[0].user.username, example_players_complete[0]["username"])
         self.assertEqual(player_profiles[0].chest, example_players_complete[0]["chest"])
         self.assertEqual(player_profiles[0].waist, example_players_complete[0]["waist"])

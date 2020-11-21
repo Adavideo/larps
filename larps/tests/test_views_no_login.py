@@ -25,16 +25,6 @@ class ViewsTestsNoLogin(TestCase):
         test_page_no_login(self, url)
 
 
-    # PLAYERS LIST
-
-    def test_players_list_page_no_login(self):
-        """
-            players_list_no_login() checks that it redirects to login when trying to access this page anonimously.
-        """
-        url = reverse('larps:players_list')
-        test_page_no_login(self, url)
-
-
     # CHARACTER PAGE
 
     def test_character_page_no_login(self):
