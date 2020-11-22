@@ -74,10 +74,12 @@ uniforms_csv_example = '''uniform_name;gender;american_size;european_size;chest_
 Pilots;female;S;38;86;90;70;74;70;74
 Pilots;female;M;40;90;94;74;78;74;78'''
 
-characters_csv_example = '''larp;run;player;character;group;race
-Mission Together;1;Werner Mikolasch;Ono;agriculture teacher;Rhea
-Mission Together;2;Fabio;Fuertes;artist teacher;Kepler'''
+characters_csv_example = '''larp;run;email;name;character;group;race
+Mission Together;1;test1@email.com;Werner Mikolasch;Ono;agriculture teacher;Rhea
+Mission Together;2;test2@email.com;Fabio;Fuertes;artist teacher;Kepler'''
 
 incorrect_csv = '''character;group;planet
 1;Werner Mikolasch;Ono;agriculture teacher;Rhea
 2;Fabio;Fuertes;artist teacher;Kepler'''
+
+example_email = "test1@email.com"

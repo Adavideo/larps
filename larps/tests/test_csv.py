@@ -16,26 +16,26 @@ class CSVCharactersTests(TestCase):
 
     def test_create_user_correct(self):
         player_name = "Ana Perez"
-        new_user = create_user(player_name)
+        new_user = create_user(player_name, example_email)
         self.assertEqual(new_user.username, "Ana_Perez")
         self.assertEqual(new_user.first_name, "Ana")
         self.assertEqual(new_user.last_name, "Perez")
 
     def test_create_user_one_name(self):
         player_name = "Ana"
-        new_user = create_user(player_name)
+        new_user = create_user(player_name, example_email)
         self.assertEqual(new_user.username, "Ana")
         self.assertEqual(new_user.first_name, "Ana")
         self.assertEqual(new_user.last_name, "")
 
     def test_create_user_empty(self):
         player_name = ""
-        new_user = create_user(player_name)
+        new_user = create_user(player_name, example_email)
         self.assertEqual(new_user, None)
 
     def test_create_user_blank_space(self):
         player_name = " "
-        new_user = create_user(player_name)
+        new_user = create_user(player_name, example_email)
         self.assertEqual(new_user, None)
 
     # Tests for create characters
@@ -104,27 +104,27 @@ class CSVCharactersTests(TestCase):
     # Test for processing lines
 
     def test_process_csv_line_correct(self):
-        column = ['Mission Together', '1', 'Werner Mikolasch', 'Ono', 'agriculture teacher', 'Rhea']
+        column = ['Mission Together', '1', 'test1@email.com', 'Werner Mikolasch', 'Ono', 'agriculture teacher', 'Rhea']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'Character Ono assigned to Werner Mikolasch')
 
     def test_process_csv_line_no_user(self):
-        column = ['Mission Together', '1', '', 'Fuertes', 'artist teacher', 'Kepler']
+        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes', 'artist teacher', 'Kepler']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid')
 
     def test_process_csv_line_user_blank_space(self):
-        column = ['Mission Together', '1', ' ', 'Fuertes', 'artist teacher', 'Kepler']
+        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes', 'artist teacher', 'Kepler']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid')
 
     def test_process_csv_line_correct_user_but_no_character(self):
-        column = ['Mission Together', '2', 'Samuel Bascomb', '', '', '']
+        column = ['Mission Together', '2', 'test1@email.com', 'Samuel Bascomb', '', '', '']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'Created user Samuel Bascomb. Character invalid')
 
     def test_process_csv_line_no_user_and_no_character(self):
-        column = ['Mission Together', '2', '', '', '', '']
+        column = ['Mission Together', '2', 'test1@email.com','', '', '', '']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid. Character invalid')
 
@@ -143,16 +143,16 @@ class CSVCharactersTests(TestCase):
         """
         process_data_with_invalid_users() checks that no users are created when the player name is empty or a blank space
         """
-        data = """larp;run;player;character;group;race
-        Mission Together;1;;Fuertes;artist teacher;Kepler;lieutenant
-        Mission Together;2;;Ono;agriculture teacher;Rhea;lieutenant"""
+        data = """larp;run;email;name;character;group;race
+        Mission Together;1;;;Fuertes;artist teacher;Kepler;lieutenant
+        Mission Together;2;;;Ono;agriculture teacher;Rhea;lieutenant"""
         result = process_data(data)
         self.assertEqual(result, ['User invalid', 'User invalid'])
 
 
     def test_process_data_with_wrong_character(self):
-        data = """larp;run;player;character;group;race
-        Mission Together;2;Samuel Bascomb;;;;"""
+        data = """larp;run;email;name;character;group;race
+        Mission Together;2;;Samuel Bascomb;;;;"""
         result = process_data(data)
         self.assertEqual(result, ['Created user Samuel Bascomb. Character invalid'])
 
