@@ -98,13 +98,14 @@ def manage_bookings_view(request, larp_id, run):
     larp = Larp.objects.get(id=larp_id)
     bookings = get_bookings(request.user, larp, run)
     if not bookings:
-        return HttpResponseRedirect('/larps/bookings')
+        url = reverse('larps:bookings_list')
+        return HttpResponseRedirect(url)
 
     if request.method == 'POST':
         form = BookingsForm(request.POST, larp_id)
         if form.is_valid():
             bookings.save_bookings(form.cleaned_data)
-            url = '/larps/bookings/'+ str(bookings.id)
+            url = reverse('larps:bookings', args=[bookings.id])
             return HttpResponseRedirect(url)
     else:
         bookings_data = bookings.get_data()

@@ -31,7 +31,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             character_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = "/larps/character/1/"
+        url = reverse('larps:character', args=[1])
         test_page_no_login(self, url)
 
 
@@ -51,7 +51,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             bookings_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = "/larps/bookings/1/"
+        url = reverse('larps:bookings', args=[1])
         test_page_no_login(self, url)
 
 
@@ -61,7 +61,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             bookings_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = "/larps/bookings/larp_1/run_1/"
+        url = "/bookings/larp_1/run_1/"
         test_page_no_login(self, url)
 
 
