@@ -1,11 +1,11 @@
 {% extends 'larps/base.html' %}
 
-{% block title %} {{ user.first_name }} {{ user.last_name }} profile {% endblock %}
+{% block title %} {{ user.first_name }} {{ user.last_name }} uniform {% endblock %}
 
 {% block content %}
 <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
-<form action="/larps/player_profile/" method="post">
+<form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     * Our uniform provider does not have their sizes as unisex, unfortunately. We understand gender is not binary, and encourage participants to order what clothing style they prefer.<br>

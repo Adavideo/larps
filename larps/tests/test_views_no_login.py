@@ -17,11 +17,11 @@ class ViewsTestsNoLogin(TestCase):
 
     # PLAYER PROFILE
 
-    def test_player_profile_page_no_login(self):
+    def test_measurements_form_no_login(self):
         """
-            player_profile_page_no_login() checks that it redirects to login when trying to access this page anonimously.
+            measurements_form_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = reverse('larps:player_profile')
+        url = reverse('larps:measurements_form')
         test_page_no_login(self, url)
 
 

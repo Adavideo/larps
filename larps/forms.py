@@ -3,7 +3,7 @@ from .models import Larp
 from .forms_util import *
 
 
-class PlayerForm(forms.Form):
+class MeasurementsForm(forms.Form):
     gender = forms.ChoiceField(choices=gender_choices(), label="Gender", help_text="What is the style you prefer?*")
     chest = forms.IntegerField(label='A - chest circunference', help_text='in cm')
     arm_length = forms.IntegerField(label='B - Arm length', help_text='in cm')

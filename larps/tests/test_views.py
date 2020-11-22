@@ -15,14 +15,11 @@ class ViewsTests(TestCase):
 
     def test_csv_upload_page(self):
         url = reverse('larps:file_upload')
-        # response = test_correct_page(self, url)
-        # self.assertContains(response, "Import CSV files")
 
 
     # PAGE FOR UNIFORMS
     def test_uniforms_page(self):
         url = reverse("larps:uniforms")
-        #response = test_correct_page(self, url)
 
 
     def test_generate_bookings(self):
