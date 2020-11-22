@@ -12,10 +12,10 @@
 <p style="text-align:right;">
 {% if user.first_name %}
 {{ user.first_name }} {{ user.last_name }}
- -  <a href="/larps/logout">Logout
+ -  <a href="/logout">Logout
 {% elif user.username %}
 {{ user.username }}
- -  <a href="/larps/logout">Logout
+ -  <a href="/logout">Logout
 {% else %}
 <a href="/accounts/login">Login
 {% endif %}
