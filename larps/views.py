@@ -7,11 +7,10 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
 from .forms import *
 from .models import *
 from .csv_importer import process_csv
-from .config import csv_file_types
+from config import csv_file_types
 
 
 

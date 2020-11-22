@@ -1,7 +1,7 @@
 import csv, io
 from django.contrib.auth.models import User
 from .models import *
-from .config import *
+from config import *
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
 

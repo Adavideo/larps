@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from config import csv_file_types, uniforms_header, characters_header
 from larps.models import Character
 from larps.csv_importer import *
-from larps.config import csv_file_types, uniforms_header, characters_header
 from .examples import *
 
 
