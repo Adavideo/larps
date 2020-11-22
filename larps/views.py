@@ -1,5 +1,5 @@
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse
 from django.views import generic
@@ -8,11 +8,23 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import *
-from .models import *
 from .csv_importer import process_csv
 from config import csv_file_types
+from .views_util import *
 
 
+# HOME AND LOGOUT
+
+def home_view(request):
+    template = 'larps/home.html'
+    assigments = CharacterAssigment.objects.filter(user=request.user)
+    larps = Larp.objects.all()
+    context = {'user': request.user, 'character_assigments': assigments, 'larps': larps }
+    return render(request, template, context)
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/accounts/login/')
 
 def not_allowed_view(request):
     template = "larps/not_allowed.html"
@@ -20,112 +32,57 @@ def not_allowed_view(request):
     return render(request, template, context)
 
 
-# HOME AND LOGOUT
+# PLAYERS MEASUREMENTS
 
-def home_view(request):
-    return render(request, 'larps/home.html', {'user': request.user})
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect('/accounts/login/')
-
-
-# CHARACTERS
-
-class CharacterView(generic.DetailView):
-    model = Character
-
-class CharactersListView(generic.ListView):
-    def get_queryset(self):
-        return Character.objects.all()
-
-
-# PLAYERS
-
-def get_measurements(user):
-    measurements_search = PlayerMeasurement.objects.filter(user=user)
-    if len(measurements_search) == 0:
-        measurements = PlayerMeasurement(user=user)
-    else:
-        measurements = measurements_search[0]
-    return measurements
-
-def measurements_form_view(request):
+def measurements_form_view(request, larp_id, run):
     template = 'larps/measurements_form.html'
-    context = {'user': request.user}
+    context = build_context(request, larp_id, run)
     measurements = get_measurements(request.user)
     if request.method == 'POST':
         form = MeasurementsForm(request.POST)
         if form.is_valid():
             measurements.save_profile(form.cleaned_data)
-            url = reverse('larps:home')
-            return HttpResponseRedirect(url)
     else:
         data = measurements.get_data()
-        context["form"] = MeasurementsForm(data)
+        form = MeasurementsForm(data)
+    context["form"] = form
     return render(request, template, context)
 
 
 # BOOKINGS
 
-def generate_bookings(user):
-    assigments = CharacterAssigment.objects.filter(user=user)
-    for assigment in assigments:
-        booking = assigment.get_bookings()
-
-class BookingsView(generic.DetailView):
-    model = Bookings
-
-class BookingsListView(generic.ListView):
-    def get_queryset(self):
-        user = self.request.user
-        if not user.is_authenticated:
-            user_bookings = Bookings.objects.none()
-        else:
-            generate_bookings(user)
-            user_bookings = Bookings.objects.filter(user=user)
-        return user_bookings
-
-def get_bookings(user, larp, run):
-    bookings_list = Bookings.objects.filter(user=user, larp=larp, run=run)
-    if len(bookings_list) == 0:
-        return None
-    else:
-        bookings = bookings_list[0]
-    return bookings
-
 def manage_bookings_view(request, larp_id, run):
-    larp = Larp.objects.get(id=larp_id)
-    bookings = get_bookings(request.user, larp, run)
+    template = 'larps/bookings_form.html'
+    context = build_context(request, larp_id, run)
+    bookings = get_bookings(request.user, context['larp'], run)
     if not bookings:
-        url = reverse('larps:bookings_list')
+        url = reverse('larps:home')
         return HttpResponseRedirect(url)
 
     if request.method == 'POST':
         form = BookingsForm(request.POST, larp_id)
         if form.is_valid():
             bookings.save_bookings(form.cleaned_data)
-            url = reverse('larps:bookings', args=[bookings.id])
-            return HttpResponseRedirect(url)
     else:
         bookings_data = bookings.get_data()
         form = BookingsForm(bookings_data, larp_id)
-    return render(request, 'larps/bookings_form.html', {'form': form, 'user': request.user, 'larp': larp, 'run': run })
+    context['form'] = form
+    return render(request, template, context)
+
+
+# CHARACTERS
+
+def characters_run_view(request, larp_id, run):
+    template = "larps/character_list.html"
+    context = build_context(request, larp_id, run)
+    context['character_list'] = get_characters(context['larp'])
+    return render(request, template, context)
+
+class CharacterView(generic.DetailView):
+    model = Character
 
 
 # CSV IMPORTER
-
-def get_context_info():
-    characters = Character.objects.all()
-    players = User.objects.all()
-    assigments = CharacterAssigment.objects.all()
-    context = {
-                'characters': characters,
-                'players': players,
-                'assigments' : assigments
-              }
-    return context
-
 
 def file_upload_view(request):
     if not request.user.is_staff:
@@ -140,7 +97,6 @@ def file_upload_view(request):
         context["result"] = result
 
     return render(request, template, context)
-
 
 
 # UNIFORMS

@@ -3,7 +3,7 @@
 {% block title %} Bookings for {{ larp.name }} run {{ run }} {% endblock %}
 
 {% block content %}
-<h1>Bookings for {{ larp.name }} run {{ run }} </h1>
+<h2>Bookings</h2>
 
 <form action="{% url 'larps:manage_bookings' larp.id run %}" method="post">
     {% csrf_token %}
