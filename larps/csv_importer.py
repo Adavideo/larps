@@ -1,7 +1,7 @@
 import csv, io
 from django.contrib.auth.models import User
 from .models import *
-from .config import *
+from config import *
 
 # CREATE ELEMENTS (USERS, CHARACTERS...) BASED ON CSV INFORMATION
 
@@ -30,20 +30,19 @@ def get_group(group_name, larp_name):
         group.save()
         return group
 
-def create_user(player_name):
-    if empty(player_name):
-        return None
+def create_user(player_name, email):
+    if empty(player_name): return None
 
     name_parts = player_name.split(' ')
     username = "_".join(name_parts)
     first_name = name_parts[0]
     last_name = " ".join(name_parts[1:])
 
-    user, created = User.objects.update_or_create(
-        username=username,
-        first_name=first_name,
-        last_name=last_name
-    )
+    user, created = User.objects.update_or_create(username=username)
+    user.first_name = first_name
+    user.last_name = last_name
+    user.email = email
+    user.save()
     return user
 
 
@@ -78,15 +77,16 @@ def assign_character_to_user(user, character, run):
 # PROCESS CSV FILE
 
 def process_character_info(column):
-    # larp;run;player;character;group;race
+    # larp;run;email;name;character;group;race
     larp = column[0]
     run = column[1]
-    player_name = column[2]
-    character_name = column[3]
-    character_group = column[4]
-    character_race = column[5]
+    email = column[2]
+    player_name = column[3]
+    character_name = column[4]
+    character_group = column[5]
+    character_race = column[6]
 
-    user = create_user(player_name)
+    user = create_user(player_name, email)
     character = create_character(larp, character_name, character_group, character_race)
 
     if user and character:
