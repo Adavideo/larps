@@ -42,10 +42,6 @@ class CharactersListView(generic.ListView):
 
 # PLAYERS
 
-class PlayersListView(generic.ListView):
-    def get_queryset(self):
-        return PlayerMeasurement.objects.all()
-
 def get_player_profile(user):
     profiles = PlayerMeasurement.objects.filter(user=user)
     if len(profiles) == 0:
