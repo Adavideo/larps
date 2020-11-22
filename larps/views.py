@@ -113,13 +113,13 @@ def uniform_sizes_view(request, uniform_id):
     if not request.user.is_staff:
         return not_allowed_view(request)
     template = "larps/uniforms.html"
+    context = { "uniforms": Uniform.objects.all() }
     selected_uniform = Uniform.objects.get(id=uniform_id)
-    players_with_sizes = selected_uniform.get_players_with_recommended_sizes()
-    context = {}
-    context["group"] = selected_uniform.group
-    context["uniforms"] = Uniform.objects.all()
-    context["players"] = players_with_sizes
-    context["sizes"] = selected_uniform.get_sizes_with_quantities(players_with_sizes)
+    if selected_uniform.group:
+        context["group"] = selected_uniform.group
+        players_with_sizes = selected_uniform.get_players_with_recommended_sizes()
+        context["players"] = players_with_sizes
+        context["sizes"] = selected_uniform.get_sizes_with_quantities(players_with_sizes)
     return render(request, template, context)
 
 
