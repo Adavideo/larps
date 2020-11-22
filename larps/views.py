@@ -42,30 +42,28 @@ class CharactersListView(generic.ListView):
 
 # PLAYERS
 
-class PlayersListView(generic.ListView):
-    def get_queryset(self):
-        return PlayerMeasurement.objects.all()
-
-def get_player_profile(user):
-    profiles = PlayerMeasurement.objects.filter(user=user)
-    if len(profiles) == 0:
-        player = PlayerMeasurement(user=user)
+def get_measurements(user):
+    measurements_search = PlayerMeasurement.objects.filter(user=user)
+    if len(measurements_search) == 0:
+        measurements = PlayerMeasurement(user=user)
     else:
-        player = profiles[0]
-    return player
+        measurements = measurements_search[0]
+    return measurements
 
-def player_profile_view(request):
-    player = get_player_profile(request.user)
+def measurements_form_view(request):
+    template = 'larps/measurements_form.html'
+    context = {'user': request.user}
+    measurements = get_measurements(request.user)
     if request.method == 'POST':
-        form = PlayerForm(request.POST)
+        form = MeasurementsForm(request.POST)
         if form.is_valid():
-            player.save_profile(form.cleaned_data)
+            measurements.save_profile(form.cleaned_data)
             url = reverse('larps:home')
             return HttpResponseRedirect(url)
     else:
-        player_data = player.get_data()
-        form = PlayerForm(player_data)
-    return render(request, 'larps/player_profile.html', {'form': form, 'user': request.user})
+        data = measurements.get_data()
+        context["form"] = MeasurementsForm(data)
+    return render(request, template, context)
 
 
 # BOOKINGS

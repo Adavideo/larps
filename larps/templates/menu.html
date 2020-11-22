@@ -1,0 +1,22 @@
+<p style="text-align:center;">
+  {% if not user.is_staff %}
+    {% include "menu_player.html" %}
+  {% else %}
+    {% include "menu_admin.html" %}
+  {% endif %}
+  <a href="{% url 'larps:characters_list' %}">
+  Characters
+  </a>
+</p>
+
+<p style="text-align:right;">
+{% if user.first_name %}
+{{ user.first_name }} {{ user.last_name }}
+ -  <a href="/larps/logout">Logout
+{% elif user.username %}
+{{ user.username }}
+ -  <a href="/larps/logout">Logout
+{% else %}
+<a href="/accounts/login">Login
+{% endif %}
+</a></p>
