@@ -11,41 +11,7 @@
         <div class="page-header">
             <center><h1><a href="{% url 'larps:home' %}">Not only Larps</a></h1></center>
 
-            <p style="text-align:center;">
-              {% if not user.is_staff %}
-                <a href="{% url 'larps:measurements_form' %}">
-                Uniform
-                </a> |
-                <a href="{% url 'larps:bookings_list' %}">
-                Bookings
-                </a> |
-              {% else %}
-                <a href="{% url 'larps:missing_info_index' %}">
-                Players missing information
-                </a> |
-                <a href="{% url 'larps:uniforms' %}">
-                Uniforms
-                </a> |
-                <a href="{% url 'larps:file_upload' %}">
-                File upload
-                </a> |
-              {% endif %}
-              <a href="{% url 'larps:characters_list' %}">
-              Characters
-              </a>
-            </p>
-
-            <p style="text-align:right;">
-            {% if user.first_name %}
-            {{ user.first_name }} {{ user.last_name }}
-             -  <a href="/larps/logout">Logout
-            {% elif user.username %}
-            {{ user.username }}
-             -  <a href="/larps/logout">Logout
-            {% else %}
-            <a href="/accounts/login">Login
-            {% endif %}
-            </a></p>
+            {% include "menu.html" %}
         </div>
 
         <div class="content container">
