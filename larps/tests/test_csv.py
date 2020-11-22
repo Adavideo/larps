@@ -166,23 +166,23 @@ class CSVUniformsTests(TestCase):
     def test_process_csv_line_correct(self):
         column = correct_size_examples[3]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, "Pilots - female. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, "Pilots - group not assigned - female. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_not_esential_info_missing(self):
         column = incorrect_size_examples[0]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, "Pilots - female. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, "Pilots - group not assigned - female. L/44 chest(98,102) waist(82,86)")
 
     def test_process_csv_line_no_group(self):
         column = incorrect_size_examples[1]
         result = process_csv_line(column, self.csv_type)
-        expected_result = " - female. L/44 chest(98,102) waist(82,86)"
+        expected_result = " - group not assigned - female. L/44 chest(98,102) waist(82,86)"
         self.assertEqual(result, expected_result)
 
     def test_process_csv_line_group_blank_space(self):
         column = incorrect_size_examples[2]
         result = process_csv_line(column, self.csv_type)
-        self.assertEqual(result, " - female. L/44 chest(98,102) waist(82,86)")
+        self.assertEqual(result, " - group not assigned - female. L/44 chest(98,102) waist(82,86)")
 
 
 class CSVFileTypesTests(TestCase):
@@ -209,8 +209,8 @@ class CSVFileTypesTests(TestCase):
 
     def test_correct_uniforms(self):
         result = process_data(uniforms_csv_example)
-        self.assertEqual(result, ["Pilots - female. S/38 chest(86,90) waist(70,74)",
-                                "Pilots - female. M/40 chest(90,94) waist(74,78)"])
+        self.assertEqual(result, ["Pilots - group not assigned - female. S/38 chest(86,90) waist(70,74)",
+                                "Pilots - group not assigned - female. M/40 chest(90,94) waist(74,78)"])
 
     def test_incorrect_data_set(self):
         result = process_data(incorrect_csv)

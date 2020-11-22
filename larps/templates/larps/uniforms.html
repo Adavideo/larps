@@ -2,6 +2,8 @@
 
 {% block content %}
 
+  <center><h2>Uniforms</h2></center>
+
   {% for uniform in uniforms %}
     <a href="{% url 'larps:uniform_sizes' uniform.id %}">
       {{ uniform }}

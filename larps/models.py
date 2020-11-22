@@ -14,7 +14,6 @@ class PlayerMeasurement(models.Model):
     torso_length = models.IntegerField(default=0)
     body_length = models.IntegerField(default=0)
 
-
     def __str__(self):
         if (self.user.first_name):
             name = self.user.first_name + " " + self.user.last_name
@@ -251,9 +250,11 @@ class Uniform(models.Model):
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        text = self.name
+        text = self.name + " - "
         if self.group:
             text += self.group.name
+        else:
+            text += "group not assigned"
         return text
 
     def get_sizes(self):
