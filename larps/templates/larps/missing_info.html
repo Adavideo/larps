@@ -2,13 +2,11 @@
 
 {% block content %}
 <center>
-<h2>{{ larp }} players missing information</h2>
+<h2>Players missing information</h2>
      {% for run_players in players_information %}
         <h3>
           {% if not run %}
-          <a href="{% url 'larps:missing_info_run' larp_id run_players.0.run %}">{{ larp }} run {{ run_players.0.run }}</a>
-          {% else %}
-             {{ larp }} run {{ run }}
+          <a href="{% url 'larps:missing_info_run' larp_id run_players.0.run %}">Run {{ run_players.0.run }}</a>
           {% endif %}
         </h3>
 

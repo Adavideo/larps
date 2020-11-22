@@ -5,7 +5,7 @@
 <center>
 
   {% for larp in larps %}
-    <h2><a href="{% url 'larps:missing_info' larp.id %}">{{ larp.name }}</a></h2><br>
+    <h2>{{ larp.name }}</h2><br>
 
     {% for run in larp.runs %}
         <h3><a href="{% url 'larps:missing_info_run' larp.id run %}">run {{ run }}</a></h3><br>
