@@ -12,7 +12,7 @@ class ViewsTestsNoLogin(TestCase):
             home_page() Test the home page is working
         """
         url = reverse('larps:home')
-        test_correct_page(self, url)
+        test_page_no_login(self, url)
 
 
     # PLAYER PROFILE
@@ -21,7 +21,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             measurements_form_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = reverse('larps:measurements_form')
+        url = reverse('larps:measurements_form', args=[1,1])
         test_page_no_login(self, url)
 
 
@@ -41,7 +41,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             characters_list_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = reverse('larps:characters_list')
+        url = reverse('larps:characters_run', args=[1,1])
         test_page_no_login(self, url)
 
 
@@ -51,7 +51,7 @@ class ViewsTestsNoLogin(TestCase):
         """
             bookings_page_no_login() checks that it redirects to login when trying to access this page anonimously.
         """
-        url = reverse('larps:bookings', args=[1])
+        url = reverse('larps:manage_bookings', args=[1,1])
         test_page_no_login(self, url)
 
 
@@ -64,15 +64,6 @@ class ViewsTestsNoLogin(TestCase):
         url = "/bookings/larp_1/run_1/"
         test_page_no_login(self, url)
 
-
-    # BOOKINGS LIST
-
-    def test_bookings_list_page_no_login(self):
-        """
-            bookings_list_page_no_login() checks that it redirects to login when trying to access this page anonimously.
-        """
-        url = reverse('larps:bookings_list')
-        test_page_no_login(self, url)
 
 
     # PAGE FOR CSV FILE UPLOAD

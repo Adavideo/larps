@@ -5,14 +5,14 @@ from . import views
 app_name = 'larps'
 
 urlpatterns = [
-    path('', views.home_view, name='home'),
+    path('', login_required(views.home_view), name='home'),
     path('logout/', views.logout_view, name='logout'),
-    path('uniform_measurements/', login_required(views.measurements_form_view), name='measurements_form'),
-    path('character/<int:pk>/', login_required(views.CharacterView.as_view()), name='character'),
-    path('characters', login_required(views.CharactersListView.as_view()), name='characters_list'),
-    path('bookings', login_required(views.BookingsListView.as_view()), name='bookings_list'),
-    path('bookings/<int:pk>/', login_required(views.BookingsView.as_view()), name='bookings'),
+    # USERS
+    path('uniform_measurements/larp_<int:larp_id>/run_<int:run>/', login_required(views.measurements_form_view), name='measurements_form'),
     path('bookings/larp_<int:larp_id>/run_<int:run>/', login_required(views.manage_bookings_view), name='manage_bookings'),
+    path('characters/larp_<int:larp_id>/run_<int:run>/', login_required(views.characters_run_view), name='characters_run'),
+    path('character/<int:pk>/', login_required(views.CharacterView.as_view()), name='character'),
+    # ADMINS
     path('file_upload/', login_required(views.file_upload_view), name='file_upload'),
     path('uniforms', login_required(views.uniforms_view), name="uniforms"),
     path('uniform_sizes/<int:uniform_id>', login_required(views.uniform_sizes_view), name="uniform_sizes"),

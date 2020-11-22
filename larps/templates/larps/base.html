@@ -9,9 +9,15 @@
     </head>
     <body>
         <div class="page-header">
+          {% if larp %}
+            <center><h1>{{ larp }}
+              {% if run %} run {{ run }}{% endif %}
+            </h1></center>
+          {% else %}
             <center><h1><a href="{% url 'larps:home' %}">Not only Larps</a></h1></center>
-
-            {% include "menu.html" %}
+          {% endif %}
+          {% include "menu.html" %}
+          {% include "login_menu.html" %}
         </div>
 
         <div class="content container">
