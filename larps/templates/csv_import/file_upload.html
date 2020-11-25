@@ -1,0 +1,32 @@
+{% extends 'larps/base.html' %}
+
+{% block title %}Import CSV files page{% endblock %}
+
+{% block content %}
+
+  <h2>Import CSV file - {{file_type}}</h2>
+  <hr>
+  {% if messages %}
+      {% for message in messages %}
+          <div>
+              <strong>{{message|safe}}</strong>
+          </div>
+      {% endfor %}
+      <hr>
+
+  {% else %}
+  {{order}}
+  <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Upload</button>
+  </form>
+  {% endif %}
+
+<hr>
+
+{% for line in result %}
+  {{ line }}<br>
+{% endfor %}
+
+{% endblock %}

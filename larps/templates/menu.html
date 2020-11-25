@@ -1,0 +1,10 @@
+<p style="text-align:center;">
+  {% if user.is_staff %}
+    {% include "menu_admin.html" %}
+  {% endif %}
+
+  {% if larp and run and not user.is_staff %}
+        {% include "menu_player.html" %}
+  {% endif %}
+
+</p>

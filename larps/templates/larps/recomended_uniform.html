@@ -1,0 +1,19 @@
+{% extends 'larps/base.html' %}
+
+{% block title %}{{ player.user.first_name }} {{ player.user.last_name }}{% endblock %}
+{% block content %}
+
+<h1>{{ player.user.first_name }} {{ player.user.last_name }}</h1>
+
+<hr>
+Meassurements
+<br>
+    shoulder {{ player.shoulder }}
+    <br>
+    height {{ player.height }}
+    <br>
+    chest {{ player.chest }}
+    <br>
+    waist {{ player.waist }}
+
+{% endblock %}

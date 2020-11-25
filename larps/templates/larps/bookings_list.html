@@ -1,10 +1,13 @@
+{% extends 'larps/base.html' %}
+
 {% block content %}
     <h2>Bookings</h2>
     <ul>
         {% for bookings in bookings_list %}
-          {{ bookings.character_assigment.larp }} run {{ bookings.character_assigment.run }}
-            <li><a href="{% url 'larps:bookings' bookings.id %}">
-              {{ bookings.character_assigment.character.name }} - {{ bookings.character_assigment.user.username }}</a></li>
+          <li>
+            <a href="{% url 'larps:manage_bookings' bookings.larp.id bookings.run %}">
+              {{ bookings.larp.name }} run {{ bookings.run }}
+            </a></li>
         {% endfor %}
     </ul>
 {% endblock %}

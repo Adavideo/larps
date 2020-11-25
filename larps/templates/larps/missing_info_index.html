@@ -1,0 +1,14 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+
+<center>
+
+  {% for larp in larps %}
+    <h3>{{ larp.name }} 
+    {% for run in larp.runs %}
+        <a href="{% url 'larps:missing_info_run' larp.id run %}">run {{ run }}</a>
+    {% endfor %}</h3>
+  {% endfor %}
+</center>
+{% endblock %}

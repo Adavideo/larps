@@ -1,8 +1,18 @@
+{% extends 'larps/base.html' %}
+
 {% block content %}
     <h2>Characters</h2>
-    <ul>
+
+    <table border=1 style="width:75%">
+      <th align="center">Character</th>
+      <th align="center">group</th>
+      <th align="center">race</th>
         {% for character in character_list %}
-            <li><a href="{% url 'larps:character' character.id %}">{{ character.name }}</a></li>
+          <tr>
+            <td align="center"><a href="{% url 'larps:character' character.id %}">{{ character.name }}</a> </td>
+            <td align="center"> {{character.group.name}} </td>
+            <td align="center">  {{character.race.name}} </td>
+          </tr>
         {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

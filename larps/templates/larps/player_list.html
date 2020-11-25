@@ -1,8 +1,0 @@
-{% block content %}
-    <h2>Players</h2>
-    <ul>
-        {% for player in player_list %}
-            <li><a href="{% url 'larps:player' player.id %}">{{ player.user.first_name }} {{ player.user.last_name }}</a></li>
-        {% endfor %}
-    </ul>
-{% endblock %}

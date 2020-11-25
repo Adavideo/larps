@@ -1,13 +1,22 @@
 from django.urls import path
-
+from django.contrib.auth.decorators import login_required
 from . import views
 
 app_name = 'larps'
+
 urlpatterns = [
-    path('player/<int:pk>/', views.PlayerView.as_view(), name='player'),
-    path('players', views.PlayersListView.as_view(), name='playerslist'),
-    path('character/<int:pk>/', views.CharacterView.as_view(), name='character'),
-    path('characters', views.CharactersListView.as_view(), name='characterslist'),
-    path('booking/<int:pk>/', views.BookingsView.as_view(), name='bookings'),
-    path('bookings', views.BookingsListView.as_view(), name='bookingslist'),
+    path('', login_required(views.home_view), name='home'),
+    path('logout/', views.logout_view, name='logout'),
+    # USERS
+    path('uniform_measurements/larp_<int:larp_id>/run_<int:run>/', login_required(views.measurements_form_view), name='measurements_form'),
+    path('bookings/larp_<int:larp_id>/run_<int:run>/', login_required(views.manage_bookings_view), name='manage_bookings'),
+    path('characters/larp_<int:larp_id>/run_<int:run>/', login_required(views.characters_run_view), name='characters_run'),
+    path('character/<int:pk>/', login_required(views.CharacterView.as_view()), name='character'),
+    # ADMINS
+    path('file_upload/', login_required(views.file_upload_view), name='file_upload'),
+    path('uniforms', login_required(views.uniforms_view), name="uniforms"),
+    path('uniform_sizes/<int:uniform_id>', login_required(views.uniform_sizes_view), name="uniform_sizes"),
+    path('missing_info/', login_required(views.missing_info_index_view), name="missing_info_index"),
+    path('missing_info/larp_<int:larp_id>/', login_required(views.players_missing_info_view), name="missing_info"),
+    path('missing_info/larp_<int:larp_id>/run_<int:run>/', login_required(views.players_missing_info_by_run_view), name="missing_info_run"),
 ]

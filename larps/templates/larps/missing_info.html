@@ -1,0 +1,56 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+<center>
+<h2>Players missing information</h2>
+     {% for run_players in players_information %}
+        <h3>
+          {% if not run %}
+          <a href="{% url 'larps:missing_info_run' larp_id run_players.0.run %}">Run {{ run_players.0.run }}</a>
+          {% endif %}
+        </h3>
+
+        <table border=1 style="width:100%">
+          <th align="center">Player</th>
+          <th align="center">Character</th>
+          <th align="center">Player profile</th>
+          <th align="center">Bookings</th>
+
+           {% for player in run_players %}
+               {% if not player.profile or not player.bookings or not player.profile.gender or not player.bookings.bus or not player.bookings.accomodation or not player.bookings.sleeping_bag %}
+               <tr>
+                 <td align="center">{{ player.user }}</td>
+                 <td align="center">{{ player.character }}</td>
+
+                 <td align="center">
+                   {% if not player.profile %}
+                      All information missing
+                   {% else %}
+                      {% if not player.profile.gender %}gender {% endif %}<br>
+                      {% if player.profile.chest == 0 %}chest {% endif %}
+                      {% if player.profile.waist == 0 %}waist {% endif %}
+                  {% endif %}
+                 </td>
+
+                 <td align="center">
+                   {% if not player.bookings %}
+                      All information missing
+                   {% else %}
+                      {% if not player.bookings.bus %}bus {% endif %}
+                      {% if not player.bookings.accomodation %}accomodation {% endif %}
+                      {% if player.bookings.sleeping_bag == None %}sleeping bag{% endif %}
+                  {% endif %}
+                 </td>
+
+                </tr>
+              {% endif %}
+           {% endfor %}
+
+         </table><br>
+
+      {% endfor %}
+
+</center>
+
+
+{% endblock %}
