@@ -77,8 +77,11 @@ WSGI_APPLICATION = 'notonlylarps.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER': 'django_user',
+        'NAME': 'larps_db',
+        'USER': 'admin',
+        'PASSWORD': '000',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
