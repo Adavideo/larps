@@ -143,7 +143,11 @@ class Character(models.Model):
     name = models.CharField(max_length=50)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, blank=True)
-    short_concept = models.CharField(max_length=200, blank=True)
+    type = models.CharField(max_length=15, blank=True)
+    rank = models.CharField(max_length=50, blank=True)
+    sheet = models.CharField(max_length=200, blank=True)
+    concept = models.CharField(max_length=200, blank=True)
+    weapon= models.BooleanField(null=True, blank=True)
     def __str__(self):
         return self.name
 

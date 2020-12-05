@@ -5,13 +5,15 @@
 
     <table border=1 style="width:75%">
       <th align="center">Character</th>
-      <th align="center">group</th>
-      <th align="center">race</th>
+      <th align="center">Group</th>
+      <th align="center">Planet</th>
+      <th align="center">Rank</th>
         {% for character in character_list %}
           <tr>
-            <td align="center"><a href="{% url 'larps:character' character.id %}">{{ character.name }}</a> </td>
+            <td align="center"> {{character.name}} </td>
             <td align="center"> {{character.group.name}} </td>
-            <td align="center">  {{character.race.name}} </td>
+            <td align="center"> {{character.race.name}} </td>
+            <td align="center"> {{character.rank}} </td>
           </tr>
         {% endfor %}
     </table>
