@@ -7,11 +7,13 @@
       <th align="center">Character</th>
       <th align="center">Group</th>
       <th align="center">Planet</th>
+      <th align="center">Rank</th>
         {% for character in character_list %}
           <tr>
             <td align="center"> {{character.name}} </td>
             <td align="center"> {{character.group.name}} </td>
             <td align="center"> {{character.race.name}} </td>
+            <td align="center"> {{character.rank}} </td>
           </tr>
         {% endfor %}
     </table>
