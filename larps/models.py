@@ -154,7 +154,7 @@ class Character(models.Model):
     rank = models.CharField(max_length=50, blank=True)
     sheet = models.CharField(max_length=200, blank=True)
     concept = models.CharField(max_length=200, blank=True)
-    weapon= models.BooleanField(null=True, blank=True)
+    weapon= models.CharField(max_length=50, blank=True)
     def __str__(self):
         return self.name
 

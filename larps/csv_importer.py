@@ -46,18 +46,17 @@ def create_user(player_name, email):
     return user
 
 
-def create_character(larp_name, character_name, character_group, character_race):
-    if empty(character_name) and empty(character_group) and empty(character_race):
+def create_character(larp_name, character_name, group, race, rank, type, concept, sheet, weapon):
+    if empty(character_name) and empty(group) and empty(race):
         return None
 
-    group = get_group(character_group, larp_name)
-    race, created = Race.objects.update_or_create(name=character_race)
+    group = get_group(group, larp_name)
+    race, created = Race.objects.update_or_create(name=race)
+    type, created = CharacterType.objects.update_or_create(name=type)
 
     character, created = Character.objects.update_or_create(
-        name=character_name,
-        group=group,
-        race=race
-    )
+        name=character_name, group=group, race=race, rank=rank, type=type,
+        concept=concept, sheet=sheet, weapon=weapon )
     return character
 
 
@@ -77,17 +76,23 @@ def assign_character_to_user(user, character, run):
 # PROCESS CSV FILE
 
 def process_character_info(column):
-    # larp;run;email;name;character;group;race
+    # larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
     larp = column[0]
     run = column[1]
     email = column[2]
     player_name = column[3]
     character_name = column[4]
-    character_group = column[5]
-    character_race = column[6]
+    group = column[5]
+    race = column[6]
+    rank = column[7]
+    type = column[8]
+    concept = column[9]
+    sheet = column[10]
+    weapon = column[11]
 
     user = create_user(player_name, email)
-    character = create_character(larp, character_name, character_group, character_race)
+    character = create_character(larp, character_name, group, race, rank,
+                                type, concept, sheet, weapon)
 
     if user and character:
         result = assign_character_to_user(user, character, run)
