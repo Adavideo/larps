@@ -379,7 +379,9 @@ class UniformSize(models.Model):
         return int(measurement)
 
     def set_values(self, size_info):
-        gender, _ = Gender.objects.get_or_create(name=size_info["gender"])
+        gender_size = size_info["gender"]
+        if gender_size=="": gender_size = "unisex"
+        gender, _ = Gender.objects.get_or_create(name=gender_size)
         self.gender = gender
         self.american_size = size_info["american_size"]
         self.european_size = size_info["european_size"]
