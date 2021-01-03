@@ -27,7 +27,7 @@ class UniformModelTests(TestCase):
     def test_create_uniform_size_with_info(self):
         size_information = example_sizes[0]
         size = create_uniform_size(size_information)
-        self.assertEqual(size.gender, size_information["gender"])
+        self.assertEqual(size.gender.name, size_information["gender"])
         self.assertEqual(size.american_size, size_information["american_size"])
         self.assertEqual(size.european_size, size_information["european_size"])
         self.assertEqual(size.chest_min, int(size_information["chest_min"]))
@@ -39,14 +39,14 @@ class UniformModelTests(TestCase):
     def test_create_uniform_size_with_empty_info(self):
         size_information = empty_size_info
         size = create_uniform_size(size_information)
-        self.assertEqual(size.gender, size_information["gender"])
+        self.assertEqual(size.gender.name, "unisex")
         self.assertEqual(size.american_size, size_information["american_size"])
         self.assertEqual(size.european_size, size_information["european_size"])
         self.assertEqual(size.chest_min, 0)
         self.assertEqual(size.chest_max, 0)
         self.assertEqual(size.waist_min, 0)
         self.assertEqual(size.waist_max, 0)
-        self.assertEqual(str(size), " chest(0,0) waist(0,0)")
+        self.assertEqual(str(size), "unisex. chest(0,0) waist(0,0)")
 
     def test_recommend_sizes_perfect_fit(self):
         player_info = example_players_complete[0]
@@ -54,7 +54,7 @@ class UniformModelTests(TestCase):
         uniform = create_uniform_with_sizes(example_sizes)
         sizes = uniform.recommend_sizes(player)
         self.assertEqual(len(sizes), 1)
-        self.assertEqual(sizes[0].gender,"female")
+        self.assertEqual(sizes[0].gender.name,"female")
         self.assertEqual(sizes[0].american_size,"M")
         self.assertEqual(sizes[0].european_size,"40")
         self.assertEqual(str(sizes[0]), "female. M/40 chest(90,94) waist(74,78)")

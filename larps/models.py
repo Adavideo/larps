@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 
 class PlayerMeasurement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=200, blank=True)
     chest = models.IntegerField(default=0)
     arm_length = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
@@ -23,7 +22,6 @@ class PlayerMeasurement(models.Model):
 
     def get_data(self):
         data = {
-            'gender' : self.gender,
             'chest' : self.chest,
             'arm_length' : self.arm_length,
             'waist' : self.waist,
@@ -34,7 +32,6 @@ class PlayerMeasurement(models.Model):
         return data
 
     def save_profile(self, new_data):
-        self.gender = new_data['gender']
         self.chest = new_data['chest']
         self.arm_length = new_data['arm_length']
         self.waist = new_data['waist']
@@ -139,11 +136,21 @@ class Race(models.Model):
     def __str__(self):
         return self.name
 
+class Gender(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
+class CharacterType(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
 class Character(models.Model):
     name = models.CharField(max_length=50)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField(max_length=15, blank=True)
+    type = models.ForeignKey(CharacterType, on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.CharField(max_length=50, blank=True)
     sheet = models.CharField(max_length=200, blank=True)
     concept = models.CharField(max_length=200, blank=True)
@@ -155,6 +162,8 @@ class CharacterAssigment(models.Model):
     run = models.IntegerField(default=1)
     character =  models.ForeignKey(Character, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
+    discord_email = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         assigment = ""
@@ -290,7 +299,8 @@ class Uniform(models.Model):
             return None
 
     def recommend_sizes(self, player):
-        sizes = self.get_sizes().filter(gender=player.gender)
+        sizes = self.get_sizes() #.filter(gender=player.gender)
+        # TODO: Associate size to Character Assigment gender.
         if not sizes:
             return None
         perfect_fit = self.find_perfect_fit(sizes, player.chest, player.waist)
@@ -332,7 +342,7 @@ class Uniform(models.Model):
 
 class UniformSize(models.Model):
     uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=50)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
     american_size = models.CharField(max_length=10)
     european_size = models.CharField(max_length=10)
     chest_min = models.IntegerField()
@@ -343,7 +353,7 @@ class UniformSize(models.Model):
     def __str__(self):
         text = self.uniform.name + " "
         if self.gender:
-            text = self.gender + ". "
+            text = self.gender.name + ". "
         if self.american_size:
             text += str(self.american_size)
             if self.european_size:
@@ -369,7 +379,10 @@ class UniformSize(models.Model):
         return int(measurement)
 
     def set_values(self, size_info):
-        self.gender = size_info["gender"]
+        gender_size = size_info["gender"]
+        if gender_size=="": gender_size = "unisex"
+        gender, _ = Gender.objects.get_or_create(name=gender_size)
+        self.gender = gender
         self.american_size = size_info["american_size"]
         self.european_size = size_info["european_size"]
         self.chest_min = self.get_measurement(size_info, "chest_min")

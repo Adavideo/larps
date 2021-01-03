@@ -74,7 +74,7 @@ uniforms_csv_example = '''uniform_name;gender;american_size;european_size;chest_
 Pilots;female;S;38;86;90;70;74;70;74
 Pilots;female;M;40;90;94;74;78;74;78'''
 
-characters_csv_example = '''larp;run;email;name;character;group;race
+characters_csv_example = '''larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
 Mission Together;1;test1@email.com;Werner Mikolasch;Ono;agriculture teacher;Rhea
 Mission Together;2;test2@email.com;Fabio;Fuertes;artist teacher;Kepler'''
 

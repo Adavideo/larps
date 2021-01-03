@@ -19,7 +19,6 @@ class PlayerMeasurementModelTests(TestCase):
         player = create_player(player_info)
         self.assertEqual(player.user.username, player_info["username"])
         self.assertEqual(str(player), player_info["first_name"] + " " + player_info["last_name"])
-        self.assertEqual(player.gender, player_info["gender"])
 
     def test_create_player_profile_with_size_information(self):
         """
@@ -68,7 +67,6 @@ class GroupModelTests(TestCase):
             # Testins player profile creation
             player_profiles = PlayerMeasurement.objects.filter(user=user)
             self.assertEqual(len(player_profiles), 1)
-            self.assertEqual(player_profiles[0].gender, player_info["gender"])
             # Testing character creation
             character_name = example_characters[i]
             character_search = Character.objects.filter(name=character_name)
