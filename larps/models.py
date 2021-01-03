@@ -141,11 +141,16 @@ class Gender(models.Model):
     def __str__(self):
         return self.name
 
+class CharacterType(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
 class Character(models.Model):
     name = models.CharField(max_length=50)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField(max_length=15, blank=True)
+    type = models.ForeignKey(CharacterType, on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.CharField(max_length=50, blank=True)
     sheet = models.CharField(max_length=200, blank=True)
     concept = models.CharField(max_length=200, blank=True)
