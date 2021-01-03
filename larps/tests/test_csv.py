@@ -143,7 +143,7 @@ class CSVCharactersTests(TestCase):
         """
         process_data_with_invalid_users() checks that no users are created when the player name is empty or a blank space
         """
-        data = """larp;run;email;name;character;group;race
+        data = """larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
         Mission Together;1;;;Fuertes;artist teacher;Kepler;lieutenant
         Mission Together;2;;;Ono;agriculture teacher;Rhea;lieutenant"""
         result = process_data(data)
@@ -151,7 +151,7 @@ class CSVCharactersTests(TestCase):
 
 
     def test_process_data_with_wrong_character(self):
-        data = """larp;run;email;name;character;group;race
+        data = """larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
         Mission Together;2;;Samuel Bascomb;;;;"""
         result = process_data(data)
         self.assertEqual(result, ['Created user Samuel Bascomb. Character invalid'])
