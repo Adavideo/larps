@@ -44,7 +44,9 @@ class CSVCharactersTests(TestCase):
         character_name = "Athena"
         group = "Scientists"
         race = "Terrans"
-        new_character = create_character(self.larp_name, character_name, group, race)
+        new_character = create_character(self.larp_name, character_name, group, race,
+            example_character['rank'], example_character['type'], example_character['concept'],
+            example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character.name, "Athena")
         self.assertEqual(new_character.group.name, "Scientists")
         self.assertEqual(new_character.group.larp.name, self.larp_name)
@@ -53,7 +55,10 @@ class CSVCharactersTests(TestCase):
         character_name = "Athena"
         group = "Scientists"
         race = ""
-        new_character = create_character(self.larp_name, character_name, group, race)
+        # larp_name, character_name, group, race, rank, type, concept, sheet, weapon
+        new_character = create_character(self.larp_name, character_name, group, race,
+            example_character['rank'], example_character['type'], example_character['concept'],
+            example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character.name, "Athena")
         self.assertEqual(new_character.race.name, "")
 
@@ -61,7 +66,9 @@ class CSVCharactersTests(TestCase):
         character_name = "Athena"
         group = ""
         race = "Terrans"
-        new_character = create_character(self.larp_name, character_name, group, race)
+        new_character = create_character(self.larp_name, character_name, group, race,
+            example_character['rank'], example_character['type'], example_character['concept'],
+            example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character.name, "Athena")
         self.assertEqual(new_character.group, None)
 
@@ -69,14 +76,18 @@ class CSVCharactersTests(TestCase):
         character_name = ""
         group = ""
         race = ""
-        new_character = create_character(self.larp_name, character_name, group, race)
+        new_character = create_character(self.larp_name, character_name, group, race,
+            example_character['rank'], example_character['type'], example_character['concept'],
+            example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character, None)
 
     def test_create_character_only_group_information(self):
         character_name = ""
         group = "Scientists"
         race = ""
-        new_character = create_character(self.larp_name, character_name, group, race)
+        new_character = create_character(self.larp_name, character_name, group, race,
+        example_character['rank'], example_character['type'], example_character['concept'],
+        example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character.group.name, "Scientists")
         self.assertEqual(new_character.group.larp.name, self.larp_name)
 
@@ -84,7 +95,9 @@ class CSVCharactersTests(TestCase):
         character_name = ""
         group = ""
         race = "Terrans"
-        new_character = create_character(self.larp_name, character_name, group, race)
+        new_character = create_character(self.larp_name, character_name, group, race,
+        example_character['rank'], example_character['type'], example_character['concept'],
+        example_character['sheet'], example_character['weapon'])
         self.assertEqual(new_character.race.name, "Terrans")
         self.assertEqual(new_character.group, None)
 
@@ -104,27 +117,43 @@ class CSVCharactersTests(TestCase):
     # Test for processing lines
 
     def test_process_csv_line_correct(self):
-        column = ['Mission Together', '1', 'test1@email.com', 'Werner Mikolasch', 'Ono', 'agriculture teacher', 'Rhea']
+        column = ['Mission Together', '1', 'test1@email.com', 'Werner Mikolasch', 'Ono',
+             example_character['group'], example_character['race'], example_character['rank'],
+             example_character['type'], example_character['concept'], example_character['sheet'],
+             example_character['weapon']]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'Character Ono assigned to Werner Mikolasch')
+        character = Character.objects.all()[0]
+        self.assertEqual(character.race.name, example_character['race'])
+        self.assertEqual(character.rank, example_character['rank'])
+        self.assertEqual(character.type.name, example_character['type'])
+        self.assertEqual(character.concept, example_character['concept'])
+        self.assertEqual(character.sheet, example_character['sheet'])
+        self.assertEqual(character.weapon, example_character['weapon'])
 
     def test_process_csv_line_no_user(self):
-        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes', 'artist teacher', 'Kepler']
+        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes',
+            example_character['group'], example_character['race'], example_character['rank'],
+            example_character['type'], example_character['concept'], example_character['sheet'],
+            example_character['weapon']]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid')
 
     def test_process_csv_line_user_blank_space(self):
-        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes', 'artist teacher', 'Kepler']
+        column = ['Mission Together', '1', 'test1@email.com', '', 'Fuertes',
+            example_character['group'], example_character['race'], example_character['rank'],
+            example_character['type'], example_character['concept'], example_character['sheet'],
+            example_character['weapon']]
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid')
 
     def test_process_csv_line_correct_user_but_no_character(self):
-        column = ['Mission Together', '2', 'test1@email.com', 'Samuel Bascomb', '', '', '']
+        column = ['Mission Together', '2', 'test1@email.com', 'Samuel Bascomb', '','','', '','','','','']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'Created user Samuel Bascomb. Character invalid')
 
     def test_process_csv_line_no_user_and_no_character(self):
-        column = ['Mission Together', '2', 'test1@email.com','', '', '', '']
+        column = ['Mission Together', '2', 'test1@email.com','', '','','', '','','','','']
         result = process_csv_line(column, self.csv_type)
         self.assertEqual(result, 'User invalid. Character invalid')
 
@@ -144,15 +173,16 @@ class CSVCharactersTests(TestCase):
         process_data_with_invalid_users() checks that no users are created when the player name is empty or a blank space
         """
         data = """larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
-        Mission Together;1;;;Fuertes;artist teacher;Kepler;lieutenant
-        Mission Together;2;;;Ono;agriculture teacher;Rhea;lieutenant"""
+        Mission Together;1;;;Fuertes;artist teacher;Kepler;lieutenant;player;https://docs.google.com/document/d/1sICrVe/edit?usp=sharing;this is a test;
+        Mission Together;2;;;Ono;agriculture teacher;Rhea;lieutenant;secret NPC;https://docs.google.com/document/d/ynZA/edit?usp=sharing;this is a test;Your character owns a weapon, we will provide it"""
+
         result = process_data(data)
         self.assertEqual(result, ['User invalid', 'User invalid'])
 
 
     def test_process_data_with_wrong_character(self):
         data = """larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
-        Mission Together;2;;Samuel Bascomb;;;;"""
+        Mission Together;2;;Samuel Bascomb;;;;;;;;"""
         result = process_data(data)
         self.assertEqual(result, ['Created user Samuel Bascomb. Character invalid'])
 

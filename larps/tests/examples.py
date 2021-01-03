@@ -74,12 +74,28 @@ uniforms_csv_example = '''uniform_name;gender;american_size;european_size;chest_
 Pilots;female;S;38;86;90;70;74;70;74
 Pilots;female;M;40;90;94;74;78;74;78'''
 
+# larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
 characters_csv_example = '''larp;run;email;name;character;group;race;rank;type;concept;sheet;weapon
-Mission Together;1;test1@email.com;Werner Mikolasch;Ono;agriculture teacher;Rhea
-Mission Together;2;test2@email.com;Fabio;Fuertes;artist teacher;Kepler'''
+Mission Together;1;test1@email.com;Werner Mikolasch;Ono;agriculture teacher;Rhea;sargeant;secret NPC;https://docs.google.com/document/d/ynZA/edit?usp=sharing;this is a test;Your character owns a weapon, we will provide it
+Mission Together;2;test2@email.com;Fabio;Fuertes;artist teacher;Kepler;;player;https://docs.google.com/document/d/1sICrVe/edit?usp=sharing;this is a test;'''
 
 incorrect_csv = '''character;group;planet
 1;Werner Mikolasch;Ono;agriculture teacher;Rhea
 2;Fabio;Fuertes;artist teacher;Kepler'''
 
 example_email = "test1@email.com"
+
+example_character = {
+    'larp': '',
+    'run': '1',
+    'email': '',
+    'name': 'Kira',
+    'character': 'Tatiana',
+    'group': 'Doctors',
+    'race': 'Kepler',
+    'rank': 'capitain',
+    'type': 'player',
+    'concept': 'https://docs.google.com/document/d/ynZA/edit?usp=sharing',
+    'sheet': 'https://docs.google.com/document/d/abcde/edit?usp=sharing',
+    'weapon': 'Your character owns a weapon, we will provide it',
+}
