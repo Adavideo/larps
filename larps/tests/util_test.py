@@ -18,7 +18,7 @@ def create_player(player_info=example_players_complete[0]):
     player_search = PlayerMeasurement.objects.filter(user=user)
     if player_search:
         return player_search[0]
-    player = PlayerMeasurement(user=user, gender=player_info["gender"], chest=player_info["chest"], waist=player_info["waist"])
+    player = PlayerMeasurement(user=user, chest=player_info["chest"], waist=player_info["waist"])
     player.save()
     return player
 
@@ -43,7 +43,7 @@ def create_character(character_name=example_characters[0], group=None, group_nam
     return character
 
 def contains_profile_info(player_info):
-    return player_info["gender"] or player_info["chest"] or player_info["waist"]
+    return player_info["chest"] or player_info["waist"]
 
 def create_character_assigment(group="", player_info=example_players_complete[0], character_name=example_characters[0], run=1):
     if contains_profile_info(player_info):
