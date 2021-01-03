@@ -158,6 +158,7 @@ class CharacterAssigment(models.Model):
     character =  models.ForeignKey(Character, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
+    discord_email = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         assigment = ""
