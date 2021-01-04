@@ -4,16 +4,15 @@
 
 
 <center>
-  {% if user.is_staff %}
-      {% for larp in larps %}
-        <h2><a href="{% url 'larps:missing_info' larp.id %}">{{ larp.name }}</a></h2>
-      {% endfor %}
-  {% endif %}
 
   {% for assigment in character_assigments %}
-    <h2><a href="{% url 'larps:manage_bookings' assigment.larp.id assigment.run %}">
-        {{ assigment.larp.name }} run {{ assigment.run }}</a></h2>
+    <h3><a href="{% url 'larps:manage_bookings' assigment.larp.id assigment.run %}">
+        {{ assigment.larp.name }} run {{ assigment.run }}</a></h3>
+        {% with character=assigment.character %}
+          {% include "larps/character_detail.html" %}<br>
+        {% endwith %}
   {% endfor %}
+
 </center>
 
 {% endblock %}

@@ -1,10 +1,16 @@
-{% extends 'larps/base.html' %}
 
-{% block content %}
-<h1>{{ character.name }}</h1>
-<br>
-Group: {{ character.group  }}
-<br>
-Race: {{ character.race  }}
+<h4>Character: {{ character.name }}</h4>
 
-{% endblock %}
+Group: {{ character.group }}<br>
+Planet: {{ character.race }}<br>
+
+{% if character.rank %}
+  Rank: {{ character.rank }}<br>
+{% endif %}
+
+<a href="{{ character.concept }}" target="_blank">Concept</a><br>
+<a href="{{ character.sheet }}" target="_blank">Character sheet</a><br>
+
+{% if character.weapon %}
+  Weapon: {{ character.weapon }}
+{% endif %}
