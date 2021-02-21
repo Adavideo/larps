@@ -24,7 +24,7 @@ def home_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect('/accounts/login/')
+    return HttpResponseRedirect('/login')
 
 def not_allowed_view(request):
     template = "larps/not_allowed.html"
@@ -34,9 +34,8 @@ def not_allowed_view(request):
 
 # PLAYERS MEASUREMENTS
 
-def measurements_form_view(request, larp_id, run):
+def measurements_form_view(request):
     template = 'larps/measurements_form.html'
-    context = build_context(request, larp_id, run)
     measurements = get_measurements(request.user)
     if request.method == 'POST':
         form = MeasurementsForm(request.POST)
@@ -45,7 +44,9 @@ def measurements_form_view(request, larp_id, run):
     else:
         data = measurements.get_data()
         form = MeasurementsForm(data)
-    context["form"] = form
+    assigments = CharacterAssigment.objects.filter(user=request.user)
+    larps = Larp.objects.all()
+    context = {'form': form, 'character_assigments': assigments, 'larps': larps }
     return render(request, template, context)
 
 
@@ -58,7 +59,6 @@ def manage_bookings_view(request, larp_id, run):
     if not bookings:
         url = reverse('larps:home')
         return HttpResponseRedirect(url)
-
     if request.method == 'POST':
         form = BookingsForm(request.POST, larp_id)
         if form.is_valid():
@@ -78,8 +78,10 @@ def characters_run_view(request, larp_id, run):
     context['character_list'] = get_characters(context['larp'])
     return render(request, template, context)
 
-class CharacterView(generic.DetailView):
-    model = Character
+def my_character_view(request, larp_id, run):
+    template = "larps/character_detail.html"
+    context = build_context(request, larp_id, run)
+    return render(request, template, context)
 
 
 # CSV IMPORTER

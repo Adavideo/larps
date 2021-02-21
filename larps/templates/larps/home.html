@@ -2,15 +2,14 @@
 
 {% block content %}
 
-
 <center>
 
   {% for assigment in character_assigments %}
-    <h3><a href="{% url 'larps:manage_bookings' assigment.larp.id assigment.run %}">
-        {{ assigment.larp.name }} run {{ assigment.run }}</a></h3>
-        {% with character=assigment.character %}
-          {% include "larps/character_detail.html" %}<br>
-        {% endwith %}
+    <h3><a href="{% url 'larps:my_character' assigment.larp.id assigment.run %}">
+        {{ assigment.larp.name }} run {{ assigment.run }}
+        - {{ assigment.character.name }}
+    </a></h3>
+
   {% endfor %}
 
 </center>

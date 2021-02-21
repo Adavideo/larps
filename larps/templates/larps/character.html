@@ -1,0 +1,11 @@
+  Character: {{ character.name }}<br>
+  Group: {{ character.group }}<br>
+  Planet: {{ character.race }}<br>
+  {% if character.rank %}
+    Rank: {{ character.rank }}<br>
+  {% endif %}
+  <a href="{{ character.concept }}" target="_blank">Concept</a><br>
+  <a href="{{ character.sheet }}" target="_blank">Character sheet</a><br>
+  {% if character.weapon %}
+    Weapon: {{ character.weapon }}<br>
+  {% endif %}

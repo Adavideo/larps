@@ -1,0 +1,10 @@
+<!-- Sidebar -->
+<ul class="sidebar navbar-nav">
+
+  {% if user.is_staff %}
+    {% include "menu/sidebar_admins.html" %}
+  {% else %}
+    {% include "menu/sidebar_players.html" %}
+  {% endif %}
+
+</ul>

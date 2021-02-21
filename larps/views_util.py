@@ -1,8 +1,18 @@
 from .models import *
 
+def find_character(user, larp, run):
+    assigments = larp.get_character_assigments()
+    for a in assigments:
+        if (a.user == user) and (a.run == run):
+            return a.character
+
 def build_context(request, larp_id, run):
     larp = Larp.objects.get(id=larp_id)
-    context = {'user': request.user, 'larp': larp, 'run':run}
+    character = find_character(request.user, larp, run)
+    context = {
+        'user': request.user,
+        'larp': larp, 'run':run,
+        'character': character }
     return context
 
 
