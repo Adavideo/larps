@@ -44,7 +44,7 @@ class PlayerMeasurement(models.Model):
 # LARPS AND CHARACTERS
 
 class Larp(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
@@ -93,8 +93,8 @@ class Larp(models.Model):
 
 class Group(models.Model):
     larp = models.ForeignKey(Larp, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, default="", blank=True)
-    weapon = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=500, default="", blank=True)
+    weapon = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         if self.name:
@@ -132,29 +132,29 @@ class Group(models.Model):
 
 
 class Race(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
 class Gender(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
 class CharacterType(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
 class Character(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, blank=True)
     type = models.ForeignKey(CharacterType, on_delete=models.SET_NULL, null=True, blank=True)
-    rank = models.CharField(max_length=50, blank=True)
-    sheet = models.CharField(max_length=200, blank=True)
-    concept = models.CharField(max_length=200, blank=True)
-    weapon= models.CharField(max_length=50, blank=True)
+    rank = models.CharField(max_length=500, blank=True)
+    sheet = models.CharField(max_length=500, blank=True)
+    concept = models.CharField(max_length=500, blank=True)
+    weapon= models.CharField(max_length=500, blank=True)
     def __str__(self):
         return self.name
 
@@ -163,7 +163,7 @@ class CharacterAssigment(models.Model):
     character =  models.ForeignKey(Character, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
-    discord_email = models.CharField(max_length=200, null=True, blank=True)
+    discord_email = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         assigment = ""
@@ -206,13 +206,13 @@ class CharacterAssigment(models.Model):
 
 class Accomodation(models.Model):
     larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
 class BusStop(models.Model):
     larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
-    name= models.CharField(max_length=50)
+    name= models.CharField(max_length=500)
     def __str__(self):
         return self.name
 
@@ -223,7 +223,7 @@ class Bookings(models.Model):
     bus = models.ForeignKey(BusStop, on_delete=models.SET_NULL, null=True, blank=True)
     accomodation = models.ForeignKey(Accomodation, on_delete=models.SET_NULL, null=True, blank=True)
     sleeping_bag = models.BooleanField(null=True, blank=True)
-    comments = models.CharField(max_length=200, default="no", blank=True, null=True)
+    comments = models.CharField(max_length=500, default="no", blank=True, null=True)
 
     def __str__(self):
         text = ""
@@ -259,7 +259,7 @@ class Bookings(models.Model):
 # UNIFORMS
 
 class Uniform(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=500)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -343,8 +343,8 @@ class Uniform(models.Model):
 class UniformSize(models.Model):
     uniform = models.ForeignKey(Uniform, on_delete=models.CASCADE)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
-    american_size = models.CharField(max_length=10)
-    european_size = models.CharField(max_length=10)
+    american_size = models.CharField(max_length=500)
+    european_size = models.CharField(max_length=500)
     chest_min = models.IntegerField()
     chest_max = models.IntegerField()
     waist_min = models.IntegerField()
