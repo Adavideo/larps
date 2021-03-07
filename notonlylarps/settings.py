@@ -25,7 +25,7 @@ SECRET_KEY = 'i2vgc3fkk#283&5iw)spux@prkpd#v%scfw$!ie6tn3rl=ya5d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['larpmanager.steinmann.io', '192.168.2.241']
+ALLOWED_HOSTS = ['larpmanager.steinmann.io', '192.168.2.241', '127.0.0.1']
 
 
 # Application definition
@@ -134,4 +134,12 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+# Email in development
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email in production
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
