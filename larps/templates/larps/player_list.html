@@ -1,0 +1,77 @@
+{% extends 'larps/base.html' %}
+
+{% block content %}
+<style>
+#dynamic_selector {
+    margin: 10px;
+}
+</style>
+    <center>
+
+<form id="dynamic_selector">
+
+    <label>Larp</label>
+    <select name="larp_selector" id="larp_selector"
+        ONCHANGE="location = this.options[this.selectedIndex].value;">
+        {% for larp_instance in larp_list %}
+            <option value="{% url 'larps:player_list' %}/{{ larp_instance.id }}" {% if larp_instance.id == selector_status.larp_id %}selected{% endif %}>
+                {{ larp_instance.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Run nummber:</label>
+    <select name="run_selector" id="run_selector"
+        ONCHANGE="location = document.getElementById('larp_selector').value + '/' + this.options[this.selectedIndex].value;"
+        {% if selector_status.runs|length == 0 %}disabled{% endif %}>
+        {% for i in selector_status.runs %}
+            <option value="{{ i|add:1 }}" {% if i|add:1 == selector_status.run_id %}selected{% endif %}>
+                {{ i|add:1 }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<h2>Players list</h2>
+<table border=1 >
+{% for key,value in players_information.items %}
+    <tr>
+    {% for header in table_headers %}
+        <th>{{header|title}}</th>
+    {% endfor %}
+    </tr>
+    {% for player in value %}
+    <tr>
+        <td>{{player.type|capfirst}}</td>
+        <td>{{player.fullname|title }}</td>
+        <td>{{player.username}}</td>
+        <td>{{player.email}}</td>
+        <td>{{player.character}}</td>
+        <td>{{player.group|title}}</td>
+        <td>{{player.race|title}}</td>
+        <td>{{player.rank|title}}</td>
+        {% if player.concept %}
+            <td><a href="{{player.concept}}" target="_blank" rel="noopener noreferrer" >Character concept</a></td>
+        {% else %}
+            <td>Not assigned</td>
+        {% endif%}
+        {% if player.concept %}
+            <td><a href="{{player.character_sheet}}" target="_blank" rel="noopener noreferrer" >Character sheet</a></td>
+        {% else %}
+            <td>Not assigned</td>
+        {% endif%}
+        {% if player.concept %}
+            <td><a href="{{player.read_friendly_character}}" target="_blank" rel="noopener noreferrer" >Read friendly</a></td>
+        {% else %}
+            <td>Not assigned</td>
+        {% endif%}
+        <td>{{player.user_discord}}</td>
+    </tr>
+    {% endfor %}
+{% endfor %}
+</table>
+
+</center>
+
+
+{% endblock %}
