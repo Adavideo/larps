@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class Gender(models.Model):
+    name = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.name
+
+
 # PLAYER MEASUREMENT
 
 class PlayerMeasurement(models.Model):
@@ -12,9 +19,10 @@ class PlayerMeasurement(models.Model):
     shoulder_length = models.IntegerField(default=0)
     torso_length = models.IntegerField(default=0)
     body_length = models.IntegerField(default=0)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        if (self.user.first_name):
+        if self.user.first_name:
             name = self.user.first_name + " " + self.user.last_name
         else:
             name = self.user.username
@@ -22,12 +30,13 @@ class PlayerMeasurement(models.Model):
 
     def get_data(self):
         data = {
-            'chest' : self.chest,
-            'arm_length' : self.arm_length,
-            'waist' : self.waist,
-            'shoulder_length' : self.shoulder_length,
-            'torso_length' : self.torso_length,
-            'body_length' : self.body_length,
+            'chest': self.chest,
+            'arm_length': self.arm_length,
+            'waist': self.waist,
+            'shoulder_length': self.shoulder_length,
+            'torso_length': self.torso_length,
+            'body_length': self.body_length,
+            'gender': self.gender,
         }
         return data
 
@@ -38,6 +47,7 @@ class PlayerMeasurement(models.Model):
         self.shoulder_length = new_data['shoulder_length']
         self.torso_length = new_data['torso_length']
         self.body_length = new_data['body_length']
+        self.gender = new_data['gender']
         self.save()
 
 
@@ -45,14 +55,15 @@ class PlayerMeasurement(models.Model):
 
 class Larp(models.Model):
     name = models.CharField(max_length=500)
+
     def __str__(self):
         return self.name
 
-    def get_character_assigments(self):
+    def get_character_assigments(self, run_id=None):
         groups = Group.objects.filter(larp=self)
         character_assigments = []
         for group in groups:
-            assigments = group.get_character_assigments()
+            assigments = group.get_character_assigments(run_id=run_id)
             character_assigments.extend(assigments)
         return character_assigments
 
@@ -65,11 +76,13 @@ class Larp(models.Model):
                 number_of_runs = assigment.run
         return number_of_runs
 
-    def initialize_players_info(self, number_of_runs):
-        players_info = [ ]
-        for i in range(0, number_of_runs):
+    @staticmethod
+    def initialize_players_info(number_of_runs):
+        players_info = []
+        for _ in range(0, number_of_runs):
             players_info.append([])
         return players_info
+
 
     def get_players_information(self):
         assigments = self.get_character_assigments()
@@ -79,16 +92,54 @@ class Larp(models.Model):
             profile = assigment.get_player_profile()
             bookings = assigment.get_bookings()
             if assigment.user:
-                if assigment.user.first_name or assigment.user.last_name:
-                    user_name = assigment.user.first_name + " " + assigment.user.last_name
-                else:
-                    user_name = assigment.user.username
+                user_name = CharacterAssigment.compose_fullname(assigment)
             else:
                 user_name = "Not assigned"
-            info = { "user": user_name, "profile": profile, "bookings": bookings, "run": assigment.run, "character": assigment.character.name }
-            run_index = assigment.run -1
+            info = {"user": user_name, "profile": profile, "bookings": bookings, "run": assigment.run, "character": assigment.character.name}
+            run_index = assigment.run - 1
             players_info[run_index].append(info)
         return players_info
+
+    def get_players_list_info(self, run_id=None) -> {}:
+        """Returns all players info by Larp ID, (and optionally run)
+
+        Parameters:
+        run (int, optional): Run number
+
+        Returns:
+        dict: Dictionary, run ID index
+
+        """
+
+        assigments = None
+
+        assigments = self.get_character_assigments(run_id=run_id)
+
+        relevant_assignments = {}
+
+        for assigment in assigments:
+            if assigment.run not in relevant_assignments:
+                relevant_assignments[assigment.run] = []
+
+            info = {
+                "run": assigment.run,
+                "type": assigment.character.type.name,
+                "fullname": CharacterAssigment.compose_fullname(assigment),
+                "username": assigment.user.username,
+                "email": assigment.user.email,
+                "character": assigment.character.name,
+                "group": assigment.character.group.name,
+                "race": assigment.character.race.name,
+                "rank": assigment.character.rank,
+                "concept": assigment.character.concept if len(assigment.character.concept) > 1 else None,
+                "character_sheet": assigment.character.sheet if len(assigment.character.sheet) > 1 else None,
+                "read_friendly_character": assigment.character.easy_read_sheet if len(assigment.character.easy_read_sheet) > 1 else None,
+                "user_discord": assigment.discord_email
+            }
+
+            relevant_assignments[assigment.run].append(info)
+
+        return relevant_assignments
 
 
 class Group(models.Model):
@@ -114,11 +165,14 @@ class Group(models.Model):
                     players.append(player_profile)
         return players
 
-    def get_character_assigments(self):
+    def get_character_assigments(self, run_id=None):
         character_assigments = []
         characters_list = Character.objects.filter(group=self)
         for character in characters_list:
-            assigments = CharacterAssigment.objects.filter(character=character)
+            if run_id:
+                assigments = CharacterAssigment.objects.filter(character=character, run=run_id)
+            else:
+                assigments = CharacterAssigment.objects.filter(character=character)
             character_assigments.extend(assigments)
         return character_assigments
 
@@ -133,18 +187,17 @@ class Group(models.Model):
 
 class Race(models.Model):
     name = models.CharField(max_length=500)
+
     def __str__(self):
         return self.name
 
-class Gender(models.Model):
-    name = models.CharField(max_length=500)
-    def __str__(self):
-        return self.name
 
 class CharacterType(models.Model):
     name = models.CharField(max_length=500)
+
     def __str__(self):
         return self.name
+
 
 class Character(models.Model):
     name = models.CharField(max_length=500)
@@ -157,12 +210,14 @@ class Character(models.Model):
     concept = models.CharField(max_length=500, blank=True)
     weapon = models.CharField(max_length=500, blank=True)
     design_document = models.CharField(max_length=500, blank=True)
+
     def __str__(self):
         return self.name
 
+
 class CharacterAssigment(models.Model):
     run = models.IntegerField(default=1)
-    character =  models.ForeignKey(Character, on_delete=models.CASCADE)
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
     discord_email = models.CharField(max_length=500, null=True, blank=True)
@@ -174,6 +229,15 @@ class CharacterAssigment(models.Model):
         if self.user:
             assigment += " assigned to " + self.user.first_name + " " + self.user.last_name
         return assigment
+
+    @staticmethod
+    def compose_fullname(assigment) -> str:
+        result = ""
+        if assigment.user.first_name or assigment.user.last_name:
+            result = assigment.user.first_name + " " + assigment.user.last_name
+        else:
+            result = assigment.user.username
+        return result
 
     def larp(self):
         return self.character.group.larp
@@ -209,14 +273,18 @@ class CharacterAssigment(models.Model):
 class Accomodation(models.Model):
     larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=500)
+
     def __str__(self):
         return self.name
 
+
 class BusStop(models.Model):
     larp = models.ForeignKey(Larp, null=True, on_delete=models.SET_NULL)
-    name= models.CharField(max_length=500)
+    name = models.CharField(max_length=500)
+
     def __str__(self):
         return self.name
+
 
 class Bookings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -236,10 +304,10 @@ class Bookings(models.Model):
 
     def get_data(self):
         data = {
-            'bus' : self.bus,
+            'bus': self.bus,
             'accomodation': self.accomodation,
-            'sleeping_bag' : self.sleeping_bag,
-            'comments' : self.comments
+            'sleeping_bag': self.sleeping_bag,
+            'comments': self.comments
         }
         return data
 
@@ -333,7 +401,7 @@ class Uniform(models.Model):
     def initialize_sizes_with_quantities(self):
         sizes_with_quantities = []
         for size in self.get_sizes():
-            sizes_with_quantities.append({ "name":size.get_name(), "info": size, "quantity": 0 })
+            sizes_with_quantities.append({ "name": size.get_name(), "info": size, "quantity": 0 })
         return sizes_with_quantities
 
     def get_sizes_with_quantities(self, players_with_sizes):
@@ -396,13 +464,13 @@ class UniformSize(models.Model):
         return self.chest_fit(chest) and self.waist_fit(waist)
 
     def chest_fit(self, chest):
-        return (self.chest_min <= chest and self.chest_max >= chest)
+        return self.chest_min <= chest and self.chest_max >= chest
 
     def chest_minimum_fit(self, chest):
         return self.chest_fit(chest) or self.chest_min >= chest
 
     def waist_fit(self, waist):
-        return (self.waist_min <= waist and self.waist_max >= waist)
+        return self.waist_min <= waist and self.waist_max >= waist
 
     def waist_minimum_fit(self, waist):
         return self.waist_fit(waist) or self.waist_min >= waist
