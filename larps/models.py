@@ -154,8 +154,10 @@ class Character(models.Model):
     type = models.ForeignKey(CharacterType, on_delete=models.SET_NULL, null=True, blank=True)
     rank = models.CharField(max_length=500, blank=True)
     sheet = models.CharField(max_length=500, blank=True)
+    easy_read_sheet = models.CharField(max_length=500, blank=True)
     concept = models.CharField(max_length=500, blank=True)
-    weapon= models.CharField(max_length=500, blank=True)
+    weapon = models.CharField(max_length=500, blank=True)
+    design_document = models.CharField(max_length=500, blank=True)
     def __str__(self):
         return self.name
 
