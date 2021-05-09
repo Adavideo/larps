@@ -54,9 +54,13 @@ def create_character(larp_name, character_name, group, race, rank, type, concept
     race, created = Race.objects.update_or_create(name=race)
     type, created = CharacterType.objects.update_or_create(name=type)
 
-    character, created = Character.objects.update_or_create(
-        name=character_name, group=group, race=race, rank=rank, type=type,
-        concept=concept, sheet=sheet, weapon=weapon )
+    character, created = Character.objects.update_or_create(name=character_name)
+    # TODO: When we include the field larp in the Character class, we should
+    # search for a character in a concrete larp with that name.
+    # This way we'll aloud to have characters with the same name in diferent larps.  
+    # character, created = Character.objects.update_or_create(name=character_name, larp=larp)
+    character.update(group=group, race=race, rank=rank, type=type, concept=concept, sheet=sheet, weapon=weapon)
+    character.save()
     return character
 
 
