@@ -5,9 +5,10 @@
   <center><h2>Uniforms</h2></center>
 
   {% for uniform in uniforms %}
-    <a href="{% url 'larps:uniform_sizes' uniform.id %}">
-      {{ uniform }}
-    </a><br>
+      <a href="{% url 'larps:uniform_sizes' uniform.id %}">
+        {{ uniform }}
+      </a>
+
   {% endfor %}
 
 
