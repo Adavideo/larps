@@ -4,8 +4,14 @@ from django.contrib.auth.models import User
 
 # PLAYER MEASUREMENT
 
+class Gender(models.Model):
+    name = models.CharField(max_length=500)
+    def __str__(self):
+        return self.name
+
 class PlayerMeasurement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
     chest = models.IntegerField(default=0)
     arm_length = models.IntegerField(default=0)
     waist = models.IntegerField(default=0)
@@ -132,11 +138,6 @@ class Group(models.Model):
 
 
 class Race(models.Model):
-    name = models.CharField(max_length=500)
-    def __str__(self):
-        return self.name
-
-class Gender(models.Model):
     name = models.CharField(max_length=500)
     def __str__(self):
         return self.name
